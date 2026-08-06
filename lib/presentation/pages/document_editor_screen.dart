@@ -286,7 +286,7 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
                               onPressed: () => _openSignatureStudio(page),
                             ),
                             IconButton(
-                              icon: const Icon(CupertinoIcons.text_viewfinder, color: Colors.blue),
+                                  icon: const Icon(Icons.text_snippet, color: Colors.blue),
                               onPressed: () => _extractTextFromPage(page),
                             ),
                             IconButton(
