@@ -6,6 +6,7 @@ class Document {
   final DateTime updatedAt;
   final int pageCount;
   final String? pdfPath;
+  final List<String> tags;
 
   Document({
     this.id,
@@ -15,6 +16,7 @@ class Document {
     required this.updatedAt,
     required this.pageCount,
     this.pdfPath,
+    this.tags = const [],
   });
 
   Document copyWith({
@@ -25,6 +27,7 @@ class Document {
     DateTime? updatedAt,
     int? pageCount,
     String? pdfPath,
+    List<String>? tags,
   }) {
     return Document(
       id: id ?? this.id,
@@ -34,6 +37,7 @@ class Document {
       updatedAt: updatedAt ?? this.updatedAt,
       pageCount: pageCount ?? this.pageCount,
       pdfPath: pdfPath ?? this.pdfPath,
+      tags: tags ?? this.tags,
     );
   }
 }

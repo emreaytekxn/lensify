@@ -10,10 +10,14 @@ import '../../domain/entities/document.dart';
 import '../../domain/entities/document_page.dart';
 import '../providers/core_providers.dart';
 import '../providers/document_provider.dart';
+import '../providers/folder_provider.dart';
 import 'scanner_camera_screen.dart';
 import '../../core/utils/ocr_service.dart';
+import '../../core/utils/tts_service.dart';
 import 'package:flutter/services.dart';
 import 'signature_studio_screen.dart';
+import '../../core/utils/image_filter_service.dart';
+import '../../domain/entities/filter_type.dart';
 
 class DocumentEditorScreen extends ConsumerStatefulWidget {
   final Document document;
@@ -171,7 +175,10 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) {
-        return DraggableScrollableSheet(
+        bool isPlaying = false;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return DraggableScrollableSheet(
           initialChildSize: 0.6,
           minChildSize: 0.4,
           maxChildSize: 0.9,
@@ -184,13 +191,33 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
                     title: const Text('Metin Çıkarımı (OCR)'),
                     backgroundColor: Colors.transparent,
                     elevation: 0,
-                    leading: const CloseButton(),
+                    leading: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        TTSService.stop();
+                        Navigator.pop(context);
+                      },
+                    ),
                     actions: [
                       IconButton(
                         icon: const Icon(CupertinoIcons.doc_on_clipboard),
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: text));
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Metin panoya kopyalandı!')));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(isPlaying ? CupertinoIcons.speaker_3_fill : CupertinoIcons.speaker_2),
+                        color: isPlaying ? Colors.blue : null,
+                        onPressed: () async {
+                          if (isPlaying) {
+                            await TTSService.stop();
+                            setState(() => isPlaying = false);
+                          } else {
+                            setState(() => isPlaying = true);
+                            await TTSService.speak(text);
+                            // It won't auto-stop icon without a listener, but we can just let it be playing or user can tap again to stop.
+                          }
                         },
                       ),
                     ],
@@ -212,6 +239,8 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
         );
       },
     );
+      },
+    );
   }
 
   void _openCamera() async {
@@ -222,6 +251,65 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
     );
     // Reload pages when coming back from camera
     _loadPages();
+  }
+
+  void _showFilterOptions(DocumentPage page) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text('Filtre Seç', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+              Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                alignment: WrapAlignment.center,
+                children: FilterType.values.map((filter) {
+                  return ActionChip(
+                    label: Text(filter.name),
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await _applyFilter(page, filter);
+                    },
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _applyFilter(DocumentPage page, FilterType filter) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CupertinoActivityIndicator()),
+    );
+    try {
+      final originalPath = page.originalImagePath;
+      final newPath = await ImageFilterService.applyFilter(originalPath, filter);
+      
+      final updatedPage = page.copyWith(
+        processedImagePath: newPath,
+        appliedFilter: filter,
+      );
+      
+      final repo = ref.read(scannerRepositoryProvider);
+      await repo.updatePage(updatedPage);
+      await _loadPages();
+    } catch (e) {
+      debugPrint("Filter Error: $e");
+    } finally {
+      if (mounted) Navigator.pop(context);
+    }
   }
 
   @override
@@ -284,6 +372,10 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
                             IconButton(
                               icon: const Icon(CupertinoIcons.pen, color: Colors.purple),
                               onPressed: () => _openSignatureStudio(page),
+                            ),
+                            IconButton(
+                              icon: const Icon(CupertinoIcons.color_filter, color: Colors.orange),
+                              onPressed: () => _showFilterOptions(page),
                             ),
                             IconButton(
                                   icon: const Icon(Icons.text_snippet, color: Colors.blue),

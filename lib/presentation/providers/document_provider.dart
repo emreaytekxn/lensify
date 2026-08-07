@@ -56,7 +56,9 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
     } else {
       final lowerQuery = state.searchQuery.toLowerCase();
       final filtered = state.allDocuments.where((doc) {
-        return doc.title.toLowerCase().contains(lowerQuery);
+        final matchesTitle = doc.title.toLowerCase().contains(lowerQuery);
+        final matchesTags = doc.tags.any((tag) => tag.toLowerCase().contains(lowerQuery));
+        return matchesTitle || matchesTags;
       }).toList();
       state = state.copyWith(filteredDocuments: filtered);
     }
@@ -106,6 +108,39 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
     try {
       await _repository.moveDocument(id, newFolderId);
       await loadDocuments();
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  Future<void> addTagToDocument(int id, String tag) async {
+    try {
+      final doc = state.allDocuments.firstWhere((d) => d.id == id);
+      if (!doc.tags.contains(tag)) {
+        final updatedDoc = doc.copyWith(
+          tags: [...doc.tags, tag],
+          updatedAt: DateTime.now(),
+        );
+        await _repository.updateDocument(updatedDoc);
+        await loadDocuments();
+      }
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  Future<void> removeTagFromDocument(int id, String tag) async {
+    try {
+      final doc = state.allDocuments.firstWhere((d) => d.id == id);
+      if (doc.tags.contains(tag)) {
+        final updatedTags = doc.tags.where((t) => t != tag).toList();
+        final updatedDoc = doc.copyWith(
+          tags: updatedTags,
+          updatedAt: DateTime.now(),
+        );
+        await _repository.updateDocument(updatedDoc);
+        await loadDocuments();
+      }
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }

@@ -19,4 +19,6 @@ class DocumentModel {
   late int pageCount;
   
   String? pdfPath;
+  
+  List<String> tags = [];
 }

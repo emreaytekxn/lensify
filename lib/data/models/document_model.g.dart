@@ -37,13 +37,18 @@ const DocumentModelSchema = CollectionSchema(
       name: r'pdfPath',
       type: IsarType.string,
     ),
-    r'title': PropertySchema(
+    r'tags': PropertySchema(
       id: 4,
+      name: r'tags',
+      type: IsarType.stringList,
+    ),
+    r'title': PropertySchema(
+      id: 5,
       name: r'title',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -101,6 +106,13 @@ int _documentModelEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  bytesCount += 3 + object.tags.length * 3;
+  {
+    for (var i = 0; i < object.tags.length; i++) {
+      final value = object.tags[i];
+      bytesCount += value.length * 3;
+    }
+  }
   bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
@@ -115,8 +127,9 @@ void _documentModelSerialize(
   writer.writeLong(offsets[1], object.folderId);
   writer.writeLong(offsets[2], object.pageCount);
   writer.writeString(offsets[3], object.pdfPath);
-  writer.writeString(offsets[4], object.title);
-  writer.writeDateTime(offsets[5], object.updatedAt);
+  writer.writeStringList(offsets[4], object.tags);
+  writer.writeString(offsets[5], object.title);
+  writer.writeDateTime(offsets[6], object.updatedAt);
 }
 
 DocumentModel _documentModelDeserialize(
@@ -131,8 +144,9 @@ DocumentModel _documentModelDeserialize(
   object.id = id;
   object.pageCount = reader.readLong(offsets[2]);
   object.pdfPath = reader.readStringOrNull(offsets[3]);
-  object.title = reader.readString(offsets[4]);
-  object.updatedAt = reader.readDateTime(offsets[5]);
+  object.tags = reader.readStringList(offsets[4]) ?? [];
+  object.title = reader.readString(offsets[5]);
+  object.updatedAt = reader.readDateTime(offsets[6]);
   return object;
 }
 
@@ -152,8 +166,10 @@ P _documentModelDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -919,6 +935,231 @@ extension DocumentModelQueryFilter
   }
 
   QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'tags',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'tags',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'tags',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'tags',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'tags',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'tags',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'tags',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'tags',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'tags',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'tags',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'tags',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'tags',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'tags',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'tags',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'tags',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      tagsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'tags',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
       titleEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1314,6 +1555,12 @@ extension DocumentModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<DocumentModel, DocumentModel, QDistinct> distinctByTags() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'tags');
+    });
+  }
+
   QueryBuilder<DocumentModel, DocumentModel, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1357,6 +1604,12 @@ extension DocumentModelQueryProperty
   QueryBuilder<DocumentModel, String?, QQueryOperations> pdfPathProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'pdfPath');
+    });
+  }
+
+  QueryBuilder<DocumentModel, List<String>, QQueryOperations> tagsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'tags');
     });
   }
 

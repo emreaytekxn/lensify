@@ -2,22 +2,26 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'filter_screen.dart';
+import '../../core/utils/camera_service.dart';
 import '../../core/utils/image_processing_service.dart';
+import '../../domain/entities/document_page.dart';
+import '../../domain/entities/filter_type.dart';
+import '../providers/core_providers.dart';
+import 'filter_screen.dart';
 
-class ScannerCameraScreen extends StatefulWidget {
+class ScannerCameraScreen extends ConsumerStatefulWidget {
   final int? targetDocumentId; // If adding to existing document
 
-  const ScannerCameraScreen({Key? key, this.targetDocumentId}) : super(key: key);
+  const ScannerCameraScreen({super.key, this.targetDocumentId});
 
   @override
-  State<ScannerCameraScreen> createState() => _ScannerCameraScreenState();
+  ConsumerState<ScannerCameraScreen> createState() => _ScannerCameraScreenState();
 }
 
-class _ScannerCameraScreenState extends State<ScannerCameraScreen> {
+class _ScannerCameraScreenState extends ConsumerState<ScannerCameraScreen> {
   CameraController? _controller;
   List<CameraDescription> _cameras = [];
   bool _isInitialized = false;
@@ -25,6 +29,8 @@ class _ScannerCameraScreenState extends State<ScannerCameraScreen> {
   final ImagePicker _picker = ImagePicker();
 
   bool _isIdCardMode = false;
+  bool _isBatchMode = false;
+  int _batchCount = 0;
   String? _idCardFrontPath;
   bool _isProcessingIdCard = false;
 
@@ -160,14 +166,32 @@ class _ScannerCameraScreenState extends State<ScannerCameraScreen> {
     if (croppedFile != null) {
       // 2. Navigate to Filter Screen
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => FilterScreen(
-            imagePath: croppedFile.path,
-            targetDocumentId: widget.targetDocumentId,
+      
+      if (_isBatchMode && widget.targetDocumentId != null) {
+        // Just save to the current document and continue
+        final repo = ref.read(scannerRepositoryProvider);
+        await repo.addPageToDocument(DocumentPage(
+          documentId: widget.targetDocumentId!,
+          originalImagePath: croppedFile.path,
+          processedImagePath: croppedFile.path, // Assuming no filter in rapid batch mode for simplicity, or we can apply default
+          pageIndex: 0, // It will be ordered by repo or just appended
+          appliedFilter: FilterType.original,
+          createdAt: DateTime.now(),
+        ));
+        setState(() {
+          _batchCount++;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sayfa eklendi ($_batchCount)')));
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => FilterScreen(
+              imagePath: croppedFile.path,
+              targetDocumentId: widget.targetDocumentId,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 
@@ -253,24 +277,28 @@ class _ScannerCameraScreenState extends State<ScannerCameraScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ChoiceChip(
-                        label: const Text('Belge'),
-                        selected: !_isIdCardMode,
-                        onSelected: (val) {
-                          if (val) setState(() => _isIdCardMode = false);
+                      CupertinoSegmentedControl<int>(
+                        groupValue: _isBatchMode ? 2 : (_isIdCardMode ? 1 : 0),
+                        children: const {
+                          0: Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text('Belge')),
+                          1: Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text('Kimlik')),
+                          2: Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text('Çoklu')),
                         },
-                      ),
-                      const SizedBox(width: 16),
-                      ChoiceChip(
-                        label: const Text('Kimlik (ID)'),
-                        selected: _isIdCardMode,
-                        onSelected: (val) {
-                          if (val) {
-                            setState(() {
+                        onValueChanged: (val) {
+                          setState(() {
+                            if (val == 0) {
+                              _isIdCardMode = false;
+                              _isBatchMode = false;
+                            } else if (val == 1) {
                               _isIdCardMode = true;
+                              _isBatchMode = false;
                               _idCardFrontPath = null;
-                            });
-                          }
+                            } else {
+                              _isIdCardMode = false;
+                              _isBatchMode = true;
+                              _batchCount = 0;
+                            }
+                          });
                         },
                       ),
                     ],

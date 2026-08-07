@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'barcode_scanner_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/document_import_service.dart';
@@ -60,6 +62,30 @@ class ToolsScreen extends ConsumerWidget {
               ref.read(documentNotifierProvider.notifier).loadDocuments();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('PDF sayfaları başarıyla resme dönüştürüldü!')),
+              );
+            },
+          ),
+
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.qrcode_viewfinder,
+            color: Colors.purple,
+            title: 'QR / Barkod Oku',
+            description: 'Kamerayla hızlıca kod tarayın',
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()));
+            },
+          ),
+
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.lock,
+            color: Colors.blue,
+            title: 'PDF Şifreleme',
+            description: 'Belgelerinize parola ekleyin (Yakında)',
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Bu özellik yakında eklenecek!')),
               );
             },
           ),
