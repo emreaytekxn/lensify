@@ -11,6 +11,7 @@ import '../widgets/document_grid_card.dart';
 import '../widgets/document_list_card.dart';
 import '../widgets/empty_state_view.dart';
 import '../widgets/folder_list_view.dart';
+import '../widgets/loading_overlay.dart';
 import 'document_editor_screen.dart';
 import 'scanner_camera_screen.dart';
 import '../../core/utils/document_import_service.dart';
@@ -165,10 +166,15 @@ class DashboardScreen extends ConsumerWidget {
                 title: const Text('Galeriden Resim Aktar'),
                 onTap: () async {
                   Navigator.pop(context);
-                  final folderId = ref.read(folderNotifierProvider).activeFolderId;
-                  final repo = ref.read(scannerRepositoryProvider);
-                  await DocumentImportService(repo).importFromGallery(folderId);
-                  ref.read(documentNotifierProvider.notifier).loadDocuments();
+                  LoadingOverlay.show(context, message: 'İçe aktarılıyor...');
+                  try {
+                    final folderId = ref.read(folderNotifierProvider).activeFolderId;
+                    final repo = ref.read(scannerRepositoryProvider);
+                    await DocumentImportService(repo).importFromGallery(folderId);
+                    ref.read(documentNotifierProvider.notifier).loadDocuments();
+                  } finally {
+                    if (context.mounted) LoadingOverlay.hide(context);
+                  }
                 },
               ),
               ListTile(
@@ -177,10 +183,15 @@ class DashboardScreen extends ConsumerWidget {
                 subtitle: const Text('PDF sayfaları resme dönüştürülür'),
                 onTap: () async {
                   Navigator.pop(context);
-                  final folderId = ref.read(folderNotifierProvider).activeFolderId;
-                  final repo = ref.read(scannerRepositoryProvider);
-                  await DocumentImportService(repo).importPdf(folderId);
-                  ref.read(documentNotifierProvider.notifier).loadDocuments();
+                  LoadingOverlay.show(context, message: 'PDF dönüştürülüyor...');
+                  try {
+                    final folderId = ref.read(folderNotifierProvider).activeFolderId;
+                    final repo = ref.read(scannerRepositoryProvider);
+                    await DocumentImportService(repo).importPdf(folderId);
+                    ref.read(documentNotifierProvider.notifier).loadDocuments();
+                  } finally {
+                    if (context.mounted) LoadingOverlay.hide(context);
+                  }
                 },
               ),
               const SizedBox(height: 16),

@@ -8,6 +8,8 @@ import '../../core/utils/document_import_service.dart';
 import '../providers/core_providers.dart';
 import '../providers/document_provider.dart';
 import '../providers/folder_provider.dart';
+import '../widgets/loading_overlay.dart';
+import '../../core/utils/format_conversion_service.dart';
 
 class ToolsScreen extends ConsumerWidget {
   const ToolsScreen({Key? key}) : super(key: key);
@@ -39,13 +41,20 @@ class ToolsScreen extends ConsumerWidget {
             title: 'Fotoğraftan PDF\'e',
             description: 'Birden fazla görseli tek bir PDF dökümanında birleştirin. (JPEG/PNG ➔ PDF)',
             onTap: () async {
-              final folderId = ref.read(folderNotifierProvider).activeFolderId;
-              final repo = ref.read(scannerRepositoryProvider);
-              await DocumentImportService(repo).importFromGallery(folderId);
-              ref.read(documentNotifierProvider.notifier).loadDocuments();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Fotoğraflar PDF (Belge) olarak aktarıldı!')),
-              );
+              LoadingOverlay.show(context, message: 'İçe aktarılıyor...');
+              try {
+                final folderId = ref.read(folderNotifierProvider).activeFolderId;
+                final repo = ref.read(scannerRepositoryProvider);
+                await DocumentImportService(repo).importFromGallery(folderId);
+                ref.read(documentNotifierProvider.notifier).loadDocuments();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Fotoğraflar başarıyla aktarıldı!')),
+                  );
+                }
+              } finally {
+                if (context.mounted) LoadingOverlay.hide(context);
+              }
             },
           ),
           
@@ -56,13 +65,20 @@ class ToolsScreen extends ConsumerWidget {
             title: 'PDF\'den Fotoğrafa',
             description: 'PDF belgelerinizin sayfalarını yüksek çözünürlüklü görsellere dönüştürün. (PDF ➔ JPEG)',
             onTap: () async {
-              final folderId = ref.read(folderNotifierProvider).activeFolderId;
-              final repo = ref.read(scannerRepositoryProvider);
-              await DocumentImportService(repo).importPdf(folderId);
-              ref.read(documentNotifierProvider.notifier).loadDocuments();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('PDF sayfaları başarıyla resme dönüştürüldü!')),
-              );
+              LoadingOverlay.show(context, message: 'PDF dönüştürülüyor...');
+              try {
+                final folderId = ref.read(folderNotifierProvider).activeFolderId;
+                final repo = ref.read(scannerRepositoryProvider);
+                await DocumentImportService(repo).importPdf(folderId);
+                ref.read(documentNotifierProvider.notifier).loadDocuments();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('PDF sayfaları başarıyla resme dönüştürüldü!')),
+                  );
+                }
+              } finally {
+                if (context.mounted) LoadingOverlay.hide(context);
+              }
             },
           ),
 
@@ -79,18 +95,84 @@ class ToolsScreen extends ConsumerWidget {
 
           _buildToolCard(
             context,
+            icon: CupertinoIcons.text_aligncenter,
+            color: Colors.green,
+            title: 'Resimden Metne (TXT)',
+            description: 'Fotoğraftaki yazıları otomatik olarak .txt formatına dönüştürün.',
+            onTap: () async {
+              LoadingOverlay.show(context, message: 'Metin analiz ediliyor...');
+              try {
+                final success = await FormatConversionService.extractTextToTxt();
+                if (success && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Metin dosyası oluşturuldu!')));
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hata: $e')));
+                }
+              } finally {
+                if (context.mounted) LoadingOverlay.hide(context);
+              }
+            },
+          ),
+
+          _buildToolCard(
+            context,
             icon: CupertinoIcons.lock,
-            color: Colors.blue,
+            color: Colors.redAccent,
             title: 'PDF Şifreleme',
-            description: 'Belgelerinize parola ekleyin (Yakında)',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Bu özellik yakında eklenecek!')),
-              );
+            description: 'PDF belgelerinize güvenli AES 256-Bit parola ekleyin.',
+            onTap: () async {
+              _showPasswordDialog(context);
             },
           ),
         ],
       ),
+    );
+  }
+
+  void _showPasswordDialog(BuildContext context) {
+    final TextEditingController passwordController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('PDF Şifreleme'),
+          content: TextField(
+            controller: passwordController,
+            obscureText: true,
+            decoration: const InputDecoration(hintText: 'Yeni parolanızı girin'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('İptal'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final pwd = passwordController.text.trim();
+                if (pwd.isEmpty) return;
+                Navigator.pop(context); // close dialog
+                
+                LoadingOverlay.show(context, message: 'PDF şifreleniyor...');
+                try {
+                  final success = await FormatConversionService.encryptPdf(pwd);
+                  if (success && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('PDF başarıyla şifrelendi!')));
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hata: $e')));
+                  }
+                } finally {
+                  if (context.mounted) LoadingOverlay.hide(context);
+                }
+              },
+              child: const Text('Şifrele'),
+            ),
+          ],
+        );
+      },
     );
   }
 

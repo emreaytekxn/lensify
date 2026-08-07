@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'core/theme/app_theme.dart';
 import 'presentation/pages/main_navigation_screen.dart';
+import 'presentation/pages/animated_splash_screen.dart';
 import 'presentation/providers/settings_provider.dart';
 
 void main() async {
@@ -25,7 +26,7 @@ class SecureScanApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: settingsState.themeMode,
-      home: const MainNavigationScreen(),
+      home: const AnimatedSplashScreen(),
     );
   }
 }
