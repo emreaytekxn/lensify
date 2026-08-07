@@ -10,18 +10,18 @@ import 'presentation/providers/settings_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('tr_TR', null);
-  runApp(const ProviderScope(child: SecureScanApp()));
+  runApp(const ProviderScope(child: KawaruApp()));
 }
 
-class SecureScanApp extends ConsumerWidget {
-  const SecureScanApp({Key? key}) : super(key: key);
+class KawaruApp extends ConsumerWidget {
+  const KawaruApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsState = ref.watch(settingsNotifierProvider);
 
     return MaterialApp(
-      title: 'Lensify',
+      title: 'Kawaru',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

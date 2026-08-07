@@ -46,7 +46,7 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
         // Success
         await Share.shareXFiles(
           [XFile(outputPath)], 
-          text: 'Lensify ile dönüştürüldü',
+          text: 'Kawaru ile dönüştürüldü',
           sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
         );
       } else if (mounted) {
@@ -78,7 +78,7 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
             const Icon(CupertinoIcons.infinite, size: 80, color: Colors.blueAccent),
             const SizedBox(height: 16),
             const Text(
-              'Lensify Evrensel Dönüştürücü',
+              'Kawaru Evrensel Dönüştürücü',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),

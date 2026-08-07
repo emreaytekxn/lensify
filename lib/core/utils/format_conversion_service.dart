@@ -27,7 +27,7 @@ class FormatConversionService {
 
     await Share.shareXFiles(
       [XFile(file.path)], 
-      text: 'Lensify ile çıkarılan metin dosyası',
+      text: 'Kawaru ile çıkarılan metin dosyası',
       sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
     );
     return true;
@@ -63,7 +63,7 @@ class FormatConversionService {
 
     await Share.shareXFiles(
       [XFile(file.path)], 
-      text: 'Lensify ile şifrelenmiş PDF',
+      text: 'Kawaru ile şifrelenmiş PDF',
       sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
     );
     return true;

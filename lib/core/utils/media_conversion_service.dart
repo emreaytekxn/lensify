@@ -10,7 +10,7 @@ class MediaConversionService {
       final originalName = inputPath.split('/').last;
       final nameWithoutExt = originalName.substring(0, originalName.lastIndexOf('.'));
       
-      final String outputPath = '${tempDir.path}/${nameWithoutExt}_lensify.$targetExtension';
+      final String outputPath = '${tempDir.path}/${nameWithoutExt}_kawaru.$targetExtension';
       
       // Delete if exists
       if (File(outputPath).existsSync()) {

@@ -1,77 +1,40 @@
-<div align="center">
-  <img src="assets/icon/app_icon.png" alt="Lensify Logo" width="150" />
-  <h1>Lensify (Scanify)</h1>
-  <p><strong>A 100% offline, intelligent, and secure document scanner built with Flutter.</strong></p>
-  
-  [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
-  [![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-</div>
+# Kawaru ♾️
 
----
+> **"Her Şeyi Dönüştüren, 0 Maliyetli"**
 
-## 🌟 Overview
+Kawaru (Japonca 変わる — "değişmek / dönüşmek"), sıradan bir belge tarayıcısının ötesinde, tamamen çevrimdışı (offline) ve yüksek güvenlikli bir Evrensel Medya ve Belge Dönüştürücü uygulamasıdır.
 
-**Lensify** is a premium, open-source document scanning application designed to compete with industry giants like CamScanner and Adobe Scan. Built with Clean Architecture principles, it ensures robust performance and maintainability while keeping your data 100% secure and offline on your device.
+Temel felsefemiz **Sonsuzluk (Infinity)** üzerine kuruludur.
 
-## ✨ Premium Features
+## 🚀 Temel Özellikler
 
-- 📸 **Smart Document Scanning:** Auto-crop and perspective correction for flawless scans.
-- 🪪 **ID Card Mode:** Combine front and back sides of ID cards onto a single A4 canvas seamlessly.
-- 🔍 **Offline OCR (Optical Character Recognition):** Extract text from scanned documents locally using Google ML Kit without needing an internet connection.
-- ✍️ **Signature Studio:** Sign your documents digitally with a smooth, native drawing canvas.
-- 🔒 **Biometric Security:** App and folder lock utilizing Face ID / Touch ID (via `local_auth`).
-- 📂 **Local Database:** Lightning-fast document management and caching powered by `Isar` Database.
-- 🚀 **State Management:** Fully reactive UI managed by `Riverpod`.
+1. **%100 Çevrimdışı (Offline-First):** Bütün özellikler internetsiz çalışır. Belgeleriniz ve dönüştürdüğünüz medyalar asla bir bulut sunucusuna gönderilmez.
+2. **0 Maliyet:** Hiçbir ücretli bulut API'si veya sunucu maliyeti yoktur. Uygulama tamamen ücretsiz ve cihaz üstü (on-device) kütüphaneler kullanılarak geliştirilmiştir.
+3. **Akıllı Kamera ve PDF Oluşturucu:** Belgeleri tarayın, otomatik kenar algılama ile düzleştirin, çok sayfalı PDF'ler oluşturun.
+4. **Resimden Metne (OCR):** Taranan belgelerdeki veya fotoğraflardaki yazıları çıkartıp .txt olarak paylaşın.
+5. **PDF Şifreleme:** Güvenli belgelerinizi AES-256 bit ile tamamen kilitleyin.
+6. **Evrensel Medya Dönüştürücü:** Ses, video ve resim formatlarını tamamen çevrimdışı olarak birbirine dönüştürün (Örn: MP4 -> MP3, WAV -> AAC).
+7. **Akıllı QR/Barkod Okuyucu:** Bağlantıları doğrudan açın veya kopyalayın.
 
-## 📸 Screenshots
+## 🛠️ Teknolojiler
 
-*(Add your app screenshots here to showcase the beautiful UI!)*
-
-## 🛠️ Tech Stack
-
-- **Framework:** Flutter & Dart
+- **Mimari:** Clean Architecture (Domain, Data, Presentation)
 - **State Management:** Riverpod
-- **Local Database:** Isar
-- **Machine Learning:** Google ML Kit (Text Recognition)
-- **Security:** Local Auth (Biometrics)
-- **Image Processing:** Image Cropper, Camera, Image
+- **Yerel Veritabanı:** Isar Database (Hızlı ve şifreli NoSQL)
+- **Tarama & Görüntü:** Camera, Image Cropper, Google ML Kit (OCR)
+- **Medya Dönüştürücü:** FFmpeg (ffmpeg_kit_flutter_new)
+- **Platform:** iOS & Android (Cross-platform)
 
-## 🚀 Getting Started
+## 🎨 Tasarım & UX
 
-### Prerequisites
+- "iOS Sistem Mavisi" (`#007AFF`) tonlarından ayrışan, özgün **Dönüşüm & Döngü** (İki Ok) logolu minimal tasarım.
+- Tüm ağır işlemlerde kullanılan büyüleyici **Sonsuzluk (Infinity) Loading Animasyonu**.
+- Liste ve ızgara görünümlerinde gerçek sayfa önizlemeleri (Thumbnails).
+- Karanlık (Dark) ve Aydınlık (Light) mod tam desteği.
 
-- Flutter SDK `^3.0.0`
-- Xcode (for iOS build)
-- Android Studio (for Android build)
+## 📦 Kurulum
 
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/emreaytekxn/lensify.git
-   ```
-2. Navigate into the directory:
-   ```bash
-   cd lensify
-   ```
-3. Install dependencies:
-   ```bash
-   flutter pub get
-   cd ios && pod install --repo-update && cd ..
-   ```
-4. Run the app:
-   ```bash
-   flutter run
-   ```
-
-## 👨‍💻 Developer
-
-**Naim Emre Aytekin**
-- 🌐 [Website](https://naimemreaytekin.site)
-- 🐙 [GitHub](https://github.com/emreaytekxn)
-
----
-<div align="center">
-  <i>If you like this project, please consider giving it a ⭐️!</i>
-</div>
+1. Depoyu klonlayın: `git clone https://github.com/emreaytekxn/lensify.git` (Proje adı github'da lensify kalsa da, içeriği Kawaru'dur)
+2. Klasöre girin: `cd SecureScanProject`
+3. Bağımlılıkları yükleyin: `flutter pub get`
+4. Uygulamayı çalıştırın: `flutter run`

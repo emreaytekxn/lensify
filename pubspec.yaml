@@ -1,7 +1,7 @@
-name: lensify
-description: A 100% offline, smart document scanner.
+name: kawaru
+description: 0 Maliyetli, Tamamen Çevrimdışı, Evrensel Dönüştürücü ve Tarayıcı.
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.1.0+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

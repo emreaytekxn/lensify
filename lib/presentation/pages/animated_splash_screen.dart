@@ -99,7 +99,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen> with Single
             FadeTransition(
               opacity: _opacityAnimation,
               child: Text(
-                'Lensify',
+                'Kawaru',
                 style: GoogleFonts.outfit(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
