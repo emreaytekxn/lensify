@@ -25,7 +25,11 @@ class FormatConversionService {
     final file = File('${tempDir.path}/CikarilanMetin_${DateTime.now().millisecondsSinceEpoch}.txt');
     await file.writeAsString(text);
 
-    await Share.shareXFiles([XFile(file.path)], text: 'Lensify ile çıkarılan metin dosyası');
+    await Share.shareXFiles(
+      [XFile(file.path)], 
+      text: 'Lensify ile çıkarılan metin dosyası',
+      sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
+    );
     return true;
   }
 
@@ -57,7 +61,11 @@ class FormatConversionService {
     final file = File('${tempDir.path}/Sifreli_${result.files.single.name}');
     await file.writeAsBytes(bytes);
 
-    await Share.shareXFiles([XFile(file.path)], text: 'Lensify ile şifrelenmiş PDF');
+    await Share.shareXFiles(
+      [XFile(file.path)], 
+      text: 'Lensify ile şifrelenmiş PDF',
+      sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
+    );
     return true;
   }
 }

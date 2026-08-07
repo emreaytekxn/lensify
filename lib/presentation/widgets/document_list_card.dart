@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../domain/entities/document.dart';
+import '../providers/core_providers.dart';
 
-class DocumentListCard extends StatelessWidget {
+class DocumentListCard extends ConsumerWidget {
   final Document document;
   final bool isSelected;
   final bool isSelectionMode;
@@ -20,7 +23,7 @@ class DocumentListCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final dateFormat = DateFormat('dd MMM yyyy, HH:mm', 'tr_TR');
     
     return Padding(
@@ -72,10 +75,33 @@ class DocumentListCard extends StatelessWidget {
                   color: Theme.of(context).scaffoldBackgroundColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  CupertinoIcons.doc_richtext,
-                  color: Theme.of(context).primaryColor.withOpacity(0.6),
-                ),
+                child: document.id != null
+                    ? FutureBuilder(
+                        future: ref.read(scannerRepositoryProvider).getPagesForDocument(document.id!),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                            final firstPage = snapshot.data!.first;
+                            final path = firstPage.processedImagePath ?? firstPage.originalImagePath;
+                            if (File(path).existsSync()) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.file(
+                                  File(path),
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                            }
+                          }
+                          return Icon(
+                            CupertinoIcons.doc_richtext,
+                            color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+                          );
+                        },
+                      )
+                    : Icon(
+                        CupertinoIcons.doc_richtext,
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+                      ),
               ),
               const SizedBox(width: 16),
               Expanded(

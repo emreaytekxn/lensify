@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BarcodeScannerScreen extends StatefulWidget {
   const BarcodeScannerScreen({super.key});
@@ -77,31 +78,52 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('QR / Barkod Bulundu'),
-        content: Text(barcode.displayValue ?? barcode.rawValue ?? 'Bilinmeyen Barkod'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Clipboard.setData(ClipboardData(text: barcode.displayValue ?? ''));
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Kopyalandı')),
-              );
-              _isBusy = false;
-              _controller?.startImageStream(_processCameraImage);
-            },
-            child: const Text('Kopyala & Devam Et'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context); // Go back
-            },
-            child: const Text('Çıkış'),
-          ),
-        ],
-      ),
+      builder: (context) {
+        final text = barcode.displayValue ?? barcode.rawValue ?? 'Bilinmeyen Barkod';
+        final isUrl = text.startsWith('http://') || text.startsWith('https://');
+        
+        return AlertDialog(
+          title: const Text('QR / Barkod Bulundu'),
+          content: Text(text),
+          actions: [
+            if (isUrl)
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(context); // Close dialog
+                  final uri = Uri.parse(text);
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  }
+                  if (mounted) {
+                    setState(() { _isBusy = false; });
+                    _controller?.startImageStream(_processCameraImage);
+                  }
+                },
+                child: const Text('Bağlantıyı Aç'),
+              ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Clipboard.setData(ClipboardData(text: text));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Kopyalandı')),
+                );
+                _isBusy = false;
+                _controller?.startImageStream(_processCameraImage);
+              },
+              child: const Text('Kopyala'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _isBusy = false;
+                _controller?.startImageStream(_processCameraImage);
+              },
+              child: const Text('İptal'),
+            ),
+          ],
+        );
+      },
     );
   }
 

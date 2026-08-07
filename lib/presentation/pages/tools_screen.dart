@@ -10,6 +10,7 @@ import '../providers/document_provider.dart';
 import '../providers/folder_provider.dart';
 import '../widgets/loading_overlay.dart';
 import '../../core/utils/format_conversion_service.dart';
+import 'media_converter_screen.dart';
 
 class ToolsScreen extends ConsumerWidget {
   const ToolsScreen({Key? key}) : super(key: key);
@@ -79,6 +80,17 @@ class ToolsScreen extends ConsumerWidget {
               } finally {
                 if (context.mounted) LoadingOverlay.hide(context);
               }
+            },
+          ),
+
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.infinite,
+            color: Colors.deepPurple,
+            title: 'Evrensel Medya Dönüştürücü',
+            description: 'Ses ve videoları çevrimdışı dönüştürün (MP4, MP3 vb.)',
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const MediaConverterScreen()));
             },
           ),
 
