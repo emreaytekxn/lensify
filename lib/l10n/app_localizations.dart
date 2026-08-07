@@ -187,6 +187,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Light Mode'**
   String get lightMode;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @requireBiometrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Require FaceID / TouchID on Startup'**
+  String get requireBiometrics;
+
+  /// No description provided for @requireBiometricsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication is required every time you enter the app.'**
+  String get requireBiometricsDesc;
+
+  /// No description provided for @themeMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark / Light Mode'**
+  String get themeMode;
+
+  /// No description provided for @legalAndDocs.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & Documents'**
+  String get legalAndDocs;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// No description provided for @kvkk.
+  ///
+  /// In en, this message translates to:
+  /// **'KVKK Text'**
+  String get kvkk;
+
+  /// No description provided for @termsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get termsOfUse;
+
+  /// No description provided for @toolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get toolsTitle;
+
+  /// No description provided for @mediaConverter.
+  ///
+  /// In en, this message translates to:
+  /// **'Media Converter'**
+  String get mediaConverter;
+
+  /// No description provided for @mediaConverterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert images/videos to any format offline.'**
+  String get mediaConverterDesc;
+
+  /// No description provided for @aiTranscription.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Transcription'**
+  String get aiTranscription;
+
+  /// No description provided for @aiTranscriptionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert audio to text perfectly offline.'**
+  String get aiTranscriptionDesc;
+
+  /// No description provided for @pdfEncrypt.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF Encryption'**
+  String get pdfEncrypt;
+
+  /// No description provided for @pdfEncryptDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect your PDF files with a password.'**
+  String get pdfEncryptDesc;
+
+  /// No description provided for @universalMediaTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Universal Media Tools'**
+  String get universalMediaTools;
+
+  /// No description provided for @universalMediaToolsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your files offline and securely with professional conversion tools.'**
+  String get universalMediaToolsDesc;
+
+  /// No description provided for @photoToPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo to PDF'**
+  String get photoToPdf;
+
+  /// No description provided for @photoToPdfDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Combine multiple images into a single PDF document. (JPEG/PNG ➔ PDF)'**
+  String get photoToPdfDesc;
+
+  /// No description provided for @importing.
+  ///
+  /// In en, this message translates to:
+  /// **'Importing...'**
+  String get importing;
+
+  /// No description provided for @photosImportedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos successfully imported!'**
+  String get photosImportedSuccessfully;
+
+  /// No description provided for @pdfToPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF to Photo'**
+  String get pdfToPhoto;
+
+  /// No description provided for @pdfToPhotoDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert PDF pages into high-resolution images. (PDF ➔ JPEG)'**
+  String get pdfToPhotoDesc;
+
+  /// No description provided for @pdfConverting.
+  ///
+  /// In en, this message translates to:
+  /// **'Converting PDF...'**
+  String get pdfConverting;
+
+  /// No description provided for @pdfPagesConvertedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF pages successfully converted to images!'**
+  String get pdfPagesConvertedSuccessfully;
+
+  /// No description provided for @qrBarcodeScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR / Barcode'**
+  String get qrBarcodeScan;
+
+  /// No description provided for @qrBarcodeScanDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Quickly scan codes with your camera.'**
+  String get qrBarcodeScanDesc;
+
+  /// No description provided for @imageToText.
+  ///
+  /// In en, this message translates to:
+  /// **'Image to Text (TXT)'**
+  String get imageToText;
+
+  /// No description provided for @imageToTextDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically convert text from photos to .txt format.'**
+  String get imageToTextDesc;
+
+  /// No description provided for @analyzingText.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing text...'**
+  String get analyzingText;
+
+  /// No description provided for @textFileCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Text file created!'**
+  String get textFileCreated;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get selected;
+
+  /// No description provided for @moveToFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to Folder'**
+  String get moveToFolder;
+
+  /// No description provided for @mainDir.
+  ///
+  /// In en, this message translates to:
+  /// **'Main Directory (Remove from folder)'**
+  String get mainDir;
+
+  /// No description provided for @noOtherFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'No other folder found.'**
+  String get noOtherFolder;
+
+  /// No description provided for @searchDocs.
+  ///
+  /// In en, this message translates to:
+  /// **'Search documents...'**
+  String get searchDocs;
+
+  /// No description provided for @appLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'App Locked'**
+  String get appLocked;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgain;
 }
 
 class _AppLocalizationsDelegate

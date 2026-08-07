@@ -6,6 +6,7 @@ import '../providers/settings_provider.dart';
 import '../../core/utils/security_service.dart';
 import 'dashboard_screen.dart';
 import 'tools_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
@@ -85,6 +86,8 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
       );
     }
 
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
@@ -98,16 +101,16 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
           });
         },
         selectedItemColor: Theme.of(context).primaryColor,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.doc_on_clipboard),
-            activeIcon: Icon(CupertinoIcons.doc_on_clipboard_fill),
-            label: 'Belgelerim',
+            icon: const Icon(CupertinoIcons.doc_on_clipboard),
+            activeIcon: const Icon(CupertinoIcons.doc_on_clipboard_fill),
+            label: loc.homeTab,
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.wrench),
-            activeIcon: Icon(CupertinoIcons.wrench_fill),
-            label: 'Araçlar',
+            icon: const Icon(CupertinoIcons.wrench),
+            activeIcon: const Icon(CupertinoIcons.wrench_fill),
+            label: loc.toolsTab,
           ),
         ],
       ),

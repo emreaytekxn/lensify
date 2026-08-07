@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/settings_provider.dart';
 import '../../core/utils/security_service.dart';
 import '../widgets/legal_documents_dialog.dart';
+import '../../l10n/app_localizations.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -11,17 +12,17 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsState = ref.watch(settingsNotifierProvider);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ayarlar'),
+        title: Text(loc.settingsTitle),
       ),
       body: ListView(
         children: [
           SwitchListTile(
-            title: const Text('Uygulama Açılışında FaceID / TouchID İste'),
-            subtitle:
-                const Text('Uygulamaya her girdiğinizde doğrulama istenir.'),
+            title: Text(loc.requireBiometrics),
+            subtitle: Text(loc.requireBiometricsDesc),
             value: settingsState.requireBiometricsOnStartup,
             secondary: const Icon(CupertinoIcons.lock_shield),
             onChanged: (value) async {
@@ -54,7 +55,7 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
           ListTile(
             leading: const Icon(CupertinoIcons.moon),
-            title: const Text('Karanlık / Aydınlık Mod'),
+            title: Text(loc.themeMode),
             trailing: Switch(
               value: settingsState.themeMode == ThemeMode.dark,
               onChanged: (val) {
@@ -66,7 +67,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(CupertinoIcons.globe),
-            title: const Text('Dil / Language'),
+            title: Text(loc.language),
             trailing: DropdownButton<String>(
               value: settingsState.locale.languageCode,
               items: const [
@@ -83,27 +84,27 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const Divider(),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text('Yasal ve Hukuki',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(loc.legalAndDocs,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.grey)),
           ),
           ListTile(
             leading: const Icon(CupertinoIcons.shield),
-            title: const Text('Gizlilik Politikası'),
+            title: Text(loc.privacyPolicy),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () => LegalDocumentsDialog.showPrivacyPolicy(context),
           ),
           ListTile(
             leading: const Icon(CupertinoIcons.doc_text),
-            title: const Text('KVKK Aydınlatma Metni'),
+            title: Text(loc.kvkk),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () => LegalDocumentsDialog.showKVKK(context),
           ),
           ListTile(
             leading: const Icon(CupertinoIcons.info),
-            title: const Text('Kullanım Koşulları'),
+            title: Text(loc.termsOfUse),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () => LegalDocumentsDialog.showTerms(context),
           ),

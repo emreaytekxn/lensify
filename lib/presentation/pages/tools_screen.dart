@@ -15,26 +15,28 @@ import '../widgets/loading_overlay.dart';
 import '../../core/utils/format_conversion_service.dart';
 import 'media_converter_screen.dart';
 import 'transcription_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class ToolsScreen extends ConsumerWidget {
   const ToolsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Araçlar & Dönüştürücü'),
+        title: Text(loc.toolsTitle),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          const Text(
-            'Evrensel Medya Araçları',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          Text(
+            loc.universalMediaTools,
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
-            'Profesyonel format dönüştürme ve işleme araçları ile dosyalarınızı çevrimdışı ve güvenli bir şekilde yönetin.',
+            loc.universalMediaToolsDesc,
             style: TextStyle(
                 color: Theme.of(context).textTheme.bodySmall?.color,
                 fontSize: 14),
@@ -44,11 +46,10 @@ class ToolsScreen extends ConsumerWidget {
             context,
             icon: CupertinoIcons.doc_on_doc,
             color: Colors.blue,
-            title: 'Fotoğraftan PDF\'e',
-            description:
-                'Birden fazla görseli tek bir PDF dökümanında birleştirin. (JPEG/PNG ➔ PDF)',
+            title: loc.photoToPdf,
+            description: loc.photoToPdfDesc,
             onTap: () async {
-              LoadingOverlay.show(context, message: 'İçe aktarılıyor...');
+              LoadingOverlay.show(context, message: loc.importing);
               try {
                 final folderId =
                     ref.read(folderNotifierProvider).activeFolderId;
@@ -57,8 +58,7 @@ class ToolsScreen extends ConsumerWidget {
                 ref.read(documentNotifierProvider.notifier).loadDocuments();
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Fotoğraflar başarıyla aktarıldı!')),
+                    SnackBar(content: Text(loc.photosImportedSuccessfully)),
                   );
                 }
               } finally {
@@ -70,11 +70,10 @@ class ToolsScreen extends ConsumerWidget {
             context,
             icon: CupertinoIcons.photo_on_rectangle,
             color: Colors.orange,
-            title: 'PDF\'den Fotoğrafa',
-            description:
-                'PDF belgelerinizin sayfalarını yüksek çözünürlüklü görsellere dönüştürün. (PDF ➔ JPEG)',
+            title: loc.pdfToPhoto,
+            description: loc.pdfToPhotoDesc,
             onTap: () async {
-              LoadingOverlay.show(context, message: 'PDF dönüştürülüyor...');
+              LoadingOverlay.show(context, message: loc.pdfConverting);
               try {
                 final folderId =
                     ref.read(folderNotifierProvider).activeFolderId;
@@ -83,9 +82,7 @@ class ToolsScreen extends ConsumerWidget {
                 ref.read(documentNotifierProvider.notifier).loadDocuments();
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text(
-                            'PDF sayfaları başarıyla resme dönüştürüldü!')),
+                    SnackBar(content: Text(loc.pdfPagesConvertedSuccessfully)),
                   );
                 }
               } finally {
@@ -97,9 +94,8 @@ class ToolsScreen extends ConsumerWidget {
             context,
             icon: CupertinoIcons.waveform_path_badge_plus,
             color: Colors.blueAccent,
-            title: 'Yapay Zeka Sesi Yazıya Çevir',
-            description:
-                'Videoları ve ses kayıtlarını internetsiz metne dönüştürün.',
+            title: loc.aiTranscription,
+            description: loc.aiTranscriptionDesc,
             onTap: () {
               Navigator.push(
                   context,
@@ -111,9 +107,8 @@ class ToolsScreen extends ConsumerWidget {
             context,
             icon: CupertinoIcons.infinite,
             color: Colors.deepPurple,
-            title: 'Evrensel Medya Dönüştürücü',
-            description:
-                'Ses ve videoları çevrimdışı dönüştürün (MP4, MP3 vb.)',
+            title: loc.mediaConverter,
+            description: loc.mediaConverterDesc,
             onTap: () {
               Navigator.push(
                   context,
@@ -125,8 +120,8 @@ class ToolsScreen extends ConsumerWidget {
             context,
             icon: CupertinoIcons.qrcode_viewfinder,
             color: Colors.purple,
-            title: 'QR / Barkod Oku',
-            description: 'Kamerayla hızlıca kod tarayın',
+            title: loc.qrBarcodeScan,
+            description: loc.qrBarcodeScanDesc,
             onTap: () {
               Navigator.push(
                   context,
@@ -138,22 +133,21 @@ class ToolsScreen extends ConsumerWidget {
             context,
             icon: CupertinoIcons.text_aligncenter,
             color: Colors.green,
-            title: 'Resimden Metne (TXT)',
-            description:
-                'Fotoğraftaki yazıları otomatik olarak .txt formatına dönüştürün.',
+            title: loc.imageToText,
+            description: loc.imageToTextDesc,
             onTap: () async {
-              LoadingOverlay.show(context, message: 'Metin analiz ediliyor...');
+              LoadingOverlay.show(context, message: loc.analyzingText);
               try {
                 final success =
                     await FormatConversionService.extractTextToTxt();
                 if (success && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Metin dosyası oluşturuldu!')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(loc.textFileCreated)));
                 }
               } catch (e) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text('Hata: $e')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${loc.error}: $e')));
                 }
               } finally {
                 if (context.mounted) LoadingOverlay.hide(context);
@@ -162,13 +156,12 @@ class ToolsScreen extends ConsumerWidget {
           ),
           _buildToolCard(
             context,
-            icon: CupertinoIcons.lock,
+            icon: CupertinoIcons.lock_shield,
             color: Colors.redAccent,
-            title: 'PDF Şifreleme',
-            description:
-                'PDF belgelerinize güvenli AES 256-Bit parola ekleyin.',
-            onTap: () async {
-              _showPasswordDialog(context);
+            title: loc.pdfEncrypt,
+            description: loc.pdfEncryptDesc,
+            onTap: () {
+              _showPasswordDialog(context, loc);
             },
           ),
         ],
@@ -176,7 +169,7 @@ class ToolsScreen extends ConsumerWidget {
     );
   }
 
-  void _showPasswordDialog(BuildContext context) {
+  void _showPasswordDialog(BuildContext context, AppLocalizations loc) {
     final TextEditingController passwordController = TextEditingController();
     showDialog(
       context: context,

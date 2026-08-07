@@ -5,6 +5,7 @@ import '../providers/document_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/folder_provider.dart';
 import '../pages/settings_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const DashboardAppBar({super.key});
@@ -13,6 +14,7 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final docState = ref.watch(documentNotifierProvider);
     final isSelectionMode = docState.isSelectionMode;
+    final loc = AppLocalizations.of(context)!;
 
     if (isSelectionMode) {
       return AppBar(
@@ -21,7 +23,7 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
           onPressed: () =>
               ref.read(documentNotifierProvider.notifier).clearSelection(),
         ),
-        title: Text('${docState.selectedDocumentIds.length} Seçildi'),
+        title: Text('${docState.selectedDocumentIds.length} ${loc.selected}'),
         actions: [
           IconButton(
             icon: const Icon(CupertinoIcons.folder_badge_plus),
@@ -48,7 +50,7 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return AppBar(
-      title: const Text('Belgelerim'),
+      title: Text(loc.homeTab),
       actions: [
         IconButton(
           icon: Icon(
@@ -81,7 +83,7 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           child: CupertinoSearchTextField(
-            placeholder: 'Belgelerde ara...',
+            placeholder: loc.searchDocs,
             onChanged: (value) {
               ref.read(documentNotifierProvider.notifier).setSearchQuery(value);
             },
@@ -98,6 +100,7 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   void _showMoveToFolderDialog(BuildContext context, WidgetRef ref) {
     final folders = ref.read(folderNotifierProvider).folders;
+    final loc = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -108,16 +111,16 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'Klasöre Taşı',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  loc.moveToFolder,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
               ListTile(
                 leading: const Icon(CupertinoIcons.tray),
-                title: const Text('Ana Dizin (Klasörden Çıkar)'),
+                title: Text(loc.mainDir),
                 onTap: () {
                   ref
                       .read(documentNotifierProvider.notifier)
@@ -127,9 +130,9 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
               ),
               const Divider(),
               if (folders.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(32.0),
-                  child: Text('Başka klasör bulunamadı.'),
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Text(loc.noOtherFolder),
                 )
               else
                 Flexible(

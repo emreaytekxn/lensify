@@ -54,4 +54,128 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lightMode => 'Light Mode';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get requireBiometrics => 'Require FaceID / TouchID on Startup';
+
+  @override
+  String get requireBiometricsDesc =>
+      'Authentication is required every time you enter the app.';
+
+  @override
+  String get themeMode => 'Dark / Light Mode';
+
+  @override
+  String get legalAndDocs => 'Legal & Documents';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get kvkk => 'KVKK Text';
+
+  @override
+  String get termsOfUse => 'Terms of Use';
+
+  @override
+  String get toolsTitle => 'Tools';
+
+  @override
+  String get mediaConverter => 'Media Converter';
+
+  @override
+  String get mediaConverterDesc =>
+      'Convert images/videos to any format offline.';
+
+  @override
+  String get aiTranscription => 'AI Transcription';
+
+  @override
+  String get aiTranscriptionDesc => 'Convert audio to text perfectly offline.';
+
+  @override
+  String get pdfEncrypt => 'PDF Encryption';
+
+  @override
+  String get pdfEncryptDesc => 'Protect your PDF files with a password.';
+
+  @override
+  String get universalMediaTools => 'Universal Media Tools';
+
+  @override
+  String get universalMediaToolsDesc =>
+      'Manage your files offline and securely with professional conversion tools.';
+
+  @override
+  String get photoToPdf => 'Photo to PDF';
+
+  @override
+  String get photoToPdfDesc =>
+      'Combine multiple images into a single PDF document. (JPEG/PNG ➔ PDF)';
+
+  @override
+  String get importing => 'Importing...';
+
+  @override
+  String get photosImportedSuccessfully => 'Photos successfully imported!';
+
+  @override
+  String get pdfToPhoto => 'PDF to Photo';
+
+  @override
+  String get pdfToPhotoDesc =>
+      'Convert PDF pages into high-resolution images. (PDF ➔ JPEG)';
+
+  @override
+  String get pdfConverting => 'Converting PDF...';
+
+  @override
+  String get pdfPagesConvertedSuccessfully =>
+      'PDF pages successfully converted to images!';
+
+  @override
+  String get qrBarcodeScan => 'Scan QR / Barcode';
+
+  @override
+  String get qrBarcodeScanDesc => 'Quickly scan codes with your camera.';
+
+  @override
+  String get imageToText => 'Image to Text (TXT)';
+
+  @override
+  String get imageToTextDesc =>
+      'Automatically convert text from photos to .txt format.';
+
+  @override
+  String get analyzingText => 'Analyzing text...';
+
+  @override
+  String get textFileCreated => 'Text file created!';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get selected => 'Selected';
+
+  @override
+  String get moveToFolder => 'Move to Folder';
+
+  @override
+  String get mainDir => 'Main Directory (Remove from folder)';
+
+  @override
+  String get noOtherFolder => 'No other folder found.';
+
+  @override
+  String get searchDocs => 'Search documents...';
+
+  @override
+  String get appLocked => 'App Locked';
+
+  @override
+  String get tryAgain => 'Try Again';
 }

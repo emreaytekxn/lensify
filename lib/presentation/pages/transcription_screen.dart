@@ -20,6 +20,7 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
   String? _selectedFilePath;
   String? _selectedFileName;
   String? _transcribedText;
+  bool _isCancelled = false;
 
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -53,13 +54,24 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
   Future<void> _transcribe() async {
     if (_selectedFilePath == null) return;
 
+    _isCancelled = false;
+
     LoadingOverlay.show(context,
-        message: 'Yapay Zeka Sesi Analiz Ediyor...\nBu işlem uzun sürebilir.');
+        message: 'Yapay Zeka Sesi Analiz Ediyor...\nBu işlem uzun sürebilir.',
+        showTimer: true,
+        infoText:
+            'İşlem tamamen cihazınızda (çevrimdışı) gerçekleşmektedir.\nSes uzunluğuna bağlı olarak dakikalarca sürebilir.',
+        onCancel: () {
+      _isCancelled = true;
+      LoadingOverlay.hide(context);
+    });
 
     try {
       // 1. Convert any media to 16kHz WAV for Whisper
       final wavPath =
           await MediaConversionService.convertMedia(_selectedFilePath!, 'wav');
+
+      if (_isCancelled) return;
 
       if (wavPath == null) {
         if (mounted) LoadingOverlay.hide(context);
@@ -71,6 +83,8 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
 
       // 2. Transcribe the WAV file
       final text = await TranscriptionService.transcribeAudio(wavPath);
+
+      if (_isCancelled) return;
 
       if (mounted) LoadingOverlay.hide(context);
 
@@ -85,6 +99,7 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
         );
       }
     } catch (e) {
+      if (_isCancelled) return;
       if (mounted) LoadingOverlay.hide(context);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
