@@ -11,6 +11,7 @@ import '../providers/folder_provider.dart';
 import '../widgets/loading_overlay.dart';
 import '../../core/utils/format_conversion_service.dart';
 import 'media_converter_screen.dart';
+import 'transcription_screen.dart';
 
 class ToolsScreen extends ConsumerWidget {
   const ToolsScreen({Key? key}) : super(key: key);
@@ -80,6 +81,17 @@ class ToolsScreen extends ConsumerWidget {
               } finally {
                 if (context.mounted) LoadingOverlay.hide(context);
               }
+            },
+          ),
+
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.waveform_path_badge_plus,
+            color: Colors.blueAccent,
+            title: 'Yapay Zeka Sesi Yazıya Çevir',
+            description: 'Videoları ve ses kayıtlarını internetsiz metne dönüştürün.',
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const TranscriptionScreen()));
             },
           ),
 

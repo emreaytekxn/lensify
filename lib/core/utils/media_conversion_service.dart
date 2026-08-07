@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_new/return_code.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MediaConversionService {
   
-  /// Mocks media conversion because ffmpeg_kit_flutter Cocoapods repo is broken (404)
+  /// Converts any media file to the target extension using FFmpeg (Actual implementation)
   static Future<String?> convertMedia(String inputPath, String targetExtension) async {
     try {
       final tempDir = await getTemporaryDirectory();
@@ -12,18 +14,31 @@ class MediaConversionService {
       
       final String outputPath = '${tempDir.path}/${nameWithoutExt}_kawaru.$targetExtension';
       
-      // Delete if exists
       if (File(outputPath).existsSync()) {
         File(outputPath).deleteSync();
       }
 
-      // Simulate a long-running conversion process to show the UI/UX
-      await Future.delayed(const Duration(seconds: 4));
+      // Simple copy/re-encode command
+      String command;
+      if (targetExtension.toLowerCase() == 'wav') {
+        // Whisper requires 16kHz, mono, 16-bit WAV
+        command = '-y -i "$inputPath" -ar 16000 -ac 1 -c:a pcm_s16le "$outputPath"';
+      } else {
+        command = '-y -i "$inputPath" "$outputPath"';
+      }
       
-      // We just copy the file as a mock because FFmpeg binaries cannot be downloaded right now.
-      await File(inputPath).copy(outputPath);
+      final session = await FFmpegKit.execute(command);
+      final returnCode = await session.getReturnCode();
       
-      return outputPath;
+      if (ReturnCode.isSuccess(returnCode)) {
+        return outputPath;
+      } else {
+        final logs = await session.getLogs();
+        for (var log in logs) {
+          print(log.getMessage());
+        }
+        return null;
+      }
     } catch (e) {
       print('Media Conversion Error: $e');
       return null;

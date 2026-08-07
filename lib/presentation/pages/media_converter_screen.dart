@@ -19,7 +19,7 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
   String _targetFormat = 'mp4';
 
   final List<String> _formats = [
-    'mp4', 'mp3', 'wav', 'mkv', 'avi', 'gif', 'mov', 'aac', 'flac'
+    'mp4', 'mov', 'mp3', 'wav', 'm4a', 'gif'
   ];
 
   Future<void> _pickFile() async {

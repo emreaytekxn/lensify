@@ -42,6 +42,8 @@ dependencies:
   google_fonts: ^8.2.1
   syncfusion_flutter_pdf: ^34.2.2
   url_launcher: ^6.3.2
+  ffmpeg_kit_flutter_new: ^4.6.2
+  whisper_flutter_new: ^1.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

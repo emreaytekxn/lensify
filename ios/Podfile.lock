@@ -115,6 +115,8 @@ PODS:
   - share_plus (0.0.1):
     - Flutter
   - SwiftyGif (5.4.5)
+  - whisper_flutter_new (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -127,6 +129,7 @@ DEPENDENCIES:
   - isar_flutter_libs (from `.symlinks/plugins/isar_flutter_libs/ios`)
   - pdfx (from `.symlinks/plugins/pdfx/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
+  - whisper_flutter_new (from `.symlinks/plugins/whisper_flutter_new/ios`)
 
 SPEC REPOS:
   trunk:
@@ -169,6 +172,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/pdfx/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
+  whisper_flutter_new:
+    :path: ".symlinks/plugins/whisper_flutter_new/ios"
 
 SPEC CHECKSUMS:
   device_info_plus: 335f3ce08d2e174b9fdc3db3db0f4e3b1f66bd89
@@ -198,6 +203,7 @@ SPEC CHECKSUMS:
   SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   share_plus: 011d6fb4f9d2576b83179a3a5c5e323202cdabcf
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
+  whisper_flutter_new: 9276535665f51f845831fe94859b2cccd0334a70
 
 PODFILE CHECKSUM: a96f2b56d61d7c527a660ad1fcf7cf602eab282d
 
