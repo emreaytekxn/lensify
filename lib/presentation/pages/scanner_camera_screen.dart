@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../core/utils/camera_service.dart';
 import '../../core/utils/image_processing_service.dart';
 import '../../domain/entities/document_page.dart';
 import '../../domain/entities/filter_type.dart';
