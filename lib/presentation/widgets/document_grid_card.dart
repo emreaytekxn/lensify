@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../domain/entities/document.dart';
@@ -24,10 +25,14 @@ class DocumentGridCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dateFormat = DateFormat('dd MMM yyyy', 'tr_TR'); // Assuming Turkish, can adjust locale
-    
+    final dateFormat = DateFormat(
+        'dd MMM yyyy', 'tr_TR'); // Assuming Turkish, can adjust locale
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        onTap();
+      },
       onLongPress: onLongPress,
       child: Stack(
         children: [
@@ -35,7 +40,7 @@ class DocumentGridCard extends ConsumerWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).cardTheme.color,
               borderRadius: BorderRadius.circular(16),
-              border: isSelected 
+              border: isSelected
                   ? Border.all(color: Theme.of(context).primaryColor, width: 2)
                   : Border.all(color: Colors.transparent, width: 2),
               boxShadow: [
@@ -53,18 +58,24 @@ class DocumentGridCard extends ConsumerWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(14)),
                     ),
                     child: document.id != null
                         ? FutureBuilder(
-                            future: ref.read(scannerRepositoryProvider).getPagesForDocument(document.id!),
+                            future: ref
+                                .read(scannerRepositoryProvider)
+                                .getPagesForDocument(document.id!),
                             builder: (context, snapshot) {
-                              if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                              if (snapshot.hasData &&
+                                  snapshot.data!.isNotEmpty) {
                                 final firstPage = snapshot.data!.first;
-                                final path = firstPage.processedImagePath ?? firstPage.originalImagePath;
+                                final path = firstPage.processedImagePath ??
+                                    firstPage.originalImagePath;
                                 if (File(path).existsSync()) {
                                   return ClipRRect(
-                                    borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                                    borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(14)),
                                     child: Image.file(
                                       File(path),
                                       fit: BoxFit.cover,
@@ -75,14 +86,18 @@ class DocumentGridCard extends ConsumerWidget {
                               return Icon(
                                 CupertinoIcons.doc_richtext,
                                 size: 40,
-                                color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withValues(alpha: 0.5),
                               );
                             },
                           )
                         : Icon(
                             CupertinoIcons.doc_richtext,
                             size: 40,
-                            color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                            color: Theme.of(context)
+                                .primaryColor
+                                .withValues(alpha: 0.5),
                           ),
                   ),
                 ),
@@ -99,7 +114,7 @@ class DocumentGridCard extends ConsumerWidget {
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                    ),
+                      ),
                       const SizedBox(height: 4),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,13 +123,17 @@ class DocumentGridCard extends ConsumerWidget {
                             dateFormat.format(document.createdAt),
                             style: TextStyle(
                               fontSize: 12,
-                              color: Theme.of(context).textTheme.bodyMedium?.color,
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium?.color,
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                              color: Theme.of(context)
+                                  .primaryColor
+                                  .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -141,9 +160,13 @@ class DocumentGridCard extends ConsumerWidget {
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isSelected ? Theme.of(context).primaryColor : Colors.white.withValues(alpha: 0.5),
+                  color: isSelected
+                      ? Theme.of(context).primaryColor
+                      : Colors.white.withValues(alpha: 0.5),
                   border: Border.all(
-                    color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
+                    color: isSelected
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey,
                     width: 2,
                   ),
                 ),

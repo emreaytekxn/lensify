@@ -25,7 +25,8 @@ class DocumentEditorScreen extends ConsumerStatefulWidget {
   const DocumentEditorScreen({super.key, required this.document});
 
   @override
-  ConsumerState<DocumentEditorScreen> createState() => _DocumentEditorScreenState();
+  ConsumerState<DocumentEditorScreen> createState() =>
+      _DocumentEditorScreenState();
 }
 
 class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
@@ -63,7 +64,7 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
     try {
       final repo = ref.read(scannerRepositoryProvider);
       await repo.deletePage(page.id!);
-      
+
       // Remove files from disk (optional but good for cleanup)
       if (page.processedImagePath != null) {
         final f = File(page.processedImagePath!);
@@ -83,7 +84,7 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    
+
     setState(() {
       final item = _pages.removeAt(oldIndex);
       _pages.insert(newIndex, item);
@@ -99,33 +100,35 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
 
   Future<void> _sharePdf() async {
     if (_pages.isEmpty) return;
-    
+
     setState(() {
       _isExporting = true;
     });
-    
+
     try {
       final tempDir = await getTemporaryDirectory();
       final sanitizedTitle = widget.document.title.replaceAll(' ', '_');
       final outPath = '${tempDir.path}/$sanitizedTitle.pdf';
-      
-      final imagePaths = _pages.map((p) => p.processedImagePath ?? p.originalImagePath).toList();
-      
-      final pdfFile = await PdfGenerationService.generatePdf(imagePaths, outPath);
-      
+
+      final imagePaths = _pages
+          .map((p) => p.processedImagePath ?? p.originalImagePath)
+          .toList();
+
+      final pdfFile =
+          await PdfGenerationService.generatePdf(imagePaths, outPath);
+
       // Update DB with latest PDF path
       final repo = ref.read(scannerRepositoryProvider);
       final updatedDoc = widget.document.copyWith(pdfPath: pdfFile.path);
       await repo.updateDocument(updatedDoc);
       await ref.read(documentNotifierProvider.notifier).loadDocuments();
-      
+
       final size = MediaQuery.of(context).size;
       await Share.shareXFiles(
         [XFile(pdfFile.path)],
         text: widget.document.title,
         sharePositionOrigin: Rect.fromLTWH(0, 0, size.width, size.height / 2),
       );
-      
     } catch (e) {
       debugPrint("PDF Export Error: $e");
     } finally {
@@ -139,7 +142,7 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
 
   void _extractTextFromPage(DocumentPage page) async {
     final imagePath = page.processedImagePath ?? page.originalImagePath;
-    
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -147,7 +150,7 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
     );
 
     final text = await OcrService.extractText(imagePath);
-    
+
     if (mounted) {
       Navigator.pop(context); // close dialog
       _showOcrResult(text);
@@ -165,7 +168,8 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
     if (success == true) {
       // Refresh the list to show the new image with the signature
       await _loadPages();
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('İmza başarıyla eklendi!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('İmza başarıyla eklendi!')));
     }
   }
 
@@ -173,72 +177,80 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) {
         bool isPlaying = false;
         return StatefulBuilder(
           builder: (context, setState) {
             return DraggableScrollableSheet(
-          initialChildSize: 0.6,
-          minChildSize: 0.4,
-          maxChildSize: 0.9,
-          expand: false,
-          builder: (context, scrollController) {
-            return SafeArea(
-              child: Column(
-                children: [
-                  AppBar(
-                    title: const Text('Metin Çıkarımı (OCR)'),
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    leading: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        TTSService.stop();
-                        Navigator.pop(context);
-                      },
-                    ),
-                    actions: [
-                      IconButton(
-                        icon: const Icon(CupertinoIcons.doc_on_clipboard),
-                        onPressed: () {
-                          Clipboard.setData(ClipboardData(text: text));
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Metin panoya kopyalandı!')));
-                        },
+              initialChildSize: 0.6,
+              minChildSize: 0.4,
+              maxChildSize: 0.9,
+              expand: false,
+              builder: (context, scrollController) {
+                return SafeArea(
+                  child: Column(
+                    children: [
+                      AppBar(
+                        title: const Text('Metin Çıkarımı (OCR)'),
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        leading: IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            TTSService.stop();
+                            Navigator.pop(context);
+                          },
+                        ),
+                        actions: [
+                          IconButton(
+                            icon: const Icon(CupertinoIcons.doc_on_clipboard),
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: text));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text('Metin panoya kopyalandı!')));
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(isPlaying
+                                ? CupertinoIcons.speaker_3_fill
+                                : CupertinoIcons.speaker_2),
+                            color: isPlaying ? Colors.blue : null,
+                            onPressed: () async {
+                              if (isPlaying) {
+                                await TTSService.stop();
+                                setState(() => isPlaying = false);
+                              } else {
+                                setState(() => isPlaying = true);
+                                await TTSService.speak(text);
+                                // It won't auto-stop icon without a listener, but we can just let it be playing or user can tap again to stop.
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: Icon(isPlaying ? CupertinoIcons.speaker_3_fill : CupertinoIcons.speaker_2),
-                        color: isPlaying ? Colors.blue : null,
-                        onPressed: () async {
-                          if (isPlaying) {
-                            await TTSService.stop();
-                            setState(() => isPlaying = false);
-                          } else {
-                            setState(() => isPlaying = true);
-                            await TTSService.speak(text);
-                            // It won't auto-stop icon without a listener, but we can just let it be playing or user can tap again to stop.
-                          }
-                        },
+                      Expanded(
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          padding: const EdgeInsets.all(16.0),
+                          child: SelectableText(
+                            text.isEmpty
+                                ? "Bu sayfada okunabilir bir metin bulunamadı."
+                                : text,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      controller: scrollController,
-                      padding: const EdgeInsets.all(16.0),
-                      child: SelectableText(
-                        text.isEmpty ? "Bu sayfada okunabilir bir metin bulunamadı." : text,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             );
           },
         );
-      },
-    );
       },
     );
   }
@@ -246,7 +258,8 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
   void _openCamera() async {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => ScannerCameraScreen(targetDocumentId: widget.document.id),
+        builder: (_) =>
+            ScannerCameraScreen(targetDocumentId: widget.document.id),
       ),
     );
     // Reload pages when coming back from camera
@@ -263,7 +276,9 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
             children: [
               const Padding(
                 padding: EdgeInsets.all(16),
-                child: Text('Filtre Seç', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                child: Text('Filtre Seç',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               Wrap(
                 spacing: 16,
@@ -295,13 +310,14 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
     );
     try {
       final originalPath = page.originalImagePath;
-      final newPath = await ImageFilterService.applyFilter(originalPath, filter);
-      
+      final newPath =
+          await ImageFilterService.applyFilter(originalPath, filter);
+
       final updatedPage = page.copyWith(
         processedImagePath: newPath,
         appliedFilter: filter,
       );
-      
+
       final repo = ref.read(scannerRepositoryProvider);
       await repo.updatePage(updatedPage);
       await _loadPages();
@@ -336,21 +352,27 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
           : _pages.isEmpty
               ? const Center(child: Text("Bu belgede hiç sayfa yok."))
               : ReorderableListView.builder(
-                  padding: const EdgeInsets.only(bottom: 100), // padding for FAB
+                  padding:
+                      const EdgeInsets.only(bottom: 100), // padding for FAB
                   itemCount: _pages.length,
                   onReorder: _reorderPages,
                   itemBuilder: (context, index) {
                     final page = _pages[index];
-                    final imagePath = page.processedImagePath ?? page.originalImagePath;
-                    
+                    final imagePath =
+                        page.processedImagePath ?? page.originalImagePath;
+
                     return Card(
-                      key: ValueKey(page.id ?? index), // Critical for ReorderableListView
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      key: ValueKey(
+                          page.id ?? index), // Critical for ReorderableListView
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                         side: BorderSide(
-                          color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                          color: Theme.of(context)
+                              .primaryColor
+                              .withValues(alpha: 0.2),
                         ),
                       ),
                       child: ListTile(
@@ -370,19 +392,23 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              icon: const Icon(CupertinoIcons.pen, color: Colors.purple),
+                              icon: const Icon(CupertinoIcons.pen,
+                                  color: Colors.purple),
                               onPressed: () => _openSignatureStudio(page),
                             ),
                             IconButton(
-                              icon: const Icon(CupertinoIcons.color_filter, color: Colors.orange),
+                              icon: const Icon(CupertinoIcons.color_filter,
+                                  color: Colors.orange),
                               onPressed: () => _showFilterOptions(page),
                             ),
                             IconButton(
-                                  icon: const Icon(Icons.text_snippet, color: Colors.blue),
+                              icon: const Icon(Icons.text_snippet,
+                                  color: Colors.blue),
                               onPressed: () => _extractTextFromPage(page),
                             ),
                             IconButton(
-                              icon: const Icon(CupertinoIcons.trash, color: Colors.redAccent),
+                              icon: const Icon(CupertinoIcons.trash,
+                                  color: Colors.redAccent),
                               onPressed: () => _deletePage(page),
                             ),
                           ],

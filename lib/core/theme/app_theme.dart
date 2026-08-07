@@ -31,12 +31,15 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.black.withValues(alpha: 0.05), width: 1),
+          side:
+              BorderSide(color: Colors.black.withValues(alpha: 0.05), width: 1),
         ),
       ),
       textTheme: TextTheme(
-        displayLarge: GoogleFonts.outfit(color: AppColors.textPrimaryLight, fontWeight: FontWeight.bold),
-        titleLarge: GoogleFonts.outfit(color: AppColors.textPrimaryLight, fontWeight: FontWeight.w600),
+        displayLarge: GoogleFonts.outfit(
+            color: AppColors.textPrimaryLight, fontWeight: FontWeight.bold),
+        titleLarge: GoogleFonts.outfit(
+            color: AppColors.textPrimaryLight, fontWeight: FontWeight.w600),
         bodyLarge: GoogleFonts.inter(color: AppColors.textPrimaryLight),
         bodyMedium: GoogleFonts.inter(color: AppColors.textSecondaryLight),
       ),
@@ -44,7 +47,8 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -82,12 +86,15 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.white.withValues(alpha: 0.05), width: 1),
+          side:
+              BorderSide(color: Colors.white.withValues(alpha: 0.05), width: 1),
         ),
       ),
       textTheme: TextTheme(
-        displayLarge: GoogleFonts.outfit(color: AppColors.textPrimaryDark, fontWeight: FontWeight.bold),
-        titleLarge: GoogleFonts.outfit(color: AppColors.textPrimaryDark, fontWeight: FontWeight.w600),
+        displayLarge: GoogleFonts.outfit(
+            color: AppColors.textPrimaryDark, fontWeight: FontWeight.bold),
+        titleLarge: GoogleFonts.outfit(
+            color: AppColors.textPrimaryDark, fontWeight: FontWeight.w600),
         bodyLarge: GoogleFonts.inter(color: AppColors.textPrimaryDark),
         bodyMedium: GoogleFonts.inter(color: AppColors.textSecondaryDark),
       ),

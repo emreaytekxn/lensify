@@ -8,7 +8,7 @@ class ImageFilterService {
 
     final bytes = await File(imagePath).readAsBytes();
     img.Image? decodedImage = img.decodeImage(bytes);
-    
+
     if (decodedImage == null) return imagePath;
 
     switch (filter) {
@@ -19,7 +19,8 @@ class ImageFilterService {
         decodedImage = img.luminanceThreshold(decodedImage);
         break;
       case FilterType.magicColor:
-        decodedImage = img.adjustColor(decodedImage, contrast: 1.5, saturation: 1.5);
+        decodedImage =
+            img.adjustColor(decodedImage, contrast: 1.5, saturation: 1.5);
         break;
       case FilterType.original:
         break;

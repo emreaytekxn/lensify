@@ -7,20 +7,21 @@ import '../../domain/entities/filter_type.dart';
 class ImageProcessingService {
   /// Applies the selected filter to the image file using an Isolate (compute)
   /// so it doesn't freeze the main UI thread.
-  static Future<File> applyFilter(File imageFile, FilterType filterType, String outputPath) async {
+  static Future<File> applyFilter(
+      File imageFile, FilterType filterType, String outputPath) async {
     if (filterType == FilterType.original) {
       // Fast path: just copy the file if original is selected
       return imageFile.copy(outputPath);
     }
 
     final imageBytes = await imageFile.readAsBytes();
-    
+
     // Process in background isolate
     final processedBytes = await compute(_processImage, {
       'imageBytes': imageBytes,
       'filterType': filterType,
     });
-    
+
     final outFile = File(outputPath);
     await outFile.writeAsBytes(processedBytes);
     return outFile;
@@ -30,10 +31,10 @@ class ImageProcessingService {
   static Uint8List _processImage(Map<String, dynamic> args) {
     final Uint8List bytes = args['imageBytes'];
     final FilterType type = args['filterType'];
-    
+
     img.Image? image = img.decodeImage(bytes);
     if (image == null) return bytes;
-    
+
     switch (type) {
       case FilterType.grayscale:
         img.grayscale(image);
@@ -46,8 +47,8 @@ class ImageProcessingService {
         // Magic color: increase contrast, brightness and slightly saturate
         // This is a basic approximation of what CamScanner does.
         img.adjustColor(
-          image, 
-          contrast: 1.5, 
+          image,
+          contrast: 1.5,
           brightness: 1.2,
           saturation: 1.2,
         );
@@ -55,11 +56,12 @@ class ImageProcessingService {
       case FilterType.original:
         break;
     }
-    
+
     return Uint8List.fromList(img.encodeJpg(image, quality: 90));
   }
 
-  static Future<String?> combineIdCard(String frontPath, String backPath) async {
+  static Future<String?> combineIdCard(
+      String frontPath, String backPath) async {
     try {
       final frontBytes = await File(frontPath).readAsBytes();
       final backBytes = await File(backPath).readAsBytes();
@@ -72,8 +74,9 @@ class ImageProcessingService {
       if (processedBytes == null) return null;
 
       final tempDir = await getTemporaryDirectory();
-      final outPath = '${tempDir.path}/id_card_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      
+      final outPath =
+          '${tempDir.path}/id_card_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
       await File(outPath).writeAsBytes(processedBytes);
       return outPath;
     } catch (e) {
@@ -96,7 +99,7 @@ class ImageProcessingService {
     img.fill(canvas, color: img.ColorRgb8(255, 255, 255));
 
     final targetWidth = (canvasWidth * 0.7).toInt();
-    
+
     final resizedFront = img.copyResize(frontImage, width: targetWidth);
     final resizedBack = img.copyResize(backImage, width: targetWidth);
 
@@ -104,7 +107,8 @@ class ImageProcessingService {
     final frontY = (canvasHeight ~/ 2 - resizedFront.height) ~/ 2;
 
     final backX = (canvasWidth - resizedBack.width) ~/ 2;
-    final backY = (canvasHeight ~/ 2) + ((canvasHeight ~/ 2 - resizedBack.height) ~/ 2);
+    final backY =
+        (canvasHeight ~/ 2) + ((canvasHeight ~/ 2 - resizedBack.height) ~/ 2);
 
     img.compositeImage(canvas, resizedFront, dstX: frontX, dstY: frontY);
     img.compositeImage(canvas, resizedBack, dstX: backX, dstY: backY);

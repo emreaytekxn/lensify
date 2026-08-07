@@ -12,7 +12,8 @@ class AnimatedSplashScreen extends StatefulWidget {
   State<AnimatedSplashScreen> createState() => _AnimatedSplashScreenState();
 }
 
-class _AnimatedSplashScreenState extends State<AnimatedSplashScreen> with SingleTickerProviderStateMixin {
+class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
@@ -20,7 +21,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen> with Single
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
@@ -38,14 +39,16 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen> with Single
       // Transition to next screen
       Future.delayed(const Duration(milliseconds: 500), () {
         if (!mounted) return;
-        
+
         final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
-        
+
         if (isFirstLaunch) {
           Navigator.of(context).pushReplacement(
             PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => const OnboardingScreen(),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const OnboardingScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
                 return FadeTransition(opacity: animation, child: child);
               },
               transitionDuration: const Duration(milliseconds: 800),
@@ -54,8 +57,10 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen> with Single
         } else {
           Navigator.of(context).pushReplacement(
             PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => const MainNavigationScreen(),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const MainNavigationScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
                 return FadeTransition(opacity: animation, child: child);
               },
               transitionDuration: const Duration(milliseconds: 800),
@@ -75,7 +80,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen> with Single
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       backgroundColor: isDark ? Colors.black : Colors.white,
       body: Center(

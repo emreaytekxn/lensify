@@ -60,12 +60,12 @@ class FolderNotifier extends StateNotifier<FolderState> {
   Future<void> deleteFolder(int id) async {
     try {
       await _repository.deleteFolder(id);
-      
+
       // If the deleted folder was active, reset active folder
       bool clearActive = state.activeFolderId == id;
-      
+
       await loadFolders();
-      
+
       if (clearActive) {
         state = state.copyWith(clearActiveFolder: true);
       }
@@ -82,7 +82,8 @@ class FolderNotifier extends StateNotifier<FolderState> {
   }
 }
 
-final folderNotifierProvider = StateNotifierProvider<FolderNotifier, FolderState>((ref) {
+final folderNotifierProvider =
+    StateNotifierProvider<FolderNotifier, FolderState>((ref) {
   final repository = ref.watch(scannerRepositoryProvider);
   return FolderNotifier(repository);
 });

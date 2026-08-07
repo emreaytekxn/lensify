@@ -12,17 +12,17 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void _loadSettings() {
     final themeIndex = prefs.getInt('themeMode');
     final langCode = prefs.getString('languageCode');
-    
+
     ThemeMode savedTheme = ThemeMode.system;
     if (themeIndex != null) {
       savedTheme = ThemeMode.values[themeIndex];
     }
-    
+
     Locale savedLocale = const Locale('tr');
     if (langCode != null) {
       savedLocale = Locale(langCode);
     }
-    
+
     state = state.copyWith(themeMode: savedTheme, locale: savedLocale);
   }
 
@@ -52,10 +52,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   void toggleBiometricsOnStartup() {
-    state = state.copyWith(requireBiometricsOnStartup: !state.requireBiometricsOnStartup);
+    state = state.copyWith(
+        requireBiometricsOnStartup: !state.requireBiometricsOnStartup);
   }
 }
 
-final settingsNotifierProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
+final settingsNotifierProvider =
+    StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
   return SettingsNotifier();
 });

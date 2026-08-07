@@ -31,7 +31,9 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
   void _submit() {
     final name = _controller.text.trim();
     if (name.isNotEmpty) {
-      ref.read(folderNotifierProvider.notifier).createFolder(name, _selectedColor);
+      ref
+          .read(folderNotifierProvider.notifier)
+          .createFolder(name, _selectedColor);
       Navigator.of(context).pop();
     }
   }
@@ -68,7 +70,8 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
               onSubmitted: (_) => _submit(),
             ),
@@ -101,7 +104,8 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
                       shape: BoxShape.circle,
                       border: isSelected
                           ? Border.all(
-                              color: Theme.of(context).textTheme.bodyLarge!.color!,
+                              color:
+                                  Theme.of(context).textTheme.bodyLarge!.color!,
                               width: 3,
                             )
                           : null,
@@ -116,16 +120,20 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+                  child:
+                      const Text('İptal', style: TextStyle(color: Colors.grey)),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _submit,
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
-                  child: const Text('Oluştur', style: TextStyle(fontWeight: FontWeight.w600)),
+                  child: const Text('Oluştur',
+                      style: TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ],
             ),

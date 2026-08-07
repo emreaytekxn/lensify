@@ -5,10 +5,10 @@ class DocumentState {
   final List<Document> filteredDocuments;
   final bool isLoading;
   final String? error;
-  
+
   // Search & Filter
   final String searchQuery;
-  
+
   // Bulk Selection
   final Set<int> selectedDocumentIds;
   final bool isSelectionMode;

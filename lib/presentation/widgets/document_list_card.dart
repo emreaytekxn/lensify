@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../domain/entities/document.dart';
@@ -25,18 +26,21 @@ class DocumentListCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dateFormat = DateFormat('dd MMM yyyy, HH:mm', 'tr_TR');
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: GestureDetector(
-        onTap: onTap,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
         onLongPress: onLongPress,
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Theme.of(context).cardTheme.color,
             borderRadius: BorderRadius.circular(16),
-            border: isSelected 
+            border: isSelected
                 ? Border.all(color: Theme.of(context).primaryColor, width: 2)
                 : Border.all(color: Colors.transparent, width: 2),
             boxShadow: [
@@ -54,9 +58,13 @@ class DocumentListCard extends ConsumerWidget {
                   margin: const EdgeInsets.only(right: 12),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
+                    color: isSelected
+                        ? Theme.of(context).primaryColor
+                        : Colors.transparent,
                     border: Border.all(
-                      color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
+                      color: isSelected
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey,
                       width: 2,
                     ),
                   ),
@@ -77,11 +85,14 @@ class DocumentListCard extends ConsumerWidget {
                 ),
                 child: document.id != null
                     ? FutureBuilder(
-                        future: ref.read(scannerRepositoryProvider).getPagesForDocument(document.id!),
+                        future: ref
+                            .read(scannerRepositoryProvider)
+                            .getPagesForDocument(document.id!),
                         builder: (context, snapshot) {
                           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                             final firstPage = snapshot.data!.first;
-                            final path = firstPage.processedImagePath ?? firstPage.originalImagePath;
+                            final path = firstPage.processedImagePath ??
+                                firstPage.originalImagePath;
                             if (File(path).existsSync()) {
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
@@ -94,13 +105,17 @@ class DocumentListCard extends ConsumerWidget {
                           }
                           return Icon(
                             CupertinoIcons.doc_richtext,
-                            color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+                            color: Theme.of(context)
+                                .primaryColor
+                                .withValues(alpha: 0.6),
                           );
                         },
                       )
                     : Icon(
                         CupertinoIcons.doc_richtext,
-                        color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+                        color: Theme.of(context)
+                            .primaryColor
+                            .withValues(alpha: 0.6),
                       ),
               ),
               const SizedBox(width: 16),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
@@ -30,7 +29,8 @@ class _SignatureStudioScreenState extends State<SignatureStudioScreen> {
 
   Future<void> _applySignature() async {
     if (_controller.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lütfen bir imza atın')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Lütfen bir imza atın')));
       return;
     }
 
@@ -45,17 +45,18 @@ class _SignatureStudioScreenState extends State<SignatureStudioScreen> {
       // Apply watermark/signature using `image` package
       final imageFile = File(widget.imagePath);
       final imageBytes = await imageFile.readAsBytes();
-      
+
       final baseImage = img.decodeImage(imageBytes);
       final signatureImage = img.decodeImage(signatureBytes);
 
       if (baseImage != null && signatureImage != null) {
         // Resize signature to fit bottom right
-        final resizedSig = img.copyResize(signatureImage, width: baseImage.width ~/ 3);
-        
+        final resizedSig =
+            img.copyResize(signatureImage, width: baseImage.width ~/ 3);
+
         // Composite signature onto base image
         img.compositeImage(
-          baseImage, 
+          baseImage,
           resizedSig,
           dstX: baseImage.width - resizedSig.width - 50,
           dstY: baseImage.height - resizedSig.height - 50,
@@ -71,7 +72,8 @@ class _SignatureStudioScreenState extends State<SignatureStudioScreen> {
     } catch (e) {
       debugPrint("Signature error: $e");
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('İmza eklenirken hata oluştu')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('İmza eklenirken hata oluştu')));
       }
     } finally {
       if (mounted) {
@@ -96,7 +98,8 @@ class _SignatureStudioScreenState extends State<SignatureStudioScreen> {
           else
             TextButton(
               onPressed: _applySignature,
-              child: const Text('Uygula', style: TextStyle(fontWeight: FontWeight.bold)),
+              child: const Text('Uygula',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
             ),
         ],
       ),
@@ -105,7 +108,8 @@ class _SignatureStudioScreenState extends State<SignatureStudioScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             color: Theme.of(context).cardColor,
-            child: const Text('Aşağıdaki alana imzanızı çizin. İmzanız belgenin sağ alt köşesine eklenecektir.'),
+            child: const Text(
+                'Aşağıdaki alana imzanızı çizin. İmzanız belgenin sağ alt köşesine eklenecektir.'),
           ),
           Expanded(
             child: Signature(

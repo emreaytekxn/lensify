@@ -17,7 +17,7 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
         loadDocuments();
       },
     );
-    
+
     loadDocuments();
   }
 
@@ -26,18 +26,18 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
     try {
       final activeFolderId = _ref.read(folderNotifierProvider).activeFolderId;
       List<Document> docs;
-      
+
       if (activeFolderId != null) {
         docs = await _repository.getDocumentsByFolder(activeFolderId);
       } else {
         docs = await _repository.getAllDocuments();
       }
-      
+
       state = state.copyWith(
         allDocuments: docs,
         isLoading: false,
       );
-      
+
       _applySearchFilter();
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -57,7 +57,8 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
       final lowerQuery = state.searchQuery.toLowerCase();
       final filtered = state.allDocuments.where((doc) {
         final matchesTitle = doc.title.toLowerCase().contains(lowerQuery);
-        final matchesTags = doc.tags.any((tag) => tag.toLowerCase().contains(lowerQuery));
+        final matchesTags =
+            doc.tags.any((tag) => tag.toLowerCase().contains(lowerQuery));
         return matchesTitle || matchesTags;
       }).toList();
       state = state.copyWith(filteredDocuments: filtered);
@@ -150,7 +151,9 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
   void toggleSelectionMode() {
     state = state.copyWith(
       isSelectionMode: !state.isSelectionMode,
-      selectedDocumentIds: !state.isSelectionMode ? state.selectedDocumentIds : {}, // Clear if exiting
+      selectedDocumentIds: !state.isSelectionMode
+          ? state.selectedDocumentIds
+          : {}, // Clear if exiting
     );
   }
 
@@ -161,10 +164,11 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
     } else {
       currentSelection.add(id);
     }
-    
+
     // Auto-exit selection mode if no items selected
-    final isSelectionMode = currentSelection.isNotEmpty || state.isSelectionMode;
-    
+    final isSelectionMode =
+        currentSelection.isNotEmpty || state.isSelectionMode;
+
     state = state.copyWith(
       selectedDocumentIds: currentSelection,
       isSelectionMode: isSelectionMode,
@@ -210,7 +214,8 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
   }
 }
 
-final documentNotifierProvider = StateNotifierProvider<DocumentNotifier, DocumentState>((ref) {
+final documentNotifierProvider =
+    StateNotifierProvider<DocumentNotifier, DocumentState>((ref) {
   final repository = ref.watch(scannerRepositoryProvider);
   return DocumentNotifier(repository, ref);
 });

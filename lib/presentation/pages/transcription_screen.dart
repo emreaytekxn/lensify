@@ -23,7 +23,8 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
 
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.video, // or audio, but file_picker doesn't do both well in cross-platform without custom ext.
+      type: FileType
+          .video, // or audio, but file_picker doesn't do both well in cross-platform without custom ext.
       // So we use media
     );
     if (result != null && result.files.single.path != null) {
@@ -34,10 +35,11 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
       });
     }
   }
-  
+
   Future<void> _pickAudioFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.audio,
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'wav', 'm4a', 'aac', 'flac'],
     );
     if (result != null && result.files.single.path != null) {
       setState(() {
@@ -51,12 +53,14 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
   Future<void> _transcribe() async {
     if (_selectedFilePath == null) return;
 
-    LoadingOverlay.show(context, message: 'Yapay Zeka Sesi Analiz Ediyor...\nBu işlem uzun sürebilir.');
-    
+    LoadingOverlay.show(context,
+        message: 'Yapay Zeka Sesi Analiz Ediyor...\nBu işlem uzun sürebilir.');
+
     try {
       // 1. Convert any media to 16kHz WAV for Whisper
-      final wavPath = await MediaConversionService.convertMedia(_selectedFilePath!, 'wav');
-      
+      final wavPath =
+          await MediaConversionService.convertMedia(_selectedFilePath!, 'wav');
+
       if (wavPath == null) {
         if (mounted) LoadingOverlay.hide(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -67,7 +71,7 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
 
       // 2. Transcribe the WAV file
       final text = await TranscriptionService.transcribeAudio(wavPath);
-      
+
       if (mounted) LoadingOverlay.hide(context);
 
       if (text != null && text.isNotEmpty) {
@@ -76,7 +80,8 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
         });
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Ses algılanamadı veya işlem başarısız.')),
+          const SnackBar(
+              content: Text('Ses algılanamadı veya işlem başarısız.')),
         );
       }
     } catch (e) {
@@ -104,14 +109,14 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
       final path = '${dir.path}/transcription_kawaru.txt';
       final file = File(path);
       await file.writeAsString(_transcribedText!);
-      
+
       await Share.shareXFiles(
         [XFile(path)],
         text: 'Kawaru ile çıkarılan metin',
         sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
       );
     } catch (e) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Dışa aktarma hatası: $e')),
       );
     }
@@ -128,7 +133,8 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(CupertinoIcons.waveform_path_badge_plus, size: 80, color: Colors.blueAccent),
+            const Icon(CupertinoIcons.waveform_path_badge_plus,
+                size: 80, color: Colors.blueAccent),
             const SizedBox(height: 16),
             const Text(
               'Sesi Yazıya Çevir',
@@ -142,7 +148,6 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
             const SizedBox(height: 40),
-            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -164,7 +169,6 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            
             if (_selectedFileName != null)
               Container(
                 padding: const EdgeInsets.all(12),
@@ -172,11 +176,10 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
                   color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text('Seçilen Dosya: $_selectedFileName', textAlign: TextAlign.center),
+                child: Text('Seçilen Dosya: $_selectedFileName',
+                    textAlign: TextAlign.center),
               ),
-
             const SizedBox(height: 24),
-            
             if (_selectedFilePath != null)
               ElevatedButton(
                 onPressed: _transcribe,
@@ -184,14 +187,17 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
                   padding: const EdgeInsets.all(16),
                   backgroundColor: Theme.of(context).primaryColor,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Yazıya Çevir', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                child: const Text('Yazıya Çevir',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
-              
             if (_transcribedText != null) ...[
               const SizedBox(height: 40),
-              const Text('Sonuç:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              const Text('Sonuç:',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.all(16),

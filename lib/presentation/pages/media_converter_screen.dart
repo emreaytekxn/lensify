@@ -17,9 +17,7 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
   String? _selectedFileName;
   String _targetFormat = 'mp4';
 
-  final List<String> _formats = [
-    'mp4', 'mov', 'mp3', 'wav', 'm4a', 'gif'
-  ];
+  final List<String> _formats = ['mp4', 'mov', 'mp3', 'wav', 'm4a', 'gif'];
 
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
@@ -34,23 +32,28 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
   Future<void> _convert() async {
     if (_selectedFilePath == null) return;
 
-    LoadingOverlay.show(context, message: '$_targetFormat formatına dönüştürülüyor...\nBu işlem dosya boyutuna göre uzun sürebilir.');
-    
+    LoadingOverlay.show(context,
+        message:
+            '$_targetFormat formatına dönüştürülüyor...\nBu işlem dosya boyutuna göre uzun sürebilir.');
+
     try {
-      final outputPath = await MediaConversionService.convertMedia(_selectedFilePath!, _targetFormat);
-      
+      final outputPath = await MediaConversionService.convertMedia(
+          _selectedFilePath!, _targetFormat);
+
       if (mounted) LoadingOverlay.hide(context);
 
       if (outputPath != null && mounted) {
         // Success
         await Share.shareXFiles(
-          [XFile(outputPath)], 
+          [XFile(outputPath)],
           text: 'Kawaru ile dönüştürüldü',
           sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
         );
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dönüştürme başarısız oldu. Format desteklenmiyor olabilir.')),
+          const SnackBar(
+              content: Text(
+                  'Dönüştürme başarısız oldu. Format desteklenmiyor olabilir.')),
         );
       }
     } catch (e) {
@@ -74,7 +77,8 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(CupertinoIcons.infinite, size: 80, color: Colors.blueAccent),
+            const Icon(CupertinoIcons.infinite,
+                size: 80, color: Colors.blueAccent),
             const SizedBox(height: 16),
             const Text(
               'Kawaru Evrensel Dönüştürücü',
@@ -88,7 +92,7 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
             const SizedBox(height: 40),
-            
+
             // File Picker Button
             ElevatedButton.icon(
               onPressed: _pickFile,
@@ -96,14 +100,17 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
               label: Text(_selectedFileName ?? 'Dosya Seçin'),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(16),
-                backgroundColor: _selectedFilePath != null ? Colors.green.withValues(alpha: 0.1) : null,
+                backgroundColor: _selectedFilePath != null
+                    ? Colors.green.withValues(alpha: 0.1)
+                    : null,
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Format Selector
             if (_selectedFilePath != null) ...[
-              const Text('Hedef Format:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text('Hedef Format:',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -134,9 +141,12 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
                   padding: const EdgeInsets.all(16),
                   backgroundColor: Theme.of(context).primaryColor,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Dönüştür', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                child: const Text('Dönüştür',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 20),
             ]

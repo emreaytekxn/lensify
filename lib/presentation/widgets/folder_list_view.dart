@@ -25,7 +25,8 @@ class FolderListView extends ConsumerWidget {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: folderState.folders.length + 2, // +1 for "All Documents", +1 for "New Folder"
+        itemCount: folderState.folders.length +
+            2, // +1 for "All Documents", +1 for "New Folder"
         itemBuilder: (context, index) {
           if (index == 0) {
             // "All Documents" item
@@ -35,7 +36,9 @@ class FolderListView extends ConsumerWidget {
               label: 'Tüm Belgeler',
               icon: CupertinoIcons.tray_full,
               isActive: isActive,
-              onTap: () => ref.read(folderNotifierProvider.notifier).setActiveFolder(null),
+              onTap: () => ref
+                  .read(folderNotifierProvider.notifier)
+                  .setActiveFolder(null),
               activeColor: Theme.of(context).primaryColor,
             );
           }
@@ -49,14 +52,16 @@ class FolderListView extends ConsumerWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                   side: BorderSide(
-                    color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                    color:
+                        Theme.of(context).primaryColor.withValues(alpha: 0.5),
                   ),
                 ),
                 label: Text(
                   'Yeni Klasör',
                   style: TextStyle(color: Theme.of(context).primaryColor),
                 ),
-                avatar: Icon(CupertinoIcons.plus, size: 16, color: Theme.of(context).primaryColor),
+                avatar: Icon(CupertinoIcons.plus,
+                    size: 16, color: Theme.of(context).primaryColor),
                 onPressed: () => _showCreateFolderDialog(context),
               ),
             );
@@ -69,18 +74,27 @@ class FolderListView extends ConsumerWidget {
           return _buildChip(
             context: context,
             label: folder.name,
-            icon: folder.isLocked ? CupertinoIcons.lock_fill : CupertinoIcons.folder_fill,
+            icon: folder.isLocked
+                ? CupertinoIcons.lock_fill
+                : CupertinoIcons.folder_fill,
             isActive: isActive,
             onTap: () async {
               if (folder.isLocked && !isActive) {
-                final auth = await SecurityService.authenticate(reason: '${folder.name} klasörüne erişmek için doğrulama gerekiyor');
+                final auth = await SecurityService.authenticate(
+                    reason:
+                        '${folder.name} klasörüne erişmek için doğrulama gerekiyor');
                 if (auth) {
-                  ref.read(folderNotifierProvider.notifier).setActiveFolder(folder.id);
+                  ref
+                      .read(folderNotifierProvider.notifier)
+                      .setActiveFolder(folder.id);
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Doğrulama başarısız!')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Doğrulama başarısız!')));
                 }
               } else {
-                ref.read(folderNotifierProvider.notifier).setActiveFolder(folder.id);
+                ref
+                    .read(folderNotifierProvider.notifier)
+                    .setActiveFolder(folder.id);
               }
             },
             onLongPress: () {
@@ -96,29 +110,37 @@ class FolderListView extends ConsumerWidget {
 
   void _showFolderOptions(BuildContext context, WidgetRef ref, dynamic folder) {
     showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: Icon(folder.isLocked ? CupertinoIcons.lock_open : CupertinoIcons.lock),
-                title: Text(folder.isLocked ? 'Kilidi Kaldır' : 'Klasörü Kilitle (FaceID)'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final auth = await SecurityService.authenticate(reason: 'Klasör kilit ayarlarını değiştirmek için doğrulama gerekiyor');
-                  if (auth) {
-                    ref.read(folderNotifierProvider.notifier).toggleFolderLock(folder.id!);
-                  }
-                },
-              )
-            ],
-          ),
-        );
-      }
-    );
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        builder: (context) {
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(folder.isLocked
+                      ? CupertinoIcons.lock_open
+                      : CupertinoIcons.lock),
+                  title: Text(folder.isLocked
+                      ? 'Kilidi Kaldır'
+                      : 'Klasörü Kilitle (FaceID)'),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    final auth = await SecurityService.authenticate(
+                        reason:
+                            'Klasör kilit ayarlarını değiştirmek için doğrulama gerekiyor');
+                    if (auth) {
+                      ref
+                          .read(folderNotifierProvider.notifier)
+                          .toggleFolderLock(folder.id!);
+                    }
+                  },
+                )
+              ],
+            ),
+          );
+        });
   }
 
   Widget _buildChip({
@@ -132,12 +154,11 @@ class FolderListView extends ConsumerWidget {
     Color? iconColor,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isActive 
+    final bgColor = isActive
         ? activeColor.withValues(alpha: isDark ? 0.2 : 0.1)
         : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05));
-    final textColor = isActive 
-        ? activeColor 
-        : Theme.of(context).textTheme.bodyLarge!.color!;
+    final textColor =
+        isActive ? activeColor : Theme.of(context).textTheme.bodyLarge!.color!;
 
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
@@ -150,7 +171,9 @@ class FolderListView extends ConsumerWidget {
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(20),
-            border: isActive ? Border.all(color: activeColor.withValues(alpha: 0.5)) : null,
+            border: isActive
+                ? Border.all(color: activeColor.withValues(alpha: 0.5))
+                : null,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -158,7 +181,9 @@ class FolderListView extends ConsumerWidget {
               Icon(
                 icon,
                 size: 18,
-                color: isActive ? activeColor : (iconColor ?? textColor.withValues(alpha: 0.7)),
+                color: isActive
+                    ? activeColor
+                    : (iconColor ?? textColor.withValues(alpha: 0.7)),
               ),
               const SizedBox(width: 8),
               Text(

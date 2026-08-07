@@ -41,7 +41,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
 
     await _controller?.initialize();
     if (!mounted) return;
-    
+
     setState(() {
       _isInitialized = true;
     });
@@ -79,9 +79,10 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        final text = barcode.displayValue ?? barcode.rawValue ?? 'Bilinmeyen Barkod';
+        final text =
+            barcode.displayValue ?? barcode.rawValue ?? 'Bilinmeyen Barkod';
         final isUrl = text.startsWith('http://') || text.startsWith('https://');
-        
+
         return AlertDialog(
           title: const Text('QR / Barkod Bulundu'),
           content: Text(text),
@@ -95,7 +96,9 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
                     await launchUrl(uri, mode: LaunchMode.externalApplication);
                   }
                   if (mounted) {
-                    setState(() { _isBusy = false; });
+                    setState(() {
+                      _isBusy = false;
+                    });
                     _controller?.startImageStream(_processCameraImage);
                   }
                 },
@@ -131,7 +134,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
     if (_controller == null) return null;
     final camera = _controller!.description;
     final sensorOrientation = camera.sensorOrientation;
-    
+
     InputImageRotation? rotation;
     if (sensorOrientation == 90) {
       rotation = InputImageRotation.rotation90deg;
@@ -203,7 +206,10 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
             child: Text(
               'QR kodunu çerçevenin içine hizalayın',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 16, backgroundColor: Colors.black54),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  backgroundColor: Colors.black54),
             ),
           )
         ],

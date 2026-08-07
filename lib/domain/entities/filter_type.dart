@@ -1,9 +1,4 @@
-enum FilterType {
-  original,
-  blackAndWhite,
-  grayscale,
-  magicColor
-}
+enum FilterType { original, blackAndWhite, grayscale, magicColor }
 
 extension FilterTypeExtension on FilterType {
   String get name {

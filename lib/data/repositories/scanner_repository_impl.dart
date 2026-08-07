@@ -127,7 +127,8 @@ class ScannerRepositoryImpl implements ScannerRepository {
     await isar.writeTxn(() async {
       await isar.folderModels.delete(id);
       // Optional: Update documents in this folder to have null folderId
-      final docs = await isar.documentModels.filter().folderIdEqualTo(id).findAll();
+      final docs =
+          await isar.documentModels.filter().folderIdEqualTo(id).findAll();
       for (var doc in docs) {
         doc.folderId = null;
         await isar.documentModels.put(doc);
@@ -149,14 +150,19 @@ class ScannerRepositoryImpl implements ScannerRepository {
   @override
   Future<List<Document>> getAllDocuments() async {
     final isar = await dataSource.db;
-    final models = await isar.documentModels.where().sortByUpdatedAtDesc().findAll();
+    final models =
+        await isar.documentModels.where().sortByUpdatedAtDesc().findAll();
     return models.map(_mapDocumentModelToEntity).toList();
   }
 
   @override
   Future<List<Document>> getDocumentsByFolder(int folderId) async {
     final isar = await dataSource.db;
-    final models = await isar.documentModels.filter().folderIdEqualTo(folderId).sortByUpdatedAtDesc().findAll();
+    final models = await isar.documentModels
+        .filter()
+        .folderIdEqualTo(folderId)
+        .sortByUpdatedAtDesc()
+        .findAll();
     return models.map(_mapDocumentModelToEntity).toList();
   }
 
@@ -207,11 +213,14 @@ class ScannerRepositoryImpl implements ScannerRepository {
     final model = _mapPageEntityToModel(page);
     await isar.writeTxn(() async {
       await isar.pageModels.put(model);
-      
+
       // Update document page count
       final doc = await isar.documentModels.get(page.documentId);
       if (doc != null) {
-        doc.pageCount = await isar.pageModels.filter().documentIdEqualTo(page.documentId).count();
+        doc.pageCount = await isar.pageModels
+            .filter()
+            .documentIdEqualTo(page.documentId)
+            .count();
         doc.updatedAt = DateTime.now();
         await isar.documentModels.put(doc);
       }
@@ -222,7 +231,11 @@ class ScannerRepositoryImpl implements ScannerRepository {
   @override
   Future<List<DocumentPage>> getPagesForDocument(int documentId) async {
     final isar = await dataSource.db;
-    final models = await isar.pageModels.filter().documentIdEqualTo(documentId).sortByPageIndex().findAll();
+    final models = await isar.pageModels
+        .filter()
+        .documentIdEqualTo(documentId)
+        .sortByPageIndex()
+        .findAll();
     return models.map(_mapPageModelToEntity).toList();
   }
 
@@ -243,11 +256,12 @@ class ScannerRepositoryImpl implements ScannerRepository {
       if (page != null) {
         final docId = page.documentId;
         await isar.pageModels.delete(id);
-        
+
         // Update document page count
         final doc = await isar.documentModels.get(docId);
         if (doc != null) {
-          doc.pageCount = await isar.pageModels.filter().documentIdEqualTo(docId).count();
+          doc.pageCount =
+              await isar.pageModels.filter().documentIdEqualTo(docId).count();
           doc.updatedAt = DateTime.now();
           await isar.documentModels.put(doc);
         }

@@ -1,18 +1,22 @@
 import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';class SecurityService {
+import 'package:local_auth/local_auth.dart';
+
+class SecurityService {
   static final LocalAuthentication _auth = LocalAuthentication();
 
   static Future<bool> isBiometricAvailable() async {
     try {
       final bool canAuthenticateWithBiometrics = await _auth.canCheckBiometrics;
-      final bool canAuthenticate = canAuthenticateWithBiometrics || await _auth.isDeviceSupported();
+      final bool canAuthenticate =
+          canAuthenticateWithBiometrics || await _auth.isDeviceSupported();
       return canAuthenticate;
     } catch (e) {
       return false;
     }
   }
 
-  static Future<bool> authenticate({String reason = 'Lütfen kimliğinizi doğrulayın'}) async {
+  static Future<bool> authenticate(
+      {String reason = 'Lütfen kimliğinizi doğrulayın'}) async {
     try {
       final bool didAuthenticate = await _auth.authenticate(
         localizedReason: reason,
@@ -21,9 +25,11 @@ import 'package:local_auth/local_auth.dart';class SecurityService {
       );
       return didAuthenticate;
     } on PlatformException catch (e) {
-      if (e.code == 'NotAvailable' || e.code == 'NotEnrolled' || e.code == 'PasscodeNotSet') {
+      if (e.code == 'NotAvailable' ||
+          e.code == 'NotEnrolled' ||
+          e.code == 'PasscodeNotSet') {
         // If no security is set on the device, we can either allow or block. Let's allow for now or return true if device isn't secure.
-        return true; 
+        return true;
       }
       return false;
     } catch (e) {

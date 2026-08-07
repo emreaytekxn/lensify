@@ -24,7 +24,8 @@ class FolderState {
       folders: folders ?? this.folders,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
-      activeFolderId: clearActiveFolder ? null : (activeFolderId ?? this.activeFolderId),
+      activeFolderId:
+          clearActiveFolder ? null : (activeFolderId ?? this.activeFolderId),
     );
   }
 }

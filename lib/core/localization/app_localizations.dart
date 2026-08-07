@@ -9,7 +9,7 @@ class AppLocalizations {
       'delete': 'Delete',
       'move': 'Move',
       'scan': 'Scan',
-      
+
       // Dashboard & Folders
       'my_documents': 'My Documents',
       'all_documents': 'All Documents',
@@ -21,12 +21,13 @@ class AppLocalizations {
       'empty_documents_desc': 'Tap the button below to\nstart your first scan.',
       'selected': 'Selected',
       'pages': 'Pages',
-      
+
       // Camera & Cropping
-      'camera_permission_required': 'Camera permission is required to scan documents.',
+      'camera_permission_required':
+          'Camera permission is required to scan documents.',
       'crop_document': 'Crop Document',
       'gallery': 'Gallery',
-      
+
       // Filters & Editor
       'filter': 'Filter',
       'original': 'Original',
@@ -48,7 +49,7 @@ class AppLocalizations {
       'delete': 'Sil',
       'move': 'Taşı',
       'scan': 'Tara',
-      
+
       // Dashboard & Folders
       'my_documents': 'Belgelerim',
       'all_documents': 'Tüm Belgeler',
@@ -57,15 +58,17 @@ class AppLocalizations {
       'choose_color': 'Renk Seçin',
       'create': 'Oluştur',
       'empty_documents': 'Henüz belge yok',
-      'empty_documents_desc': 'Sağ alttaki butona dokunarak\nilk taramanızı yapın.',
+      'empty_documents_desc':
+          'Sağ alttaki butona dokunarak\nilk taramanızı yapın.',
       'selected': 'Seçildi',
       'pages': 'Syf',
-      
+
       // Camera & Cropping
-      'camera_permission_required': 'Belge taramak için kamera izni gereklidir.',
+      'camera_permission_required':
+          'Belge taramak için kamera izni gereklidir.',
       'crop_document': 'Belgeyi Kırp',
       'gallery': 'Galeri',
-      
+
       // Filters & Editor
       'filter': 'Filtrele',
       'original': 'Orijinal',
@@ -80,10 +83,11 @@ class AppLocalizations {
     }
   };
 
-  static String translate(String languageCode, String key, [List<String>? args]) {
+  static String translate(String languageCode, String key,
+      [List<String>? args]) {
     final langMap = translations[languageCode] ?? translations['en']!;
     String result = langMap[key] ?? key;
-    
+
     if (args != null) {
       for (int i = 0; i < args.length; i++) {
         result = result.replaceAll('{$i}', args[i]);

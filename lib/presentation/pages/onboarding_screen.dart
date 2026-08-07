@@ -84,12 +84,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ElevatedButton(
                       onPressed: _completeOnboarding,
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 16),
                         backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
-                      child: Text(l10n.startButton, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      child: Text(l10n.startButton,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
                     )
                   else
                     TextButton(
@@ -99,7 +102,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           curve: Curves.easeInOut,
                         );
                       },
-                      child: const Text('İleri', style: TextStyle(fontSize: 16)),
+                      child:
+                          const Text('İleri', style: TextStyle(fontSize: 16)),
                     ),
                 ],
               ),
@@ -110,7 +114,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
-  Widget _buildPage({required String title, required String description, required IconData icon, required Color color}) {
+  Widget _buildPage(
+      {required String title,
+      required String description,
+      required IconData icon,
+      required Color color}) {
     return Padding(
       padding: const EdgeInsets.all(40.0),
       child: Column(
@@ -121,13 +129,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold),
+            style:
+                GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Text(
             description,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16, color: Colors.grey, height: 1.5),
+            style:
+                const TextStyle(fontSize: 16, color: Colors.grey, height: 1.5),
           ),
         ],
       ),
@@ -145,34 +155,47 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           Text(
             l10n.onboardingLanguageTitle,
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold),
+            style:
+                GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Text(
             l10n.onboardingLanguageDesc,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16, color: Colors.grey, height: 1.5),
+            style:
+                const TextStyle(fontSize: 16, color: Colors.grey, height: 1.5),
           ),
           const SizedBox(height: 40),
-          
           ListTile(
             title: const Text('Türkçe'),
             leading: const Text('🇹🇷', style: TextStyle(fontSize: 24)),
-            trailing: Localizations.localeOf(context).languageCode == 'tr' ? const Icon(CupertinoIcons.check_mark, color: Colors.green) : null,
+            trailing: Localizations.localeOf(context).languageCode == 'tr'
+                ? const Icon(CupertinoIcons.check_mark, color: Colors.green)
+                : null,
             onTap: () {
-              ref.read(settingsNotifierProvider.notifier).setLocale(const Locale('tr'));
+              ref
+                  .read(settingsNotifierProvider.notifier)
+                  .setLocale(const Locale('tr'));
             },
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.withValues(alpha: 0.2))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: Colors.grey.withValues(alpha: 0.2))),
           ),
           const SizedBox(height: 12),
           ListTile(
             title: const Text('English'),
             leading: const Text('🇬🇧', style: TextStyle(fontSize: 24)),
-            trailing: Localizations.localeOf(context).languageCode == 'en' ? const Icon(CupertinoIcons.check_mark, color: Colors.green) : null,
+            trailing: Localizations.localeOf(context).languageCode == 'en'
+                ? const Icon(CupertinoIcons.check_mark, color: Colors.green)
+                : null,
             onTap: () {
-              ref.read(settingsNotifierProvider.notifier).setLocale(const Locale('en'));
+              ref
+                  .read(settingsNotifierProvider.notifier)
+                  .setLocale(const Locale('en'));
             },
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.withValues(alpha: 0.2))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: Colors.grey.withValues(alpha: 0.2))),
           ),
         ],
       ),

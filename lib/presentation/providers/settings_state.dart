@@ -22,7 +22,8 @@ class SettingsState {
     return SettingsState(
       isGridView: isGridView ?? this.isGridView,
       themeMode: themeMode ?? this.themeMode,
-      requireBiometricsOnStartup: requireBiometricsOnStartup ?? this.requireBiometricsOnStartup,
+      requireBiometricsOnStartup:
+          requireBiometricsOnStartup ?? this.requireBiometricsOnStartup,
       locale: locale ?? this.locale,
     );
   }

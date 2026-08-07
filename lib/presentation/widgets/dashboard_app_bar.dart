@@ -18,21 +18,28 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
       return AppBar(
         leading: IconButton(
           icon: const Icon(CupertinoIcons.xmark),
-          onPressed: () => ref.read(documentNotifierProvider.notifier).clearSelection(),
+          onPressed: () =>
+              ref.read(documentNotifierProvider.notifier).clearSelection(),
         ),
         title: Text('${docState.selectedDocumentIds.length} Seçildi'),
         actions: [
           IconButton(
             icon: const Icon(CupertinoIcons.folder_badge_plus),
-            onPressed: docState.selectedDocumentIds.isEmpty ? null : () {
-              _showMoveToFolderDialog(context, ref);
-            },
+            onPressed: docState.selectedDocumentIds.isEmpty
+                ? null
+                : () {
+                    _showMoveToFolderDialog(context, ref);
+                  },
           ),
           IconButton(
             icon: const Icon(CupertinoIcons.trash, color: Colors.redAccent),
-            onPressed: docState.selectedDocumentIds.isEmpty ? null : () {
-              ref.read(documentNotifierProvider.notifier).deleteSelectedDocuments();
-            },
+            onPressed: docState.selectedDocumentIds.isEmpty
+                ? null
+                : () {
+                    ref
+                        .read(documentNotifierProvider.notifier)
+                        .deleteSelectedDocuments();
+                  },
           ),
         ],
       );
@@ -64,7 +71,8 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(CupertinoIcons.settings),
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsScreen()));
           },
         ),
       ],
@@ -77,7 +85,8 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
             onChanged: (value) {
               ref.read(documentNotifierProvider.notifier).setSearchQuery(value);
             },
-            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
+            style:
+                TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
           ),
         ),
       ),
@@ -110,7 +119,9 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 leading: const Icon(CupertinoIcons.tray),
                 title: const Text('Ana Dizin (Klasörden Çıkar)'),
                 onTap: () {
-                  ref.read(documentNotifierProvider.notifier).moveSelectedDocuments(null);
+                  ref
+                      .read(documentNotifierProvider.notifier)
+                      .moveSelectedDocuments(null);
                   Navigator.pop(context);
                 },
               ),
@@ -128,10 +139,13 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     itemBuilder: (context, index) {
                       final folder = folders[index];
                       return ListTile(
-                        leading: Icon(CupertinoIcons.folder_fill, color: Color(folder.color)),
+                        leading: Icon(CupertinoIcons.folder_fill,
+                            color: Color(folder.color)),
                         title: Text(folder.name),
                         onTap: () {
-                          ref.read(documentNotifierProvider.notifier).moveSelectedDocuments(folder.id);
+                          ref
+                              .read(documentNotifierProvider.notifier)
+                              .moveSelectedDocuments(folder.id);
                           Navigator.pop(context);
                         },
                       );

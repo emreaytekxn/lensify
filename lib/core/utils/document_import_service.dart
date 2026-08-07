@@ -39,13 +39,13 @@ class DocumentImportService {
     if (result != null && result.files.single.path != null) {
       final pdfPath = result.files.single.path!;
       final docName = result.files.single.name.replaceAll('.pdf', '');
-      
+
       try {
         final document = await PdfDocument.openFile(pdfPath);
         List<String> imagePaths = [];
-        
+
         final tempDir = await getTemporaryDirectory();
-        
+
         for (int i = 1; i <= document.pagesCount; i++) {
           final page = await document.getPage(i);
           // Render at 2x resolution for better quality
@@ -54,16 +54,17 @@ class DocumentImportService {
             height: page.height * 2,
             format: PdfPageImageFormat.jpeg,
           );
-          
+
           if (pageImage != null) {
-            final imgFile = File('${tempDir.path}/pdf_page_${DateTime.now().millisecondsSinceEpoch}_$i.jpg');
+            final imgFile = File(
+                '${tempDir.path}/pdf_page_${DateTime.now().millisecondsSinceEpoch}_$i.jpg');
             await imgFile.writeAsBytes(pageImage.bytes);
             imagePaths.add(imgFile.path);
           }
           await page.close();
         }
         await document.close();
-        
+
         if (imagePaths.isNotEmpty) {
           await _createDocumentFromImages(imagePaths, docName, targetFolderId);
         }
@@ -73,7 +74,8 @@ class DocumentImportService {
     }
   }
 
-  Future<void> _createDocumentFromImages(List<String> imagePaths, String title, int? folderId) async {
+  Future<void> _createDocumentFromImages(
+      List<String> imagePaths, String title, int? folderId) async {
     final doc = Document(
       title: title,
       folderId: folderId,
@@ -81,9 +83,9 @@ class DocumentImportService {
       updatedAt: DateTime.now(),
       pageCount: imagePaths.length,
     );
-    
+
     final createdDoc = await _repository.createDocument(doc);
-    
+
     int pageIndex = 0;
     for (String path in imagePaths) {
       final page = DocumentPage(

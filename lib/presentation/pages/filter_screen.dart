@@ -30,7 +30,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
   FilterType _selectedFilter = FilterType.original;
   bool _isProcessing = false;
   String? _processedImagePath;
-  
+
   @override
   void initState() {
     super.initState();
@@ -80,7 +80,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
     try {
       final repo = ref.read(scannerRepositoryProvider);
       int docId;
-      
+
       // If new document, create it first
       if (widget.targetDocumentId == null) {
         final activeFolderId = ref.read(folderNotifierProvider).activeFolderId;
@@ -104,15 +104,15 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
       // Save processed image permanently (move from temp to app dir)
       final appDir = await getApplicationDocumentsDirectory();
-      final permanentOriginal = await File(widget.imagePath).copy(
-        '${appDir.path}/orig_${docId}_$nextIndex.jpg'
-      );
-      
+      final permanentOriginal = await File(widget.imagePath)
+          .copy('${appDir.path}/orig_${docId}_$nextIndex.jpg');
+
       String? permanentProcessed;
-      if (_processedImagePath != null && _processedImagePath != widget.imagePath) {
-        permanentProcessed = await File(_processedImagePath!).copy(
-          '${appDir.path}/proc_${docId}_$nextIndex.jpg'
-        ).then((file) => file.path);
+      if (_processedImagePath != null &&
+          _processedImagePath != widget.imagePath) {
+        permanentProcessed = await File(_processedImagePath!)
+            .copy('${appDir.path}/proc_${docId}_$nextIndex.jpg')
+            .then((file) => file.path);
       }
 
       final page = DocumentPage(
@@ -125,7 +125,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
       );
 
       await repo.addPageToDocument(page);
-      
+
       // Refresh documents
       await ref.read(documentNotifierProvider.notifier).loadDocuments();
 
@@ -156,7 +156,11 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
         actions: [
           TextButton(
             onPressed: _isProcessing ? null : _saveAndContinue,
-            child: const Text('Kaydet', style: TextStyle(color: CupertinoColors.activeBlue, fontWeight: FontWeight.bold, fontSize: 16)),
+            child: const Text('Kaydet',
+                style: TextStyle(
+                    color: CupertinoColors.activeBlue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16)),
           ),
         ],
       ),
@@ -178,7 +182,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
                   Container(
                     color: Colors.black54,
                     child: const Center(
-                      child: CupertinoActivityIndicator(radius: 20, color: Colors.white),
+                      child: CupertinoActivityIndicator(
+                          radius: 20, color: Colors.white),
                     ),
                   ),
               ],
@@ -203,7 +208,7 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
 
   Widget _buildFilterThumb(FilterType filter) {
     final isSelected = _selectedFilter == filter;
-    
+
     return GestureDetector(
       onTap: () => _applyFilter(filter),
       child: Container(
@@ -216,7 +221,9 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? CupertinoColors.activeBlue : Colors.transparent,
+                  color: isSelected
+                      ? CupertinoColors.activeBlue
+                      : Colors.transparent,
                   width: 3,
                 ),
                 color: Colors.grey.shade800,
@@ -224,7 +231,8 @@ class _FilterScreenState extends ConsumerState<FilterScreen> {
               child: Center(
                 child: Icon(
                   _getFilterIcon(filter),
-                  color: isSelected ? CupertinoColors.activeBlue : Colors.white70,
+                  color:
+                      isSelected ? CupertinoColors.activeBlue : Colors.white70,
                 ),
               ),
             ),

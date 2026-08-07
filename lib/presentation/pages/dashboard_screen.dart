@@ -23,7 +23,7 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final docState = ref.watch(documentNotifierProvider);
     final settings = ref.watch(settingsNotifierProvider);
-    
+
     return Scaffold(
       appBar: const DashboardAppBar(),
       body: Column(
@@ -36,12 +36,13 @@ class DashboardScreen extends ConsumerWidget {
                 ? const Center(child: CupertinoActivityIndicator())
                 : docState.filteredDocuments.isEmpty
                     ? const EmptyStateView()
-                    : _buildDocumentView(context, ref, docState, settings.isGridView),
+                    : _buildDocumentView(
+                        context, ref, docState, settings.isGridView),
           ),
         ],
       ),
-      floatingActionButton: docState.isSelectionMode 
-          ? null 
+      floatingActionButton: docState.isSelectionMode
+          ? null
           : FloatingActionButton.extended(
               onPressed: () => _showAddOptions(context, ref),
               backgroundColor: Theme.of(context).primaryColor,
@@ -59,9 +60,9 @@ class DashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildDocumentView(
-    BuildContext context, 
-    WidgetRef ref, 
-    DocumentState state, 
+    BuildContext context,
+    WidgetRef ref,
+    DocumentState state,
     bool isGridView,
   ) {
     if (isGridView) {
@@ -77,14 +78,16 @@ class DashboardScreen extends ConsumerWidget {
         itemBuilder: (context, index) {
           final doc = state.filteredDocuments[index];
           final isSelected = state.selectedDocumentIds.contains(doc.id);
-          
+
           return DocumentGridCard(
             document: doc,
             isSelected: isSelected,
             isSelectionMode: state.isSelectionMode,
             onTap: () {
               if (state.isSelectionMode) {
-                ref.read(documentNotifierProvider.notifier).toggleDocumentSelection(doc.id!);
+                ref
+                    .read(documentNotifierProvider.notifier)
+                    .toggleDocumentSelection(doc.id!);
               } else {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -95,7 +98,9 @@ class DashboardScreen extends ConsumerWidget {
             },
             onLongPress: () {
               ref.read(documentNotifierProvider.notifier).toggleSelectionMode();
-              ref.read(documentNotifierProvider.notifier).toggleDocumentSelection(doc.id!);
+              ref
+                  .read(documentNotifierProvider.notifier)
+                  .toggleDocumentSelection(doc.id!);
             },
           );
         },
@@ -107,14 +112,16 @@ class DashboardScreen extends ConsumerWidget {
         itemBuilder: (context, index) {
           final doc = state.filteredDocuments[index];
           final isSelected = state.selectedDocumentIds.contains(doc.id);
-          
+
           return DocumentListCard(
             document: doc,
             isSelected: isSelected,
             isSelectionMode: state.isSelectionMode,
             onTap: () {
               if (state.isSelectionMode) {
-                ref.read(documentNotifierProvider.notifier).toggleDocumentSelection(doc.id!);
+                ref
+                    .read(documentNotifierProvider.notifier)
+                    .toggleDocumentSelection(doc.id!);
               } else {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -125,7 +132,9 @@ class DashboardScreen extends ConsumerWidget {
             },
             onLongPress: () {
               ref.read(documentNotifierProvider.notifier).toggleSelectionMode();
-              ref.read(documentNotifierProvider.notifier).toggleDocumentSelection(doc.id!);
+              ref
+                  .read(documentNotifierProvider.notifier)
+                  .toggleDocumentSelection(doc.id!);
             },
           );
         },
@@ -157,7 +166,8 @@ class DashboardScreen extends ConsumerWidget {
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const ScannerCameraScreen()),
+                    MaterialPageRoute(
+                        builder: (_) => const ScannerCameraScreen()),
                   );
                 },
               ),
@@ -168,9 +178,11 @@ class DashboardScreen extends ConsumerWidget {
                   Navigator.pop(context);
                   LoadingOverlay.show(context, message: 'İçe aktarılıyor...');
                   try {
-                    final folderId = ref.read(folderNotifierProvider).activeFolderId;
+                    final folderId =
+                        ref.read(folderNotifierProvider).activeFolderId;
                     final repo = ref.read(scannerRepositoryProvider);
-                    await DocumentImportService(repo).importFromGallery(folderId);
+                    await DocumentImportService(repo)
+                        .importFromGallery(folderId);
                     ref.read(documentNotifierProvider.notifier).loadDocuments();
                   } finally {
                     if (context.mounted) LoadingOverlay.hide(context);
@@ -178,14 +190,17 @@ class DashboardScreen extends ConsumerWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(CupertinoIcons.doc_text, color: Colors.orange),
+                leading:
+                    const Icon(CupertinoIcons.doc_text, color: Colors.orange),
                 title: const Text('PDF İçe Aktar'),
                 subtitle: const Text('PDF sayfaları resme dönüştürülür'),
                 onTap: () async {
                   Navigator.pop(context);
-                  LoadingOverlay.show(context, message: 'PDF dönüştürülüyor...');
+                  LoadingOverlay.show(context,
+                      message: 'PDF dönüştürülüyor...');
                   try {
-                    final folderId = ref.read(folderNotifierProvider).activeFolderId;
+                    final folderId =
+                        ref.read(folderNotifierProvider).activeFolderId;
                     final repo = ref.read(scannerRepositoryProvider);
                     await DocumentImportService(repo).importPdf(folderId);
                     ref.read(documentNotifierProvider.notifier).loadDocuments();
