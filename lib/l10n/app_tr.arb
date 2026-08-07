@@ -1,0 +1,18 @@
+{
+  "@@locale": "tr",
+  "appTitle": "Kawaru",
+  "onboardingWelcomeTitle": "Kawaru'ya Hoş Geldiniz",
+  "onboardingWelcomeDesc": "Her şeyi dönüştüren yapay zeka gücü. Sınır tanımadan tarayın, dönüştürün ve yazıya çevirin.",
+  "onboardingOfflineTitle": "%100 Çevrimdışı ve Ücretsiz",
+  "onboardingOfflineDesc": "Bulut yok, abonelik yok. Tüm gizliliğiniz cihazınızda kalır.",
+  "onboardingLanguageTitle": "Dil Seçimi",
+  "onboardingLanguageDesc": "Bunu daha sonra Ayarlar'dan değiştirebilirsiniz.",
+  "startButton": "Başla",
+  "homeTab": "Tüm Belgeler",
+  "toolsTab": "Araçlar",
+  "settingsTab": "Ayarlar",
+  "language": "Dil",
+  "theme": "Tema",
+  "darkMode": "Karanlık Mod",
+  "lightMode": "Aydınlık Mod"
+}

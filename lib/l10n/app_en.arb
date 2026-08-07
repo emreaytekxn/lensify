@@ -1,0 +1,18 @@
+{
+  "@@locale": "en",
+  "appTitle": "Kawaru",
+  "onboardingWelcomeTitle": "Welcome to Kawaru",
+  "onboardingWelcomeDesc": "The offline AI power that transforms everything. Scan, convert, and transcribe limitlessly.",
+  "onboardingOfflineTitle": "100% Offline & Free",
+  "onboardingOfflineDesc": "No cloud, no subscriptions. Your privacy is secured on your device.",
+  "onboardingLanguageTitle": "Select Language",
+  "onboardingLanguageDesc": "You can change this later in Settings.",
+  "startButton": "Get Started",
+  "homeTab": "All Documents",
+  "toolsTab": "Tools",
+  "settingsTab": "Settings",
+  "language": "Language",
+  "theme": "Theme",
+  "darkMode": "Dark Mode",
+  "lightMode": "Light Mode"
+}
