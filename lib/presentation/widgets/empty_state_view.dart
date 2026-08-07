@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EmptyStateView extends StatelessWidget {
-  const EmptyStateView({Key? key}) : super(key: key);
+  const EmptyStateView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class EmptyStateView extends StatelessWidget {
           Icon(
             CupertinoIcons.doc_text_viewfinder,
             size: 80,
-            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.3),
+            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 20),
           Text(
@@ -21,7 +21,7 @@ class EmptyStateView extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
+              color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7),
               letterSpacing: -0.5,
             ),
           ),
@@ -31,7 +31,7 @@ class EmptyStateView extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 15,
-              color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+              color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
             ),
           ),
         ],

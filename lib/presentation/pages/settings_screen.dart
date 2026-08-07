@@ -5,7 +5,7 @@ import '../providers/settings_provider.dart';
 import '../../core/utils/security_service.dart';
 
 class SettingsScreen extends ConsumerWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

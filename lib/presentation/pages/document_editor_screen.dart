@@ -22,7 +22,7 @@ import '../../domain/entities/filter_type.dart';
 class DocumentEditorScreen extends ConsumerStatefulWidget {
   final Document document;
 
-  const DocumentEditorScreen({Key? key, required this.document}) : super(key: key);
+  const DocumentEditorScreen({super.key, required this.document});
 
   @override
   ConsumerState<DocumentEditorScreen> createState() => _DocumentEditorScreenState();
@@ -350,7 +350,7 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                         side: BorderSide(
-                          color: Theme.of(context).primaryColor.withOpacity(0.2),
+                          color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                         ),
                       ),
                       child: ListTile(

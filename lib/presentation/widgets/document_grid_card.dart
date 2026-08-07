@@ -14,13 +14,13 @@ class DocumentGridCard extends ConsumerWidget {
   final VoidCallback onLongPress;
 
   const DocumentGridCard({
-    Key? key,
+    super.key,
     required this.document,
     required this.isSelected,
     required this.isSelectionMode,
     required this.onTap,
     required this.onLongPress,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,7 +40,7 @@ class DocumentGridCard extends ConsumerWidget {
                   : Border.all(color: Colors.transparent, width: 2),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 )
@@ -114,7 +114,7 @@ class DocumentGridCard extends ConsumerWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor.withOpacity(0.1),
+                              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -141,7 +141,7 @@ class DocumentGridCard extends ConsumerWidget {
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isSelected ? Theme.of(context).primaryColor : Colors.white.withOpacity(0.5),
+                  color: isSelected ? Theme.of(context).primaryColor : Colors.white.withValues(alpha: 0.5),
                   border: Border.all(
                     color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
                     width: 2,

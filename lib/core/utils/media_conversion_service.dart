@@ -35,12 +35,10 @@ class MediaConversionService {
       } else {
         final logs = await session.getLogs();
         for (var log in logs) {
-          print(log.getMessage());
         }
         return null;
       }
     } catch (e) {
-      print('Media Conversion Error: $e');
       return null;
     }
   }

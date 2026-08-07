@@ -17,11 +17,11 @@ class DocumentImportService {
 
   Future<void> importFromGallery(int? targetFolderId) async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile>? images = await picker.pickMultiImage(
+    final List<XFile> images = await picker.pickMultiImage(
       imageQuality: 100,
     );
 
-    if (images != null && images.isNotEmpty) {
+    if (images.isNotEmpty) {
       await _createDocumentFromImages(
         images.map((f) => f.path).toList(),
         "Galeriden İçe Aktarıldı",

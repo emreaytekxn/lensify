@@ -7,7 +7,7 @@ import '../providers/folder_provider.dart';
 import '../pages/settings_screen.dart';
 
 class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  const DashboardAppBar({Key? key}) : super(key: key);
+  const DashboardAppBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

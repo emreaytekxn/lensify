@@ -17,10 +17,10 @@ class FilterScreen extends ConsumerStatefulWidget {
   final int? targetDocumentId;
 
   const FilterScreen({
-    Key? key,
+    super.key,
     required this.imagePath,
     this.targetDocumentId,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<FilterScreen> createState() => _FilterScreenState();

@@ -7,7 +7,7 @@ import 'dart:io';
 
 class SignatureStudioScreen extends StatefulWidget {
   final String imagePath;
-  const SignatureStudioScreen({Key? key, required this.imagePath}) : super(key: key);
+  const SignatureStudioScreen({super.key, required this.imagePath});
 
   @override
   State<SignatureStudioScreen> createState() => _SignatureStudioScreenState();

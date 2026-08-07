@@ -8,7 +8,7 @@ import 'dashboard_screen.dart';
 import 'tools_screen.dart';
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
-  const MainNavigationScreen({Key? key}) : super(key: key);
+  const MainNavigationScreen({super.key});
 
   @override
   ConsumerState<MainNavigationScreen> createState() => _MainNavigationScreenState();

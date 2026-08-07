@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'barcode_scanner_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/utils/document_import_service.dart';
@@ -14,7 +13,7 @@ import 'media_converter_screen.dart';
 import 'transcription_screen.dart';
 
 class ToolsScreen extends ConsumerWidget {
-  const ToolsScreen({Key? key}) : super(key: key);
+  const ToolsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -212,7 +211,7 @@ class ToolsScreen extends ConsumerWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Theme.of(context).primaryColor.withOpacity(0.1)),
+        side: BorderSide(color: Theme.of(context).primaryColor.withValues(alpha: 0.1)),
       ),
       child: InkWell(
         onTap: onTap,
@@ -225,7 +224,7 @@ class ToolsScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: color, size: 28),
@@ -247,7 +246,7 @@ class ToolsScreen extends ConsumerWidget {
                       description,
                       style: TextStyle(
                         fontSize: 13,
-                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                       ),
                     ),
                   ],

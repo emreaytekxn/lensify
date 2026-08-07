@@ -17,7 +17,7 @@ import 'scanner_camera_screen.dart';
 import '../../core/utils/document_import_service.dart';
 
 class DashboardScreen extends ConsumerWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

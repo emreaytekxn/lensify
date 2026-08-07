@@ -6,7 +6,7 @@ import 'create_folder_dialog.dart';
 import '../../core/utils/security_service.dart';
 
 class FolderListView extends ConsumerWidget {
-  const FolderListView({Key? key}) : super(key: key);
+  const FolderListView({super.key});
 
   void _showCreateFolderDialog(BuildContext context) {
     showDialog(
@@ -49,7 +49,7 @@ class FolderListView extends ConsumerWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                   side: BorderSide(
-                    color: Theme.of(context).primaryColor.withOpacity(0.5),
+                    color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
                   ),
                 ),
                 label: Text(
@@ -133,8 +133,8 @@ class FolderListView extends ConsumerWidget {
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = isActive 
-        ? activeColor.withOpacity(isDark ? 0.2 : 0.1)
-        : (isDark ? Colors.white10 : Colors.black.withOpacity(0.05));
+        ? activeColor.withValues(alpha: isDark ? 0.2 : 0.1)
+        : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05));
     final textColor = isActive 
         ? activeColor 
         : Theme.of(context).textTheme.bodyLarge!.color!;
@@ -150,7 +150,7 @@ class FolderListView extends ConsumerWidget {
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(20),
-            border: isActive ? Border.all(color: activeColor.withOpacity(0.5)) : null,
+            border: isActive ? Border.all(color: activeColor.withValues(alpha: 0.5)) : null,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -158,7 +158,7 @@ class FolderListView extends ConsumerWidget {
               Icon(
                 icon,
                 size: 18,
-                color: isActive ? activeColor : (iconColor ?? textColor.withOpacity(0.7)),
+                color: isActive ? activeColor : (iconColor ?? textColor.withValues(alpha: 0.7)),
               ),
               const SizedBox(width: 8),
               Text(

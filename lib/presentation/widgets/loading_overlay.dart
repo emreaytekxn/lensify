@@ -17,20 +17,13 @@ class LoadingOverlay {
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    blurRadius: 20,
-                    spreadRadius: 5,
-                  ),
-                ],
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  LoadingAnimationWidget.twistingDots(
-                    leftDotColor: Colors.blueAccent,
-                    rightDotColor: Colors.orangeAccent,
+                  LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.blueAccent,
                     size: 60,
                   ),
                   const SizedBox(height: 24),

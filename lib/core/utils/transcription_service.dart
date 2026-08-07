@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:whisper_flutter_new/whisper_flutter_new.dart';
 
 class TranscriptionService {
@@ -9,7 +8,7 @@ class TranscriptionService {
     if (_whisper != null) return;
     
     // Using tiny model for faster offline performance on mobile
-    _whisper = Whisper(
+    _whisper = const Whisper(
       model: WhisperModel.tiny,
       downloadHost: "https://huggingface.co/ggerganov/whisper.cpp/resolve/main"
     );
@@ -20,7 +19,7 @@ class TranscriptionService {
     try {
       await _initWhisper();
       
-      final transcription = await _whisper!.transcribe(
+      final response = await _whisper!.transcribe(
         transcribeRequest: TranscribeRequest(
           audio: audioPath,
           isTranslate: false, // Don't translate, just transcribe original language
@@ -29,17 +28,8 @@ class TranscriptionService {
         ),
       );
       
-      // The transcription returns a JSON string, we need to parse it
-      // Usually it has a 'text' field.
-      try {
-        final Map<String, dynamic> data = jsonDecode(transcription);
-        return data['text']?.toString().trim();
-      } catch (e) {
-        // If it's not JSON, maybe it returns raw text
-        return transcription.trim();
-      }
+      return response.text;
     } catch (e) {
-      print('Transcription Error: $e');
       return null;
     }
   }

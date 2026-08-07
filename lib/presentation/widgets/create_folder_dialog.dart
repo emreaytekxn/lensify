@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/folder_provider.dart';
 
 class CreateFolderDialog extends ConsumerStatefulWidget {
-  const CreateFolderDialog({Key? key}) : super(key: key);
+  const CreateFolderDialog({super.key});
 
   @override
   ConsumerState<CreateFolderDialog> createState() => _CreateFolderDialogState();
@@ -64,7 +63,7 @@ class _CreateFolderDialogState extends ConsumerState<CreateFolderDialog> {
                 filled: true,
                 fillColor: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white10
-                    : Colors.black.withOpacity(0.05),
+                    : Colors.black.withValues(alpha: 0.05),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
