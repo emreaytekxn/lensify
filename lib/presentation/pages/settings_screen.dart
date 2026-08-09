@@ -5,6 +5,7 @@ import '../providers/settings_provider.dart';
 import '../../core/utils/security_service.dart';
 import '../widgets/legal_documents_dialog.dart';
 import '../../l10n/app_localizations.dart';
+import '../../main.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -20,6 +21,43 @@ class SettingsScreen extends ConsumerWidget {
       ),
       body: ListView(
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(loc.security,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.grey)),
+          ),
+          SwitchListTile(
+            title: Text(loc.appLockPin),
+            subtitle: Text(loc.appLockPinDesc),
+            value: prefs.getString('realPin') != null && prefs.getString('realPin')!.isNotEmpty,
+            secondary: const Icon(CupertinoIcons.lock_shield),
+            onChanged: (value) async {
+              if (value) {
+                _showPinSetupDialog(context, isFake: false);
+              } else {
+                final auth = await SecurityService.authenticate(
+                    reason: 'Kilidi kapatmak için doğrulama gerekiyor');
+                if (auth) {
+                  await prefs.remove('realPin');
+                  await prefs.remove('fakePin'); // Also remove fake pin if real pin is disabled
+                  if (context.mounted) {
+                    (context as Element).markNeedsBuild(); // Refresh UI
+                  }
+                }
+              }
+            },
+          ),
+          if (prefs.getString('realPin') != null && prefs.getString('realPin')!.isNotEmpty)
+            ListTile(
+              leading: const Icon(CupertinoIcons.eye_slash, color: Colors.redAccent),
+              title: Text(loc.fakePin),
+              subtitle: Text(loc.fakePinDesc),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                _showPinSetupDialog(context, isFake: true);
+              },
+            ),
           SwitchListTile(
             title: Text(loc.requireBiometrics),
             subtitle: Text(loc.requireBiometricsDesc),
@@ -111,6 +149,104 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: 32),
         ],
       ),
+    );
+  }
+
+  void _showPinSetupDialog(BuildContext context, {required bool isFake}) {
+    String newPin = '';
+    final loc = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(isFake ? loc.fakePin : loc.appLockPin),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(isFake ? loc.fakePinSetupDesc : loc.appLockPinSetupDesc),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      4,
+                      (index) => Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        width: 16,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: index < newPin.length ? Colors.blue : Colors.grey.shade300,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.center,
+                    children: List.generate(9, (index) {
+                      return ActionChip(
+                        label: Text('${index + 1}'),
+                        onPressed: () {
+                          if (newPin.length < 4) {
+                            setState(() => newPin += '${index + 1}');
+                          }
+                        },
+                      );
+                    })..add(
+                      ActionChip(
+                        label: const Icon(CupertinoIcons.delete_left, size: 18),
+                        onPressed: () {
+                          if (newPin.isNotEmpty) {
+                            setState(() => newPin = newPin.substring(0, newPin.length - 1));
+                          }
+                        },
+                      ),
+                    )..add(
+                      ActionChip(
+                        label: const Text('0'),
+                        onPressed: () {
+                          if (newPin.length < 4) {
+                            setState(() => newPin += '0');
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(loc.cancel),
+                ),
+                TextButton(
+                  onPressed: newPin.length == 4
+                      ? () async {
+                          if (isFake) {
+                            await prefs.setString('fakePin', newPin);
+                          } else {
+                            await prefs.setString('realPin', newPin);
+                          }
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            // Force rebuild of settings screen
+                            (this as Element).markNeedsBuild();
+                          }
+                        }
+                      : null,
+                  child: Text(loc.save),
+                ),
+              ],
+            );
+          }
+        );
+      },
     );
   }
 }

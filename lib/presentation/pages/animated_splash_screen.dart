@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main.dart';
 import 'main_navigation_screen.dart';
 import 'onboarding_screen.dart';
+import 'lock_screen.dart';
+import '../providers/core_providers.dart';
+import '../providers/folder_provider.dart';
+import '../providers/document_provider.dart';
 
-class AnimatedSplashScreen extends StatefulWidget {
+class AnimatedSplashScreen extends ConsumerStatefulWidget {
   const AnimatedSplashScreen({super.key});
 
   @override
-  State<AnimatedSplashScreen> createState() => _AnimatedSplashScreenState();
+  ConsumerState<AnimatedSplashScreen> createState() => _AnimatedSplashScreenState();
 }
 
-class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
+class _AnimatedSplashScreenState extends ConsumerState<AnimatedSplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -37,12 +42,15 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
 
     _controller.forward().then((_) {
       // Transition to next screen
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(milliseconds: 500), () async {
         if (!mounted) return;
 
         final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+        final realPin = prefs.getString('realPin');
 
         if (isFirstLaunch) {
+          await ref.read(localDataSourceProvider).initDb('default');
+          if (!mounted) return;
           Navigator.of(context).pushReplacement(
             PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
@@ -54,7 +62,26 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
               transitionDuration: const Duration(milliseconds: 800),
             ),
           );
+        } else if (realPin != null && realPin.isNotEmpty) {
+          // Lock Screen will initialize the DB based on the PIN entered.
+          Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const LockScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+              transitionDuration: const Duration(milliseconds: 800),
+            ),
+          );
         } else {
+          // No lock, init default DB
+          await ref.read(localDataSourceProvider).initDb('default');
+          ref.read(folderNotifierProvider.notifier).loadFolders();
+          ref.read(documentNotifierProvider.notifier).loadDocuments();
+          
+          if (!mounted) return;
           Navigator.of(context).pushReplacement(
             PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>

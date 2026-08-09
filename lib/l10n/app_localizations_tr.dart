@@ -227,4 +227,33 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get heicConverterDesc =>
       'Apple HEIC fotoğraflarınızı kayıpsız bir şekilde evrensel JPG formatına dönüştürün.';
+
+  @override
+  String get security => 'Güvenlik & Kasa';
+
+  @override
+  String get appLockPin => 'Uygulama Kilidi (PIN)';
+
+  @override
+  String get appLockPinDesc =>
+      'Uygulamaya girerken 4 haneli bir şifre isteyin.';
+
+  @override
+  String get fakePin => 'Gizli Tuzak Kasa (Fake PIN)';
+
+  @override
+  String get fakePinDesc =>
+      'Farklı bir şifreyle bomboş bir sahte kasanın açılmasını sağlayın.';
+
+  @override
+  String get appLockPinSetupDesc => '4 haneli gerçek PIN kodunuzu belirleyin.';
+
+  @override
+  String get fakePinSetupDesc => '4 haneli tuzak PIN kodunuzu belirleyin.';
+
+  @override
+  String get cancel => 'İptal';
+
+  @override
+  String get save => 'Kaydet';
 }

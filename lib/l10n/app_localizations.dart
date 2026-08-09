@@ -505,6 +505,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Convert Apple HEIC photos to universal JPG format without quality loss.'**
   String get heicConverterDesc;
+
+  /// No description provided for @security.
+  ///
+  /// In en, this message translates to:
+  /// **'Security & Vault'**
+  String get security;
+
+  /// No description provided for @appLockPin.
+  ///
+  /// In en, this message translates to:
+  /// **'App Lock (PIN)'**
+  String get appLockPin;
+
+  /// No description provided for @appLockPinDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Require a PIN when opening the app.'**
+  String get appLockPinDesc;
+
+  /// No description provided for @fakePin.
+  ///
+  /// In en, this message translates to:
+  /// **'Decoy Vault (Fake PIN)'**
+  String get fakePin;
+
+  /// No description provided for @fakePinDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a secondary PIN that opens an empty vault.'**
+  String get fakePinDesc;
+
+  /// No description provided for @appLockPinSetupDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your 4-digit real PIN code.'**
+  String get appLockPinSetupDesc;
+
+  /// No description provided for @fakePinSetupDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your 4-digit decoy PIN code.'**
+  String get fakePinSetupDesc;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
 }
 
 class _AppLocalizationsDelegate

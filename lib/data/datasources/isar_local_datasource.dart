@@ -9,23 +9,25 @@ import '../models/batch_item_model.dart';
 class IsarLocalDataSource {
   late Future<Isar> db;
 
-  IsarLocalDataSource() {
-    db = _initDb();
-  }
+  Future<Isar> initDb([String instanceName = 'default']) async {
+    final isarInstance = Isar.getInstance(instanceName);
+    if (isarInstance != null) {
+      db = Future.value(isarInstance);
+      return isarInstance;
+    }
 
-  Future<Isar> _initDb() async {
-    if (Isar.instanceNames.isEmpty) {
-      final dir = await getApplicationDocumentsDirectory();
-      return await Isar.open(
-        [
+    final dir = await getApplicationDocumentsDirectory();
+    final newDb = await Isar.open(
+      [
           FolderModelSchema,
           DocumentModelSchema,
           PageModelSchema,
           BatchItemModelSchema,
-        ],
-        directory: dir.path,
-      );
-    }
-    return Future.value(Isar.getInstance());
+      ],
+      directory: dir.path,
+      name: instanceName,
+    );
+    db = Future.value(newDb);
+    return newDb;
   }
 }

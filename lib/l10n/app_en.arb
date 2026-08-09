@@ -67,5 +67,14 @@
   "summary": "Summary",
   "copy": "Copy",
   "heicConverter": "HEIC to JPG",
-  "heicConverterDesc": "Convert Apple HEIC photos to universal JPG format without quality loss."
+  "heicConverterDesc": "Convert Apple HEIC photos to universal JPG format without quality loss.",
+  "security": "Security & Vault",
+  "appLockPin": "App Lock (PIN)",
+  "appLockPinDesc": "Require a PIN when opening the app.",
+  "fakePin": "Decoy Vault (Fake PIN)",
+  "fakePinDesc": "Set a secondary PIN that opens an empty vault.",
+  "appLockPinSetupDesc": "Set your 4-digit real PIN code.",
+  "fakePinSetupDesc": "Set your 4-digit decoy PIN code.",
+  "cancel": "Cancel",
+  "save": "Save"
 }

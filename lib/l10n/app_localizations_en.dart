@@ -223,4 +223,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get heicConverterDesc =>
       'Convert Apple HEIC photos to universal JPG format without quality loss.';
+
+  @override
+  String get security => 'Security & Vault';
+
+  @override
+  String get appLockPin => 'App Lock (PIN)';
+
+  @override
+  String get appLockPinDesc => 'Require a PIN when opening the app.';
+
+  @override
+  String get fakePin => 'Decoy Vault (Fake PIN)';
+
+  @override
+  String get fakePinDesc => 'Set a secondary PIN that opens an empty vault.';
+
+  @override
+  String get appLockPinSetupDesc => 'Set your 4-digit real PIN code.';
+
+  @override
+  String get fakePinSetupDesc => 'Set your 4-digit decoy PIN code.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get save => 'Save';
 }
