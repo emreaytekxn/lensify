@@ -65,5 +65,7 @@
   "smartDictaphoneDesc": "Record high-quality audio and convert it to text instantly.",
   "aiSummarize": "✨ AI Summarize",
   "summary": "Summary",
-  "copy": "Copy"
+  "copy": "Copy",
+  "heicConverter": "HEIC to JPG",
+  "heicConverterDesc": "Convert Apple HEIC photos to universal JPG format without quality loss."
 }

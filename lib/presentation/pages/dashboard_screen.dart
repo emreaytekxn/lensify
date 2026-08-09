@@ -19,7 +19,11 @@ import 'viewers/pdf_viewer_screen.dart';
 import 'viewers/audio_player_screen.dart';
 import 'viewers/image_viewer_screen.dart';
 import 'viewers/text_viewer_screen.dart';
+import 'dart:io';
 import '../../core/utils/document_import_service.dart';
+import '../../core/utils/archive_service.dart';
+import '../../domain/entities/document.dart';
+import 'package:path/path.dart' as p;
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -97,7 +101,7 @@ class DashboardScreen extends ConsumerWidget {
                     .read(documentNotifierProvider.notifier)
                     .toggleDocumentSelection(doc.id!);
               } else {
-                _navigateToViewer(context, doc);
+                _navigateToViewer(context, ref, doc);
               }
             },
             onLongPress: () {
@@ -127,7 +131,7 @@ class DashboardScreen extends ConsumerWidget {
                     .read(documentNotifierProvider.notifier)
                     .toggleDocumentSelection(doc.id!);
               } else {
-                _navigateToViewer(context, doc);
+                _navigateToViewer(context, ref, doc);
               }
             },
             onLongPress: () {
@@ -142,7 +146,7 @@ class DashboardScreen extends ConsumerWidget {
     }
   }
 
-  void _navigateToViewer(BuildContext context, document) {
+  void _navigateToViewer(BuildContext context, WidgetRef ref, document) {
     if (document.pdfPath != null) {
       if (document.fileType == 'audio') {
         Navigator.of(context).push(
@@ -184,6 +188,9 @@ class DashboardScreen extends ConsumerWidget {
           ),
         );
         return;
+      } else if (document.fileType == 'archive') {
+        _unzipDocument(context, ref, document);
+        return;
       }
     }
     
@@ -193,6 +200,56 @@ class DashboardScreen extends ConsumerWidget {
         builder: (_) => DocumentEditorScreen(document: document),
       ),
     );
+  }
+
+  Future<void> _unzipDocument(BuildContext context, WidgetRef ref, Document document) async {
+    LoadingOverlay.show(context, message: 'Arşivden çıkarılıyor...');
+    try {
+      final extractedPaths = await ArchiveService.unzipFile(document.pdfPath!);
+      if (extractedPaths.isNotEmpty) {
+        final folderId = document.folderId;
+        final repo = ref.read(scannerRepositoryProvider);
+        
+        for (var path in extractedPaths) {
+          final file = File(path);
+          if (await file.exists()) {
+            final ext = p.extension(path).toLowerCase();
+            String fileType = 'image'; // default
+            if (ext == '.pdf') fileType = 'pdf';
+            if (ext == '.txt') fileType = 'text';
+            if (ext == '.wav' || ext == '.mp3' || ext == '.m4a') fileType = 'audio';
+
+            final newDoc = Document(
+              title: p.basename(path),
+              folderId: folderId,
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+              pageCount: 0,
+              pdfPath: path,
+              isFavorite: false,
+              fileSize: await file.length(),
+              fileType: fileType,
+            );
+            await repo.createDocument(newDoc);
+          }
+        }
+        await ref.read(documentNotifierProvider.notifier).loadDocuments();
+        
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('${extractedPaths.length} dosya çıkarıldı.')),
+          );
+        }
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Arşiv boş veya bozuk.')),
+          );
+        }
+      }
+    } finally {
+      if (context.mounted) LoadingOverlay.hide(context);
+    }
   }
 
   void _showAddOptions(BuildContext context, WidgetRef ref) {

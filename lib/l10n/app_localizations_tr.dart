@@ -220,4 +220,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get copy => 'Kopyala';
+
+  @override
+  String get heicConverter => 'HEIC to JPG';
+
+  @override
+  String get heicConverterDesc =>
+      'Apple HEIC fotoğraflarınızı kayıpsız bir şekilde evrensel JPG formatına dönüştürün.';
 }

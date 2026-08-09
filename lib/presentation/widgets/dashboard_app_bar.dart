@@ -1,10 +1,17 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/document_provider.dart';
+import '../providers/document_state.dart';
 import '../providers/settings_provider.dart';
 import '../providers/folder_provider.dart';
+import '../providers/folder_provider.dart';
+import '../providers/core_providers.dart';
 import '../pages/settings_screen.dart';
+import '../widgets/loading_overlay.dart';
+import '../../core/utils/archive_service.dart';
+import '../../domain/entities/document.dart';
 import '../../l10n/app_localizations.dart';
 
 class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -39,6 +46,14 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 ? null
                 : () {
                     _showMoveToFolderDialog(context, ref);
+                  },
+          ),
+          IconButton(
+            icon: const Icon(CupertinoIcons.archivebox),
+            onPressed: docState.selectedDocumentIds.isEmpty
+                ? null
+                : () {
+                    _zipSelectedDocuments(context, ref, docState);
                   },
           ),
           IconButton(
@@ -168,5 +183,53 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
         );
       },
     );
+  }
+
+  Future<void> _zipSelectedDocuments(BuildContext context, WidgetRef ref, DocumentState docState) async {
+    final docs = docState.filteredDocuments
+        .where((d) => docState.selectedDocumentIds.contains(d.id))
+        .toList();
+    if (docs.isEmpty) return;
+
+    LoadingOverlay.show(context, message: 'Arşivleniyor...');
+    
+    try {
+      final zipPath = await ArchiveService.zipDocuments(docs, 'Archive_${DateTime.now().millisecondsSinceEpoch}');
+      if (zipPath != null) {
+        final repo = ref.read(scannerRepositoryProvider);
+        final file = File(zipPath);
+        final folderId = ref.read(folderNotifierProvider).activeFolderId;
+
+        final archiveDoc = Document(
+          title: 'Arşiv - ${docs.length} Dosya',
+          folderId: folderId,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          pageCount: 0,
+          pdfPath: zipPath,
+          isFavorite: false,
+          fileSize: await file.length(),
+          fileType: 'archive',
+        );
+
+        await repo.createDocument(archiveDoc);
+        await ref.read(documentNotifierProvider.notifier).loadDocuments();
+        ref.read(documentNotifierProvider.notifier).clearSelection();
+        
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Dosyalar arşivlendi!')),
+          );
+        }
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Arşivleme başarısız oldu.')),
+          );
+        }
+      }
+    } finally {
+      if (context.mounted) LoadingOverlay.hide(context);
+    }
   }
 }

@@ -65,5 +65,7 @@
   "smartDictaphoneDesc": "Yüksek kaliteli ses kaydedin ve saniyeler içinde metne dönüştürün.",
   "aiSummarize": "✨ Yapay Zeka ile Özetle",
   "summary": "Özet",
-  "copy": "Kopyala"
+  "copy": "Kopyala",
+  "heicConverter": "HEIC to JPG",
+  "heicConverterDesc": "Apple HEIC fotoğraflarınızı kayıpsız bir şekilde evrensel JPG formatına dönüştürün."
 }

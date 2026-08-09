@@ -493,6 +493,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copy'**
   String get copy;
+
+  /// No description provided for @heicConverter.
+  ///
+  /// In en, this message translates to:
+  /// **'HEIC to JPG'**
+  String get heicConverter;
+
+  /// No description provided for @heicConverterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert Apple HEIC photos to universal JPG format without quality loss.'**
+  String get heicConverterDesc;
 }
 
 class _AppLocalizationsDelegate

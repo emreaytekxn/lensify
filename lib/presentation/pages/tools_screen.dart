@@ -14,6 +14,7 @@ import '../providers/folder_provider.dart';
 import '../widgets/loading_overlay.dart';
 import '../../core/utils/format_conversion_service.dart';
 import 'tools/voice_recorder_screen.dart';
+import 'tools/heic_converter_screen.dart';
 import 'media_converter_screen.dart';
 import 'transcription_screen.dart';
 import 'batch_conversion_screen.dart';
@@ -217,6 +218,19 @@ class ToolsScreen extends ConsumerWidget {
                   context,
                   MaterialPageRoute(
                       builder: (_) => const PdfCompressScreen()));
+            },
+          ),
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.photo_on_rectangle,
+            color: Colors.pink,
+            title: loc.heicConverter,
+            description: loc.heicConverterDesc,
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const HeicConverterScreen()));
             },
           ),
         ],
