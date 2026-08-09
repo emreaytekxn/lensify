@@ -43,9 +43,10 @@ class _AnimatedSplashScreenState extends ConsumerState<AnimatedSplashScreen>
     );
 
     _controller.forward().then((_) {
-      // Transition to next screen
-      Future.delayed(const Duration(milliseconds: 500), () async {
+      Future.delayed(const Duration(milliseconds: 600), () {
         if (!mounted) return;
+        _controller.reverse().then((_) async {
+          if (!mounted) return;
 
         final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
         final realPin = prefs.getString('realPin');
@@ -92,10 +93,11 @@ class _AnimatedSplashScreenState extends ConsumerState<AnimatedSplashScreen>
                   (context, animation, secondaryAnimation, child) {
                 return FadeTransition(opacity: animation, child: child);
               },
-              transitionDuration: const Duration(milliseconds: 800),
+              transitionDuration: const Duration(milliseconds: 1200),
             ),
           );
         }
+        });
       });
     });
   }

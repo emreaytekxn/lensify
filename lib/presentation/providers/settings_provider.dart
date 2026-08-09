@@ -12,6 +12,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void _loadSettings() {
     final themeIndex = prefs.getInt('themeMode');
     final langCode = prefs.getString('languageCode');
+    final showArchives = prefs.getBool('showArchivesInHome') ?? true;
 
     ThemeMode savedTheme = ThemeMode.system;
     if (themeIndex != null) {
@@ -23,7 +24,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       savedLocale = Locale(langCode);
     }
 
-    state = state.copyWith(themeMode: savedTheme, locale: savedLocale);
+    state = state.copyWith(
+      themeMode: savedTheme, 
+      locale: savedLocale,
+      showArchivesInHome: showArchives,
+    );
   }
 
   void toggleViewMode() {
@@ -54,6 +59,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void toggleBiometricsOnStartup() {
     state = state.copyWith(
         requireBiometricsOnStartup: !state.requireBiometricsOnStartup);
+  }
+
+  void toggleShowArchivesInHome() {
+    final newValue = !state.showArchivesInHome;
+    prefs.setBool('showArchivesInHome', newValue);
+    state = state.copyWith(showArchivesInHome: newValue);
   }
 }
 

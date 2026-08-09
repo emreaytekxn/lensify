@@ -12,6 +12,7 @@ import '../widgets/loading_overlay.dart';
 import '../../core/utils/archive_service.dart';
 import '../../domain/entities/document.dart';
 import '../../l10n/app_localizations.dart';
+import '../widgets/ux_feedback.dart';
 
 class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const DashboardAppBar({super.key});
@@ -36,7 +37,11 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
             onPressed: docState.selectedDocumentIds.isEmpty
                 ? null
                 : () {
-                    ref.read(documentNotifierProvider.notifier).toggleFavoriteSelectedDocuments();
+                    ref.read(documentNotifierProvider.notifier).toggleFavoriteSelectedDocuments().then((_) {
+                      if (context.mounted) {
+                        UXFeedback.showStar(context, 'Favori Durumu Değişti');
+                      }
+                    });
                   },
           ),
           IconButton(
@@ -146,7 +151,11 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 onTap: () {
                   ref
                       .read(documentNotifierProvider.notifier)
-                      .moveSelectedDocuments(null);
+                      .moveSelectedDocuments(null).then((_) {
+                        if (context.mounted) {
+                          UXFeedback.showSuccess(context, 'Klasöre Taşındı');
+                        }
+                      });
                   Navigator.pop(context);
                 },
               ),
@@ -170,7 +179,11 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
                         onTap: () {
                           ref
                               .read(documentNotifierProvider.notifier)
-                              .moveSelectedDocuments(folder.id);
+                              .moveSelectedDocuments(folder.id).then((_) {
+                                if (context.mounted) {
+                                  UXFeedback.showSuccess(context, 'Klasöre Taşındı');
+                                }
+                              });
                           Navigator.pop(context);
                         },
                       );

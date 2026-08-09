@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/document_provider.dart';
 import '../providers/document_state.dart';
+import '../providers/settings_provider.dart';
 
 class SmartFolderListView extends ConsumerWidget {
   const SmartFolderListView({super.key});
@@ -23,6 +24,11 @@ class SmartFolderListView extends ConsumerWidget {
       {'type': SmartFolderType.audio, 'icon': Icons.audiotrack, 'label': isEn ? 'Audios' : 'Sesler', 'color': Colors.purple},
       {'type': SmartFolderType.text, 'icon': Icons.description, 'label': isEn ? 'Texts' : 'Metinler', 'color': Colors.teal},
     ];
+
+    final showArchives = ref.watch(settingsNotifierProvider).showArchivesInHome;
+    if (showArchives) {
+      folders.add({'type': SmartFolderType.archive, 'icon': Icons.archive, 'label': isEn ? 'Archives' : 'Arşivlerim', 'color': Colors.indigo});
+    }
 
     return SizedBox(
       height: 48,

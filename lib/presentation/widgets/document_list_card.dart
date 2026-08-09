@@ -99,6 +99,12 @@ class DocumentListCard extends ConsumerWidget {
                                 child: Image.file(
                                   File(path),
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(
+                                      CupertinoIcons.doc_richtext,
+                                      color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+                                    );
+                                  },
                                 ),
                               );
                             }

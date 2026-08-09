@@ -8,7 +8,8 @@ enum SmartFolderType {
   pdf,
   image,
   audio,
-  text
+  text,
+  archive
 }
 
 enum SortType {

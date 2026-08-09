@@ -123,6 +123,15 @@ class SettingsScreen extends ConsumerWidget {
               },
             ),
           ),
+          SwitchListTile(
+            title: const Text('Arşivleri Göster'),
+            subtitle: const Text('Ana sayfada Arşivlenenler klasörünü gösterir'),
+            value: settingsState.showArchivesInHome,
+            secondary: const Icon(CupertinoIcons.archivebox),
+            onChanged: (val) {
+              ref.read(settingsNotifierProvider.notifier).toggleShowArchivesInHome();
+            },
+          ),
           const Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

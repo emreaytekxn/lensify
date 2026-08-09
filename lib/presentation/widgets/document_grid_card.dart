@@ -79,6 +79,15 @@ class DocumentGridCard extends ConsumerWidget {
                                     child: Image.file(
                                       File(path),
                                       fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Center(
+                                          child: Icon(
+                                            CupertinoIcons.doc_richtext,
+                                            size: 40,
+                                            color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   );
                                 }

@@ -13,6 +13,7 @@ class LoadingOverlay {
   }) {
     showDialog(
       context: context,
+      useRootNavigator: true,
       barrierDismissible: false,
       barrierColor: Colors.black.withValues(alpha: 0.6),
       builder: (context) {
@@ -27,8 +28,8 @@ class LoadingOverlay {
   }
 
   static void hide(BuildContext context) {
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+    if (Navigator.of(context, rootNavigator: true).canPop()) {
+      Navigator.of(context, rootNavigator: true).pop();
     }
   }
 }

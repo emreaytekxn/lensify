@@ -180,3 +180,10 @@ yerine, **sadece ilk açılışta**:
 
 Her adımda: küçük, test edilebilir parçalar halinde ilerle, her tamamlanan
 parçadan sonra Bölüm 0'daki commit+push kuralını uygula.
+
+## 7. Sonuç Mesajı Formatı
+Her yaptığın değişiklik ve geliştirmeden sonra, kullanıcıya projeyi çalıştırıp test edebilmesi için terminalde yazması gereken komutları mutlaka hatırlat. Örnek:
+```bash
+cd /Users/aytek/Desktop/SecureScanProject
+flutter run
+```

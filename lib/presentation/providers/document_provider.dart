@@ -87,6 +87,9 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
       case SmartFolderType.text:
         result = result.where((d) => d.fileType == 'text').toList();
         break;
+      case SmartFolderType.archive:
+        result = result.where((d) => d.fileType == 'archive').toList();
+        break;
       case SmartFolderType.none:
         break;
     }

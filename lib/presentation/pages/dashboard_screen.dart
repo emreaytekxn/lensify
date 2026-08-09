@@ -258,7 +258,7 @@ class DashboardScreen extends ConsumerWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) {
+      builder: (sheetContext) {
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -274,7 +274,7 @@ class DashboardScreen extends ConsumerWidget {
                 leading: const Icon(CupertinoIcons.camera, color: Colors.blue),
                 title: const Text('Kamera ile Tara'),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(sheetContext);
                   Navigator.of(context).push(
                     MaterialPageRoute(
                         builder: (_) => const ScannerCameraScreen()),
@@ -285,7 +285,7 @@ class DashboardScreen extends ConsumerWidget {
                 leading: const Icon(CupertinoIcons.photo, color: Colors.purple),
                 title: const Text('Galeriden Resim Aktar'),
                 onTap: () async {
-                  Navigator.pop(context);
+                  Navigator.pop(sheetContext);
                   LoadingOverlay.show(context, message: 'İçe aktarılıyor...');
                   try {
                     final folderId =
@@ -305,7 +305,7 @@ class DashboardScreen extends ConsumerWidget {
                 title: const Text('PDF İçe Aktar'),
                 subtitle: const Text('PDF sayfaları resme dönüştürülür'),
                 onTap: () async {
-                  Navigator.pop(context);
+                  Navigator.pop(sheetContext);
                   LoadingOverlay.show(context,
                       message: 'PDF dönüştürülüyor...');
                   try {
