@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../domain/entities/batch_item.dart';
 import '../providers/batch_conversion_provider.dart';
+import 'batch_save_result_screen.dart';
 
 class BatchConversionScreen extends ConsumerStatefulWidget {
   const BatchConversionScreen({super.key});
@@ -106,10 +107,43 @@ class _BatchConversionScreenState extends ConsumerState<BatchConversionScreen> {
               },
             ),
       floatingActionButton: items.isNotEmpty
-          ? FloatingActionButton.extended(
-              onPressed: _pickFiles,
-              icon: const Icon(CupertinoIcons.add),
-              label: const Text('Daha Fazla Ekle'),
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (items.any((e) => e.status == BatchItemStatus.paused || e.status == BatchItemStatus.failed))
+                  FloatingActionButton.extended(
+                    heroTag: 'startAll',
+                    onPressed: () {
+                      ref.read(batchConversionProvider.notifier).startAll();
+                    },
+                    icon: const Icon(CupertinoIcons.play_fill),
+                    label: const Text('Tümünü Başlat'),
+                    backgroundColor: Colors.green,
+                  ),
+                if (items.every((e) => e.status == BatchItemStatus.completed))
+                  FloatingActionButton.extended(
+                    heroTag: 'saveAll',
+                    onPressed: () {
+                      // Navigate to BatchSaveResultScreen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const BatchSaveResultScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(CupertinoIcons.lock_shield),
+                    label: const Text('Tümünü Kaydet'),
+                    backgroundColor: Colors.blueAccent,
+                  ),
+                const SizedBox(width: 16),
+                FloatingActionButton.extended(
+                  heroTag: 'addMore',
+                  onPressed: _pickFiles,
+                  icon: const Icon(CupertinoIcons.add),
+                  label: const Text('Ekle'),
+                ),
+              ],
             )
           : null,
     );

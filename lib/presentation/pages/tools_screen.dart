@@ -27,6 +27,7 @@ import '../../l10n/app_localizations.dart';
 import '../widgets/ux_feedback.dart';
 import 'tools/zip_creator_screen.dart';
 import 'tools/jpeg_to_gif_screen.dart';
+import 'tools/mp4_to_gif_screen.dart';
 
 class ToolsScreen extends ConsumerWidget {
   const ToolsScreen({super.key});
@@ -163,7 +164,7 @@ class ToolsScreen extends ConsumerWidget {
           _buildToolCard(
             context,
             icon: CupertinoIcons.sparkles,
-            color: Colors.purpleAccent,
+            color: Colors.purple,
             title: 'JPEG to GIF',
             description: 'Fotoğraflarınızı hareketli GIF animasyonlarına dönüştürün.',
             onTap: () {
@@ -171,6 +172,20 @@ class ToolsScreen extends ConsumerWidget {
                   context,
                   MaterialPageRoute(
                       builder: (_) => const JpegToGifScreen()));
+            },
+          ),
+          const SizedBox(height: 16),
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.film,
+            color: Colors.deepPurple,
+            title: 'MP4 to GIF',
+            description: 'Videolarınızı hareketli GIF animasyonlarına dönüştürün.',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const Mp4ToGifScreen()));
             },
           ),
           _buildToolCard(

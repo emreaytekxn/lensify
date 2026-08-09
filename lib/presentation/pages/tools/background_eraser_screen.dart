@@ -21,7 +21,10 @@ class _BackgroundEraserScreenState extends ConsumerState<BackgroundEraserScreen>
   bool _isProcessing = false;
   int _activeToolIndex = 0; // 0: Fırça, 1: Arka Plan, 2: Filtre
   bool _isEraserMode = true;
+  bool _isEraserMode = true;
   double _brushSize = 20.0;
+  Color _selectedBgColor = Colors.transparent;
+  String _selectedFilter = 'Orijinal';
 
   Future<void> _pickImage() async {
     try {
@@ -143,7 +146,15 @@ class _BackgroundEraserScreenState extends ConsumerState<BackgroundEraserScreen>
                         : _processedImage != null
                             ? InteractiveViewer(
                                 maxScale: 5.0,
-                                child: Image.file(_processedImage!),
+                                child: Container(
+                                  color: _selectedBgColor,
+                                  child: _selectedFilter == 'Orijinal' 
+                                    ? Image.file(_processedImage!)
+                                    : ColorFiltered(
+                                        colorFilter: _getFilterMatrix(),
+                                        child: Image.file(_processedImage!),
+                                      ),
+                                ),
                               )
                             : _selectedImage != null
                                 ? Image.file(_selectedImage!)
@@ -247,7 +258,7 @@ class _BackgroundEraserScreenState extends ConsumerState<BackgroundEraserScreen>
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                _buildBgColorBubble(Colors.transparent, isSelected: true),
+                                _buildBgColorBubble(Colors.transparent),
                                 _buildBgColorBubble(Colors.white),
                                 _buildBgColorBubble(Colors.black),
                                 _buildBgColorBubble(Colors.red),
@@ -295,41 +306,85 @@ class _BackgroundEraserScreenState extends ConsumerState<BackgroundEraserScreen>
     );
   }
 
-  Widget _buildBgColorBubble(Color color, {bool isSelected = false}) {
-    return Container(
-      margin: const EdgeInsets.only(right: 12),
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.grey, width: isSelected ? 3 : 1),
+  Widget _buildBgColorBubble(Color color) {
+    final isSelected = _selectedBgColor == color;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedBgColor = color),
+      child: Container(
+        margin: const EdgeInsets.only(right: 12),
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.grey, width: isSelected ? 3 : 1),
+        ),
+        child: color == Colors.transparent
+            ? const Icon(CupertinoIcons.nosign, size: 20, color: Colors.grey)
+            : null,
       ),
-      child: color == Colors.transparent
-          ? const Icon(CupertinoIcons.nosign, size: 20, color: Colors.grey)
-          : null,
     );
   }
 
   Widget _buildFilterBubble(String name) {
-    return Container(
-      margin: const EdgeInsets.only(right: 12),
-      child: Column(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(12),
+    final isSelected = _selectedFilter == name;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedFilter = name),
+      child: Container(
+        margin: const EdgeInsets.only(right: 12),
+        child: Column(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(12),
+                border: isSelected ? Border.all(color: Theme.of(context).primaryColor, width: 3) : null,
+              ),
+              child: const Icon(CupertinoIcons.photo, color: Colors.grey),
             ),
-            child: const Icon(CupertinoIcons.photo, color: Colors.grey),
-          ),
-          const SizedBox(height: 4),
-          Text(name, style: const TextStyle(fontSize: 10)),
-        ],
+            const SizedBox(height: 4),
+            Text(name, style: TextStyle(fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+          ],
+        ),
       ),
     );
+  }
+
+  ColorFilter _getFilterMatrix() {
+    switch (_selectedFilter) {
+      case 'Siyah Beyaz':
+        return const ColorFilter.matrix([
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0,      0,      0,      1, 0,
+        ]);
+      case 'Sıcak':
+        return const ColorFilter.matrix([
+          1.2, 0,   0,   0, 0,
+          0,   1.0, 0,   0, 0,
+          0,   0,   0.8, 0, 0,
+          0,   0,   0,   1, 0,
+        ]);
+      case 'Soğuk':
+        return const ColorFilter.matrix([
+          0.8, 0,   0,   0, 0,
+          0,   1.0, 0,   0, 0,
+          0,   0,   1.2, 0, 0,
+          0,   0,   0,   1, 0,
+        ]);
+      case 'Vintage':
+        return const ColorFilter.matrix([
+          0.9, 0.5, 0.1, 0, 0,
+          0.3, 0.8, 0.1, 0, 0,
+          0.2, 0.3, 0.5, 0, 0,
+          0,   0,   0,   1, 0,
+        ]);
+      default:
+        return const ColorFilter.mode(Colors.transparent, BlendMode.multiply);
+    }
   }
 
   Widget _buildBottomBarItem({required IconData icon, required String label, required int index}) {

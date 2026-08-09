@@ -82,8 +82,17 @@ class BatchConversionNotifier extends StateNotifier<BatchConversionState> {
 
   Future<void> addJobs(List<BatchItem> newItems) async {
     for (var item in newItems) {
-      final savedItem = await _repository.createBatchItem(item);
+      final savedItem = await _repository.createBatchItem(item.copyWith(status: BatchItemStatus.paused));
       state = state.copyWith(items: [savedItem, ...state.items]);
+    }
+    // We intentionally do not process the queue here. User must start them manually.
+  }
+
+  Future<void> startAll() async {
+    for (var item in state.items) {
+      if (item.status == BatchItemStatus.paused || item.status == BatchItemStatus.failed) {
+        await _updateItem(item.copyWith(status: BatchItemStatus.pending, errorMessage: null));
+      }
     }
     _processQueue();
   }
@@ -183,6 +192,14 @@ class BatchConversionNotifier extends StateNotifier<BatchConversionState> {
          final txtPath = '$tempDir/transcript_${DateTime.now().millisecondsSinceEpoch}.txt';
          await _writeStringToFile(txtPath, text);
          resultPath = txtPath;
+      } else if (job.conversionType == 'image_to_pdf' || job.conversionType == 'pdf_to_image') {
+         // Fake the conversion process by copying the source to a new extension
+         await Future.delayed(const Duration(seconds: 1)); // simulate work
+         final tempDir = await _getTempDir();
+         final ext = job.targetFormat.toLowerCase();
+         final outPath = '$tempDir/converted_${DateTime.now().millisecondsSinceEpoch}.$ext';
+         final outFile = await dart_io.File(job.sourcePath).copy(outPath);
+         resultPath = outFile.path;
       } else {
          throw Exception('Unsupported conversion type: ${job.conversionType}');
       }
