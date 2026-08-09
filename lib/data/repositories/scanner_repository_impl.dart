@@ -49,6 +49,9 @@ class ScannerRepositoryImpl implements ScannerRepository {
       pageCount: model.pageCount,
       pdfPath: model.pdfPath,
       tags: model.tags,
+      isFavorite: model.isFavorite,
+      fileSize: model.fileSize,
+      fileType: model.fileType,
     );
   }
 
@@ -60,7 +63,10 @@ class ScannerRepositoryImpl implements ScannerRepository {
       ..updatedAt = entity.updatedAt
       ..pageCount = entity.pageCount
       ..pdfPath = entity.pdfPath
-      ..tags = entity.tags;
+      ..tags = entity.tags
+      ..isFavorite = entity.isFavorite
+      ..fileSize = entity.fileSize
+      ..fileType = entity.fileType;
     if (entity.id != null) {
       model.id = entity.id!;
     }

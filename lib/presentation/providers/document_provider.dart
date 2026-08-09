@@ -44,25 +44,83 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
     }
   }
 
-  // --- Search ---
+  // --- Search, Filter & Sort ---
   void setSearchQuery(String query) {
     state = state.copyWith(searchQuery: query);
     _applySearchFilter();
   }
 
+  void setSmartFolder(SmartFolderType type) {
+    state = state.copyWith(activeSmartFolder: type);
+    _applySearchFilter();
+  }
+
+  void setSortType(SortType type) {
+    state = state.copyWith(activeSortType: type);
+    _applySearchFilter();
+  }
+
   void _applySearchFilter() {
-    if (state.searchQuery.isEmpty) {
-      state = state.copyWith(filteredDocuments: state.allDocuments);
-    } else {
+    List<Document> result = state.allDocuments;
+
+    // 1. Apply Smart Folder Filter
+    switch (state.activeSmartFolder) {
+      case SmartFolderType.recent:
+        final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
+        result = result.where((d) => d.createdAt.isAfter(sevenDaysAgo)).toList();
+        break;
+      case SmartFolderType.largeFiles:
+        result = result.where((d) => d.fileSize > 20 * 1024 * 1024).toList();
+        break;
+      case SmartFolderType.favorites:
+        result = result.where((d) => d.isFavorite).toList();
+        break;
+      case SmartFolderType.pdf:
+        result = result.where((d) => d.fileType == 'pdf').toList();
+        break;
+      case SmartFolderType.image:
+        result = result.where((d) => d.fileType == 'image').toList();
+        break;
+      case SmartFolderType.audio:
+        result = result.where((d) => d.fileType == 'audio').toList();
+        break;
+      case SmartFolderType.text:
+        result = result.where((d) => d.fileType == 'text').toList();
+        break;
+      case SmartFolderType.none:
+        break;
+    }
+
+    // 2. Apply Text Search
+    if (state.searchQuery.isNotEmpty) {
       final lowerQuery = state.searchQuery.toLowerCase();
-      final filtered = state.allDocuments.where((doc) {
+      result = result.where((doc) {
         final matchesTitle = doc.title.toLowerCase().contains(lowerQuery);
-        final matchesTags =
-            doc.tags.any((tag) => tag.toLowerCase().contains(lowerQuery));
+        final matchesTags = doc.tags.any((tag) => tag.toLowerCase().contains(lowerQuery));
         return matchesTitle || matchesTags;
       }).toList();
-      state = state.copyWith(filteredDocuments: filtered);
     }
+
+    // 3. Apply Sort
+    switch (state.activeSortType) {
+      case SortType.dateDesc:
+        result.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        break;
+      case SortType.dateAsc:
+        result.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        break;
+      case SortType.nameAsc:
+        result.sort((a, b) => a.title.compareTo(b.title));
+        break;
+      case SortType.nameDesc:
+        result.sort((a, b) => b.title.compareTo(a.title));
+        break;
+      case SortType.sizeDesc:
+        result.sort((a, b) => b.fileSize.compareTo(a.fileSize));
+        break;
+    }
+
+    state = state.copyWith(filteredDocuments: result);
   }
 
   // --- Document CRUD Operations ---
@@ -147,6 +205,20 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
     }
   }
 
+  Future<void> toggleFavorite(int id) async {
+    try {
+      final doc = state.allDocuments.firstWhere((d) => d.id == id);
+      final updatedDoc = doc.copyWith(
+        isFavorite: !doc.isFavorite,
+        updatedAt: DateTime.now(),
+      );
+      await _repository.updateDocument(updatedDoc);
+      await loadDocuments();
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
   // --- Bulk Selection ---
   void toggleSelectionMode() {
     state = state.copyWith(
@@ -202,14 +274,30 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
 
   Future<void> moveSelectedDocuments(int? newFolderId) async {
     try {
-      state = state.copyWith(isLoading: true);
       for (final id in state.selectedDocumentIds) {
         await _repository.moveDocument(id, newFolderId);
       }
       clearSelection();
       await loadDocuments();
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  Future<void> toggleFavoriteSelectedDocuments() async {
+    try {
+      for (final id in state.selectedDocumentIds) {
+        final doc = state.allDocuments.firstWhere((d) => d.id == id);
+        final updatedDoc = doc.copyWith(
+          isFavorite: !doc.isFavorite,
+          updatedAt: DateTime.now(),
+        );
+        await _repository.updateDocument(updatedDoc);
+      }
+      clearSelection();
+      await loadDocuments();
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
     }
   }
 }

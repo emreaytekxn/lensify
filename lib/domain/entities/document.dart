@@ -7,6 +7,9 @@ class Document {
   final int pageCount;
   final String? pdfPath;
   final List<String> tags;
+  final bool isFavorite;
+  final int fileSize;
+  final String fileType;
 
   Document({
     this.id,
@@ -17,6 +20,9 @@ class Document {
     required this.pageCount,
     this.pdfPath,
     this.tags = const [],
+    this.isFavorite = false,
+    this.fileSize = 0,
+    this.fileType = 'pdf',
   });
 
   Document copyWith({
@@ -28,6 +34,9 @@ class Document {
     int? pageCount,
     String? pdfPath,
     List<String>? tags,
+    bool? isFavorite,
+    int? fileSize,
+    String? fileType,
   }) {
     return Document(
       id: id ?? this.id,
@@ -38,6 +47,9 @@ class Document {
       pageCount: pageCount ?? this.pageCount,
       pdfPath: pdfPath ?? this.pdfPath,
       tags: tags ?? this.tags,
+      isFavorite: isFavorite ?? this.isFavorite,
+      fileSize: fileSize ?? this.fileSize,
+      fileType: fileType ?? this.fileType,
     );
   }
 }

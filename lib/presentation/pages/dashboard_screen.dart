@@ -11,6 +11,7 @@ import '../widgets/document_grid_card.dart';
 import '../widgets/document_list_card.dart';
 import '../widgets/empty_state_view.dart';
 import '../widgets/folder_list_view.dart';
+import '../widgets/smart_folder_list_view.dart';
 import '../widgets/loading_overlay.dart';
 import 'document_editor_screen.dart';
 import 'scanner_camera_screen.dart';
@@ -29,6 +30,9 @@ class DashboardScreen extends ConsumerWidget {
       body: Column(
         children: [
           const SizedBox(height: 12),
+          const SmartFolderListView(),
+          const SizedBox(height: 16),
+          _buildSortHeader(context, ref, docState),
           const FolderListView(),
           const SizedBox(height: 16),
           Expanded(
@@ -214,6 +218,49 @@ class DashboardScreen extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildSortHeader(BuildContext context, WidgetRef ref, DocumentState docState) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Dosyalarınız',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          PopupMenuButton<SortType>(
+            icon: const Icon(CupertinoIcons.sort_down, size: 20),
+            onSelected: (type) {
+              ref.read(documentNotifierProvider.notifier).setSortType(type);
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: SortType.dateDesc,
+                child: Text('En Yeniler'),
+              ),
+              const PopupMenuItem(
+                value: SortType.dateAsc,
+                child: Text('En Eskiler'),
+              ),
+              const PopupMenuItem(
+                value: SortType.sizeDesc,
+                child: Text('Boyuta Göre (Büyük > Küçük)'),
+              ),
+              const PopupMenuItem(
+                value: SortType.nameAsc,
+                child: Text('İsme Göre (A-Z)'),
+              ),
+              const PopupMenuItem(
+                value: SortType.nameDesc,
+                child: Text('İsme Göre (Z-A)'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

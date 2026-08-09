@@ -22,33 +22,48 @@ const DocumentModelSchema = CollectionSchema(
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
-    r'folderId': PropertySchema(
+    r'fileSize': PropertySchema(
       id: 1,
+      name: r'fileSize',
+      type: IsarType.long,
+    ),
+    r'fileType': PropertySchema(
+      id: 2,
+      name: r'fileType',
+      type: IsarType.string,
+    ),
+    r'folderId': PropertySchema(
+      id: 3,
       name: r'folderId',
       type: IsarType.long,
     ),
+    r'isFavorite': PropertySchema(
+      id: 4,
+      name: r'isFavorite',
+      type: IsarType.bool,
+    ),
     r'pageCount': PropertySchema(
-      id: 2,
+      id: 5,
       name: r'pageCount',
       type: IsarType.long,
     ),
     r'pdfPath': PropertySchema(
-      id: 3,
+      id: 6,
       name: r'pdfPath',
       type: IsarType.string,
     ),
     r'tags': PropertySchema(
-      id: 4,
+      id: 7,
       name: r'tags',
       type: IsarType.stringList,
     ),
     r'title': PropertySchema(
-      id: 5,
+      id: 8,
       name: r'title',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 6,
+      id: 9,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -100,6 +115,7 @@ int _documentModelEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.fileType.length * 3;
   {
     final value = object.pdfPath;
     if (value != null) {
@@ -124,12 +140,15 @@ void _documentModelSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDateTime(offsets[0], object.createdAt);
-  writer.writeLong(offsets[1], object.folderId);
-  writer.writeLong(offsets[2], object.pageCount);
-  writer.writeString(offsets[3], object.pdfPath);
-  writer.writeStringList(offsets[4], object.tags);
-  writer.writeString(offsets[5], object.title);
-  writer.writeDateTime(offsets[6], object.updatedAt);
+  writer.writeLong(offsets[1], object.fileSize);
+  writer.writeString(offsets[2], object.fileType);
+  writer.writeLong(offsets[3], object.folderId);
+  writer.writeBool(offsets[4], object.isFavorite);
+  writer.writeLong(offsets[5], object.pageCount);
+  writer.writeString(offsets[6], object.pdfPath);
+  writer.writeStringList(offsets[7], object.tags);
+  writer.writeString(offsets[8], object.title);
+  writer.writeDateTime(offsets[9], object.updatedAt);
 }
 
 DocumentModel _documentModelDeserialize(
@@ -140,13 +159,16 @@ DocumentModel _documentModelDeserialize(
 ) {
   final object = DocumentModel();
   object.createdAt = reader.readDateTime(offsets[0]);
-  object.folderId = reader.readLongOrNull(offsets[1]);
+  object.fileSize = reader.readLong(offsets[1]);
+  object.fileType = reader.readString(offsets[2]);
+  object.folderId = reader.readLongOrNull(offsets[3]);
   object.id = id;
-  object.pageCount = reader.readLong(offsets[2]);
-  object.pdfPath = reader.readStringOrNull(offsets[3]);
-  object.tags = reader.readStringList(offsets[4]) ?? [];
-  object.title = reader.readString(offsets[5]);
-  object.updatedAt = reader.readDateTime(offsets[6]);
+  object.isFavorite = reader.readBool(offsets[4]);
+  object.pageCount = reader.readLong(offsets[5]);
+  object.pdfPath = reader.readStringOrNull(offsets[6]);
+  object.tags = reader.readStringList(offsets[7]) ?? [];
+  object.title = reader.readString(offsets[8]);
+  object.updatedAt = reader.readDateTime(offsets[9]);
   return object;
 }
 
@@ -160,16 +182,22 @@ P _documentModelDeserializeProp<P>(
     case 0:
       return (reader.readDateTime(offset)) as P;
     case 1:
-      return (reader.readLongOrNull(offset)) as P;
-    case 2:
       return (reader.readLong(offset)) as P;
-    case 3:
-      return (reader.readStringOrNull(offset)) as P;
-    case 4:
-      return (reader.readStringList(offset) ?? []) as P;
-    case 5:
+    case 2:
       return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readLongOrNull(offset)) as P;
+    case 4:
+      return (reader.readBool(offset)) as P;
+    case 5:
+      return (reader.readLong(offset)) as P;
     case 6:
+      return (reader.readStringOrNull(offset)) as P;
+    case 7:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 8:
+      return (reader.readString(offset)) as P;
+    case 9:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -597,6 +625,198 @@ extension DocumentModelQueryFilter
   }
 
   QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileSizeEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fileSize',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileSizeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'fileSize',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileSizeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'fileSize',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileSizeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'fileSize',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileTypeEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fileType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileTypeGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'fileType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileTypeLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'fileType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileTypeBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'fileType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileTypeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'fileType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileTypeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'fileType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileTypeContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'fileType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileTypeMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'fileType',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileTypeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fileType',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      fileTypeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'fileType',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
       folderIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -720,6 +940,16 @@ extension DocumentModelQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      isFavoriteEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isFavorite',
+        value: value,
       ));
     });
   }
@@ -1373,6 +1603,32 @@ extension DocumentModelQuerySortBy
     });
   }
 
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> sortByFileSize() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileSize', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy>
+      sortByFileSizeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileSize', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> sortByFileType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy>
+      sortByFileTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileType', Sort.desc);
+    });
+  }
+
   QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> sortByFolderId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'folderId', Sort.asc);
@@ -1383,6 +1639,19 @@ extension DocumentModelQuerySortBy
       sortByFolderIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'folderId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> sortByIsFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy>
+      sortByIsFavoriteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.desc);
     });
   }
 
@@ -1452,6 +1721,32 @@ extension DocumentModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> thenByFileSize() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileSize', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy>
+      thenByFileSizeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileSize', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> thenByFileType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy>
+      thenByFileTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fileType', Sort.desc);
+    });
+  }
+
   QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> thenByFolderId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'folderId', Sort.asc);
@@ -1474,6 +1769,19 @@ extension DocumentModelQuerySortThenBy
   QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> thenByIsFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy>
+      thenByIsFavoriteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.desc);
     });
   }
 
@@ -1536,9 +1844,28 @@ extension DocumentModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<DocumentModel, DocumentModel, QDistinct> distinctByFileSize() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'fileSize');
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QDistinct> distinctByFileType(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'fileType', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<DocumentModel, DocumentModel, QDistinct> distinctByFolderId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'folderId');
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QDistinct> distinctByIsFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isFavorite');
     });
   }
 
@@ -1589,9 +1916,27 @@ extension DocumentModelQueryProperty
     });
   }
 
+  QueryBuilder<DocumentModel, int, QQueryOperations> fileSizeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'fileSize');
+    });
+  }
+
+  QueryBuilder<DocumentModel, String, QQueryOperations> fileTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'fileType');
+    });
+  }
+
   QueryBuilder<DocumentModel, int?, QQueryOperations> folderIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'folderId');
+    });
+  }
+
+  QueryBuilder<DocumentModel, bool, QQueryOperations> isFavoriteProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isFavorite');
     });
   }
 

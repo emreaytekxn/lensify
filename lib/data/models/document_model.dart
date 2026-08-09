@@ -21,4 +21,10 @@ class DocumentModel {
   String? pdfPath;
 
   List<String> tags = [];
+
+  bool isFavorite = false;
+  
+  int fileSize = 0; // bytes
+  
+  String fileType = 'pdf'; // 'pdf', 'image', 'audio', 'text'
 }

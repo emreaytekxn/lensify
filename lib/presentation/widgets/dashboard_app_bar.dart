@@ -26,6 +26,14 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
         title: Text('${docState.selectedDocumentIds.length} ${loc.selected}'),
         actions: [
           IconButton(
+            icon: const Icon(CupertinoIcons.star),
+            onPressed: docState.selectedDocumentIds.isEmpty
+                ? null
+                : () {
+                    ref.read(documentNotifierProvider.notifier).toggleFavoriteSelectedDocuments();
+                  },
+          ),
+          IconButton(
             icon: const Icon(CupertinoIcons.folder_badge_plus),
             onPressed: docState.selectedDocumentIds.isEmpty
                 ? null
