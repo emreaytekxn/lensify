@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/batch_conversion_provider.dart';
 import '../providers/folder_provider.dart';
+import '../providers/core_providers.dart';
 import '../../domain/entities/batch_item.dart';
 import '../../domain/entities/document.dart' as doc_entity;
 import '../../l10n/app_localizations.dart';

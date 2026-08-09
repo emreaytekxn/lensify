@@ -21,7 +21,6 @@ class _BackgroundEraserScreenState extends ConsumerState<BackgroundEraserScreen>
   bool _isProcessing = false;
   int _activeToolIndex = 0; // 0: Fırça, 1: Arka Plan, 2: Filtre
   bool _isEraserMode = true;
-  bool _isEraserMode = true;
   double _brushSize = 20.0;
   Color _selectedBgColor = Colors.transparent;
   String _selectedFilter = 'Orijinal';
