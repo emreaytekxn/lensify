@@ -8,6 +8,8 @@ import '../datasources/isar_local_datasource.dart';
 import '../models/document_model.dart';
 import '../models/folder_model.dart';
 import '../models/page_model.dart';
+import '../models/batch_item_model.dart';
+import '../../domain/entities/batch_item.dart';
 
 class ScannerRepositoryImpl implements ScannerRepository {
   final IsarLocalDataSource dataSource;
@@ -283,6 +285,100 @@ class ScannerRepositoryImpl implements ScannerRepository {
           }
         }
       }
+    });
+  }
+
+  // --- Batch Operations ---
+  BatchItem _mapBatchItemModelToEntity(BatchItemModel model) {
+    return BatchItem(
+      id: model.id,
+      sourcePath: model.sourcePath,
+      sourceFileName: model.sourceFileName,
+      targetFormat: model.targetFormat,
+      conversionType: model.conversionType,
+      status: model.status,
+      progress: model.progress,
+      outputPath: model.outputPath,
+      errorMessage: model.errorMessage,
+      createdAt: model.createdAt,
+      completedAt: model.completedAt,
+    );
+  }
+
+  BatchItemModel _mapBatchItemEntityToModel(BatchItem entity) {
+    final model = BatchItemModel()
+      ..sourcePath = entity.sourcePath
+      ..sourceFileName = entity.sourceFileName
+      ..targetFormat = entity.targetFormat
+      ..conversionType = entity.conversionType
+      ..status = entity.status
+      ..progress = entity.progress
+      ..outputPath = entity.outputPath
+      ..errorMessage = entity.errorMessage
+      ..createdAt = entity.createdAt
+      ..completedAt = entity.completedAt;
+    
+    if (entity.id != null) {
+      model.id = entity.id!;
+    }
+    return model;
+  }
+
+  @override
+  Future<BatchItem> createBatchItem(BatchItem item) async {
+    final isar = await dataSource.db;
+    final model = _mapBatchItemEntityToModel(item);
+    await isar.writeTxn(() async {
+      await isar.batchItemModels.put(model);
+    });
+    return _mapBatchItemModelToEntity(model);
+  }
+
+  @override
+  Future<List<BatchItem>> getAllBatchItems() async {
+    final isar = await dataSource.db;
+    final models = await isar.batchItemModels.where().sortByCreatedAtDesc().findAll();
+    return models.map(_mapBatchItemModelToEntity).toList();
+  }
+
+  @override
+  Future<List<BatchItem>> getPendingBatchItems() async {
+    final isar = await dataSource.db;
+    final models = await isar.batchItemModels
+        .filter()
+        .statusEqualTo(BatchItemStatus.pending)
+        .or()
+        .statusEqualTo(BatchItemStatus.converting)
+        .sortByCreatedAt()
+        .findAll();
+    return models.map(_mapBatchItemModelToEntity).toList();
+  }
+
+  @override
+  Future<void> updateBatchItem(BatchItem item) async {
+    final isar = await dataSource.db;
+    final model = _mapBatchItemEntityToModel(item);
+    await isar.writeTxn(() async {
+      await isar.batchItemModels.put(model);
+    });
+  }
+
+  @override
+  Future<void> deleteBatchItem(int id) async {
+    final isar = await dataSource.db;
+    await isar.writeTxn(() async {
+      await isar.batchItemModels.delete(id);
+    });
+  }
+
+  @override
+  Future<void> clearCompletedBatchItems() async {
+    final isar = await dataSource.db;
+    await isar.writeTxn(() async {
+      await isar.batchItemModels
+          .filter()
+          .statusEqualTo(BatchItemStatus.completed)
+          .deleteAll();
     });
   }
 }

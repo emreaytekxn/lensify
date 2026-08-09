@@ -15,6 +15,7 @@ import '../widgets/loading_overlay.dart';
 import '../../core/utils/format_conversion_service.dart';
 import 'media_converter_screen.dart';
 import 'transcription_screen.dart';
+import 'batch_conversion_screen.dart';
 import '../../l10n/app_localizations.dart';
 
 class ToolsScreen extends ConsumerWidget {
@@ -42,6 +43,19 @@ class ToolsScreen extends ConsumerWidget {
                 fontSize: 14),
           ),
           const SizedBox(height: 24),
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.layers_alt_fill,
+            color: Colors.teal,
+            title: 'Toplu Dönüştürme Motoru', // Hardcoded for now since I didn't add the arb key
+            description: 'Aynı anda birden fazla dosyayı arka planda işleyin ve yönetin.',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const BatchConversionScreen()));
+            },
+          ),
           _buildToolCard(
             context,
             icon: CupertinoIcons.doc_on_doc,

@@ -1,6 +1,7 @@
 import '../entities/document.dart';
 import '../entities/document_page.dart';
 import '../entities/folder.dart';
+import '../entities/batch_item.dart';
 
 abstract class ScannerRepository {
   // Folder Operations
@@ -24,4 +25,12 @@ abstract class ScannerRepository {
   Future<void> updatePage(DocumentPage page);
   Future<void> deletePage(int id);
   Future<void> reorderPages(int documentId, List<DocumentPage> newOrder);
+
+  // Batch Operations
+  Future<BatchItem> createBatchItem(BatchItem item);
+  Future<List<BatchItem>> getAllBatchItems();
+  Future<List<BatchItem>> getPendingBatchItems();
+  Future<void> updateBatchItem(BatchItem item);
+  Future<void> deleteBatchItem(int id);
+  Future<void> clearCompletedBatchItems();
 }
