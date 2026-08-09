@@ -16,6 +16,8 @@ import '../../core/utils/format_conversion_service.dart';
 import 'media_converter_screen.dart';
 import 'transcription_screen.dart';
 import 'batch_conversion_screen.dart';
+import 'pdf_merge_screen.dart';
+import 'pdf_compress_screen.dart';
 import '../../l10n/app_localizations.dart';
 
 class ToolsScreen extends ConsumerWidget {
@@ -176,6 +178,38 @@ class ToolsScreen extends ConsumerWidget {
             description: loc.pdfEncryptDesc,
             onTap: () {
               _showPasswordDialog(context, loc);
+            },
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Gelişmiş PDF Araçları',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.doc_on_clipboard_fill,
+            color: Colors.indigo,
+            title: 'PDF Birleştir',
+            description: 'Birden fazla PDF dosyasını tek bir PDF haline getirin.',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const PdfMergeScreen()));
+            },
+          ),
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.arrow_down_right_square_fill,
+            color: Colors.orange,
+            title: 'PDF Sıkıştır',
+            description: 'Büyük PDF dosyalarınızın boyutunu küçültün.',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const PdfCompressScreen()));
             },
           ),
         ],
