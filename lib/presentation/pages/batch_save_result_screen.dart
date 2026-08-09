@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/batch_conversion_provider.dart';
-import '../providers/core_providers.dart';
+import '../providers/folder_provider.dart';
 import '../../domain/entities/batch_item.dart';
 import '../../domain/entities/document.dart' as doc_entity;
 import '../../l10n/app_localizations.dart';
@@ -40,10 +40,12 @@ class _BatchSaveResultScreenState extends ConsumerState<BatchSaveResultScreen> {
             final fileName = item.sourceFileName.split('.').first;
             final doc = doc_entity.Document(
               title: '${fileName}_${item.targetFormat.toUpperCase()}',
-              filePath: item.outputPath!,
+              pdfPath: item.outputPath!,
               createdAt: DateTime.now(),
-              type: _mapType(item.targetFormat),
-              sizeInBytes: await file.length(),
+              updatedAt: DateTime.now(),
+              pageCount: 1,
+              fileType: _mapType(item.targetFormat),
+              fileSize: await file.length(),
               folderId: _selectedFolderId,
             );
             await repo.createDocument(doc);
@@ -75,20 +77,20 @@ class _BatchSaveResultScreenState extends ConsumerState<BatchSaveResultScreen> {
     }
   }
 
-  doc_entity.DocumentType _mapType(String format) {
+  String _mapType(String format) {
     switch (format.toLowerCase()) {
-      case 'pdf': return doc_entity.DocumentType.pdf;
-      case 'txt': return doc_entity.DocumentType.text;
+      case 'pdf': return 'pdf';
+      case 'txt': return 'text';
       case 'mp4': 
       case 'mov':
       case 'mp3':
       case 'wav':
-      case 'm4a': return doc_entity.DocumentType.media;
+      case 'm4a': return 'media';
       case 'jpg':
       case 'jpeg':
       case 'png':
-      case 'gif': return doc_entity.DocumentType.image;
-      default: return doc_entity.DocumentType.pdf;
+      case 'gif': return 'image';
+      default: return 'pdf';
     }
   }
 
@@ -96,7 +98,7 @@ class _BatchSaveResultScreenState extends ConsumerState<BatchSaveResultScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(batchConversionProvider);
     final completedItems = state.items.where((e) => e.status == BatchItemStatus.completed).toList();
-    final foldersAsync = ref.watch(foldersProvider);
+    final folderState = ref.watch(folderNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -135,37 +137,36 @@ class _BatchSaveResultScreenState extends ConsumerState<BatchSaveResultScreen> {
                     const SizedBox(height: 32),
                     const Text('Hedef Klasör:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     const SizedBox(height: 8),
-                    foldersAsync.when(
-                      data: (folders) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(12),
+                    if (folderState.isLoading)
+                      const CupertinoActivityIndicator()
+                    else if (folderState.error != null)
+                      const Text('Klasörler yüklenemedi.')
+                    else
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<int?>(
+                            value: _selectedFolderId,
+                            isExpanded: true,
+                            hint: const Text('Ana Dizin (Klasörsüz)'),
+                            items: [
+                              const DropdownMenuItem<int?>(
+                                value: null,
+                                child: Text('Ana Dizin'),
+                              ),
+                              ...folderState.folders.map((f) => DropdownMenuItem(
+                                    value: f.id,
+                                    child: Text('📁 ${f.name}'),
+                                  )),
+                            ],
+                            onChanged: (val) => setState(() => _selectedFolderId = val),
                           ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<int?>(
-                              value: _selectedFolderId,
-                              isExpanded: true,
-                              hint: const Text('Ana Dizin (Klasörsüz)'),
-                              items: [
-                                const DropdownMenuItem<int?>(
-                                  value: null,
-                                  child: Text('Ana Dizin'),
-                                ),
-                                ...folders.map((f) => DropdownMenuItem(
-                                      value: f.id,
-                                      child: Text('📁 ${f.name}'),
-                                    )),
-                              ],
-                              onChanged: (val) => setState(() => _selectedFolderId = val),
-                            ),
-                          ),
-                        );
-                      },
-                      loading: () => const CupertinoActivityIndicator(),
-                      error: (_, __) => const Text('Klasörler yüklenemedi.'),
-                    ),
+                        ),
+                      ),
                     const Spacer(),
                     ElevatedButton.icon(
                       onPressed: _saveAll,
