@@ -15,6 +15,10 @@ import '../widgets/smart_folder_list_view.dart';
 import '../widgets/loading_overlay.dart';
 import 'document_editor_screen.dart';
 import 'scanner_camera_screen.dart';
+import 'viewers/pdf_viewer_screen.dart';
+import 'viewers/audio_player_screen.dart';
+import 'viewers/image_viewer_screen.dart';
+import 'viewers/text_viewer_screen.dart';
 import '../../core/utils/document_import_service.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -93,11 +97,7 @@ class DashboardScreen extends ConsumerWidget {
                     .read(documentNotifierProvider.notifier)
                     .toggleDocumentSelection(doc.id!);
               } else {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => DocumentEditorScreen(document: doc),
-                  ),
-                );
+                _navigateToViewer(context, doc);
               }
             },
             onLongPress: () {
@@ -127,11 +127,7 @@ class DashboardScreen extends ConsumerWidget {
                     .read(documentNotifierProvider.notifier)
                     .toggleDocumentSelection(doc.id!);
               } else {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => DocumentEditorScreen(document: doc),
-                  ),
-                );
+                _navigateToViewer(context, doc);
               }
             },
             onLongPress: () {
@@ -144,6 +140,59 @@ class DashboardScreen extends ConsumerWidget {
         },
       );
     }
+  }
+
+  void _navigateToViewer(BuildContext context, document) {
+    if (document.pdfPath != null) {
+      if (document.fileType == 'audio') {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => AudioPlayerScreen(
+              audioPath: document.pdfPath!,
+              title: document.title,
+            ),
+          ),
+        );
+        return;
+      } else if (document.fileType == 'image') {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ImageViewerScreen(
+              imagePath: document.pdfPath!,
+              title: document.title,
+            ),
+          ),
+        );
+        return;
+      } else if (document.fileType == 'text') {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => TextViewerScreen(
+              textPath: document.pdfPath!,
+              title: document.title,
+            ),
+          ),
+        );
+        return;
+      } else if (document.fileType == 'pdf') {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => PdfViewerScreen(
+              pdfPath: document.pdfPath!,
+              title: document.title,
+            ),
+          ),
+        );
+        return;
+      }
+    }
+    
+    // Default fallback for scanned documents
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => DocumentEditorScreen(document: document),
+      ),
+    );
   }
 
   void _showAddOptions(BuildContext context, WidgetRef ref) {
