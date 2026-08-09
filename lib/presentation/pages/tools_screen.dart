@@ -13,6 +13,7 @@ import '../providers/document_provider.dart';
 import '../providers/folder_provider.dart';
 import '../widgets/loading_overlay.dart';
 import '../../core/utils/format_conversion_service.dart';
+import 'tools/voice_recorder_screen.dart';
 import 'media_converter_screen.dart';
 import 'transcription_screen.dart';
 import 'batch_conversion_screen.dart';
@@ -119,6 +120,19 @@ class ToolsScreen extends ConsumerWidget {
                   context,
                   MaterialPageRoute(
                       builder: (_) => const TranscriptionScreen()));
+            },
+          ),
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.mic_circle_fill,
+            color: Colors.redAccent,
+            title: loc.smartDictaphone,
+            description: loc.smartDictaphoneDesc,
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const VoiceRecorderScreen()));
             },
           ),
           _buildToolCard(

@@ -60,5 +60,7 @@
   "pdfMerge": "Merge PDFs",
   "pdfMergeDesc": "Combine multiple PDF files into a single PDF.",
   "pdfCompress": "Compress PDF",
-  "pdfCompressDesc": "Reduce the file size of large PDF files."
+  "pdfCompressDesc": "Reduce the file size of large PDF files.",
+  "smartDictaphone": "Smart Dictaphone",
+  "smartDictaphoneDesc": "Record high-quality audio and convert it to text instantly."
 }

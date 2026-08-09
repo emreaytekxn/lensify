@@ -60,5 +60,7 @@
   "pdfMerge": "PDF Birleştir",
   "pdfMergeDesc": "Birden fazla PDF dosyasını tek bir PDF haline getirin.",
   "pdfCompress": "PDF Sıkıştır",
-  "pdfCompressDesc": "Büyük PDF dosyalarınızın boyutunu küçültün."
+  "pdfCompressDesc": "Büyük PDF dosyalarınızın boyutunu küçültün.",
+  "smartDictaphone": "Akıllı Diktafon",
+  "smartDictaphoneDesc": "Yüksek kaliteli ses kaydedin ve saniyeler içinde metne dönüştürün."
 }

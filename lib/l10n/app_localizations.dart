@@ -463,6 +463,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reduce the file size of large PDF files.'**
   String get pdfCompressDesc;
+
+  /// No description provided for @smartDictaphone.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart Dictaphone'**
+  String get smartDictaphone;
+
+  /// No description provided for @smartDictaphoneDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Record high-quality audio and convert it to text instantly.'**
+  String get smartDictaphoneDesc;
 }
 
 class _AppLocalizationsDelegate

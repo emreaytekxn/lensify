@@ -204,4 +204,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pdfCompressDesc => 'Büyük PDF dosyalarınızın boyutunu küçültün.';
+
+  @override
+  String get smartDictaphone => 'Akıllı Diktafon';
+
+  @override
+  String get smartDictaphoneDesc =>
+      'Yüksek kaliteli ses kaydedin ve saniyeler içinde metne dönüştürün.';
 }

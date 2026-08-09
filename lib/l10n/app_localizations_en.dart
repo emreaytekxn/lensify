@@ -200,4 +200,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfCompressDesc => 'Reduce the file size of large PDF files.';
+
+  @override
+  String get smartDictaphone => 'Smart Dictaphone';
+
+  @override
+  String get smartDictaphoneDesc =>
+      'Record high-quality audio and convert it to text instantly.';
 }
