@@ -53,5 +53,12 @@
   "noOtherFolder": "No other folder found.",
   "searchDocs": "Search documents...",
   "appLocked": "App Locked",
-  "tryAgain": "Try Again"
+  "tryAgain": "Try Again",
+  "batchConversion": "Batch Conversion Engine",
+  "batchConversionDesc": "Process and manage multiple files in the background simultaneously.",
+  "advancedPdfTools": "Advanced PDF Tools",
+  "pdfMerge": "Merge PDFs",
+  "pdfMergeDesc": "Combine multiple PDF files into a single PDF.",
+  "pdfCompress": "Compress PDF",
+  "pdfCompressDesc": "Reduce the file size of large PDF files."
 }

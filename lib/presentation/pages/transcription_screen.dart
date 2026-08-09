@@ -87,7 +87,10 @@ class _TranscriptionScreenState extends ConsumerState<TranscriptionScreen> {
       }
 
       // 2. Transcribe the WAV file
-      final text = await TranscriptionService.transcribeAudio(wavPath);
+      final text = await TranscriptionService.transcribeAudio(
+        wavPath,
+        isCancelled: () => _isCancelled,
+      );
 
       if (_isCancelled) return;
 

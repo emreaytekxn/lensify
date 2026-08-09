@@ -51,8 +51,8 @@ class ToolsScreen extends ConsumerWidget {
             context,
             icon: CupertinoIcons.layers_alt_fill,
             color: Colors.teal,
-            title: 'Toplu Dönüştürme Motoru', // Hardcoded for now since I didn't add the arb key
-            description: 'Aynı anda birden fazla dosyayı arka planda işleyin ve yönetin.',
+            title: loc.batchConversion,
+            description: loc.batchConversionDesc,
             onTap: () {
               Navigator.push(
                   context,
@@ -174,17 +174,17 @@ class ToolsScreen extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 24),
-          const Text(
-            'Gelişmiş PDF Araçları',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          Text(
+            loc.advancedPdfTools,
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           _buildToolCard(
             context,
             icon: CupertinoIcons.doc_on_clipboard_fill,
             color: Colors.indigo,
-            title: 'PDF Birleştir',
-            description: 'Birden fazla PDF dosyasını tek bir PDF haline getirin.',
+            title: loc.pdfMerge,
+            description: loc.pdfMergeDesc,
             onTap: () {
               Navigator.push(
                   context,
@@ -196,8 +196,8 @@ class ToolsScreen extends ConsumerWidget {
             context,
             icon: CupertinoIcons.arrow_down_right_square_fill,
             color: Colors.orange,
-            title: 'PDF Sıkıştır',
-            description: 'Büyük PDF dosyalarınızın boyutunu küçültün.',
+            title: loc.pdfCompress,
+            description: loc.pdfCompressDesc,
             onTap: () {
               Navigator.push(
                   context,

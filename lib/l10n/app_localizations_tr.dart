@@ -181,4 +181,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tryAgain => 'Tekrar Dene';
+
+  @override
+  String get batchConversion => 'Toplu Dönüştürme Motoru';
+
+  @override
+  String get batchConversionDesc =>
+      'Aynı anda birden fazla dosyayı arka planda işleyin ve yönetin.';
+
+  @override
+  String get advancedPdfTools => 'Gelişmiş PDF Araçları';
+
+  @override
+  String get pdfMerge => 'PDF Birleştir';
+
+  @override
+  String get pdfMergeDesc =>
+      'Birden fazla PDF dosyasını tek bir PDF haline getirin.';
+
+  @override
+  String get pdfCompress => 'PDF Sıkıştır';
+
+  @override
+  String get pdfCompressDesc => 'Büyük PDF dosyalarınızın boyutunu küçültün.';
 }

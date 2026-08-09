@@ -28,11 +28,12 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: AppColors.surfaceLight,
-        elevation: 0,
+        elevation: 8,
+        shadowColor: Colors.black.withValues(alpha: 0.08),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           side:
-              BorderSide(color: Colors.black.withValues(alpha: 0.05), width: 1),
+              BorderSide(color: Colors.black.withValues(alpha: 0.03), width: 1),
         ),
       ),
       textTheme: TextTheme(
@@ -45,10 +46,13 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 4,
+          shadowColor: AppColors.primary.withValues(alpha: 0.3),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -83,11 +87,12 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: AppColors.surfaceDark,
-        elevation: 0,
+        elevation: 8,
+        shadowColor: Colors.black.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           side:
-              BorderSide(color: Colors.white.withValues(alpha: 0.05), width: 1),
+              BorderSide(color: Colors.white.withValues(alpha: 0.08), width: 1),
         ),
       ),
       textTheme: TextTheme(
@@ -102,11 +107,13 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryDark,
           foregroundColor: Colors.white,
-          elevation: 0,
+          elevation: 4,
+          shadowColor: AppColors.primaryDark.withValues(alpha: 0.5),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
       ),
     );

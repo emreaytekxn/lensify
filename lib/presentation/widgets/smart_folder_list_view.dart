@@ -11,15 +11,17 @@ class SmartFolderListView extends ConsumerWidget {
     final docState = ref.watch(documentNotifierProvider);
     final activeSmartFolder = docState.activeSmartFolder;
 
+    final isEn = Localizations.localeOf(context).languageCode == 'en';
+    
     final folders = [
-      {'type': SmartFolderType.none, 'icon': Icons.all_inclusive, 'label': 'Tümü', 'color': Colors.blueGrey},
-      {'type': SmartFolderType.recent, 'icon': Icons.access_time, 'label': 'Son 7 Gün', 'color': Colors.blue},
-      {'type': SmartFolderType.favorites, 'icon': Icons.star, 'label': 'Favoriler', 'color': Colors.orange},
-      {'type': SmartFolderType.largeFiles, 'icon': Icons.folder_special, 'label': 'Büyük Dosyalar', 'color': Colors.redAccent},
-      {'type': SmartFolderType.pdf, 'icon': Icons.picture_as_pdf, 'label': 'PDF\'ler', 'color': Colors.red},
-      {'type': SmartFolderType.image, 'icon': Icons.image, 'label': 'Görseller', 'color': Colors.green},
-      {'type': SmartFolderType.audio, 'icon': Icons.audiotrack, 'label': 'Sesler', 'color': Colors.purple},
-      {'type': SmartFolderType.text, 'icon': Icons.description, 'label': 'Metinler', 'color': Colors.teal},
+      {'type': SmartFolderType.none, 'icon': Icons.all_inclusive, 'label': isEn ? 'All' : 'Tümü', 'color': Colors.blueGrey},
+      {'type': SmartFolderType.recent, 'icon': Icons.access_time, 'label': isEn ? 'Last 7 Days' : 'Son 7 Gün', 'color': Colors.blue},
+      {'type': SmartFolderType.favorites, 'icon': Icons.star, 'label': isEn ? 'Favorites' : 'Favoriler', 'color': Colors.orange},
+      {'type': SmartFolderType.largeFiles, 'icon': Icons.folder_special, 'label': isEn ? 'Large Files' : 'Büyük Dosyalar', 'color': Colors.redAccent},
+      {'type': SmartFolderType.pdf, 'icon': Icons.picture_as_pdf, 'label': isEn ? 'PDFs' : 'PDF\'ler', 'color': Colors.red},
+      {'type': SmartFolderType.image, 'icon': Icons.image, 'label': isEn ? 'Images' : 'Görseller', 'color': Colors.green},
+      {'type': SmartFolderType.audio, 'icon': Icons.audiotrack, 'label': isEn ? 'Audios' : 'Sesler', 'color': Colors.purple},
+      {'type': SmartFolderType.text, 'icon': Icons.description, 'label': isEn ? 'Texts' : 'Metinler', 'color': Colors.teal},
     ];
 
     return SizedBox(

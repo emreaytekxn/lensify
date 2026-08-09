@@ -421,6 +421,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try Again'**
   String get tryAgain;
+
+  /// No description provided for @batchConversion.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch Conversion Engine'**
+  String get batchConversion;
+
+  /// No description provided for @batchConversionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Process and manage multiple files in the background simultaneously.'**
+  String get batchConversionDesc;
+
+  /// No description provided for @advancedPdfTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced PDF Tools'**
+  String get advancedPdfTools;
+
+  /// No description provided for @pdfMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge PDFs'**
+  String get pdfMerge;
+
+  /// No description provided for @pdfMergeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Combine multiple PDF files into a single PDF.'**
+  String get pdfMergeDesc;
+
+  /// No description provided for @pdfCompress.
+  ///
+  /// In en, this message translates to:
+  /// **'Compress PDF'**
+  String get pdfCompress;
+
+  /// No description provided for @pdfCompressDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Reduce the file size of large PDF files.'**
+  String get pdfCompressDesc;
 }
 
 class _AppLocalizationsDelegate

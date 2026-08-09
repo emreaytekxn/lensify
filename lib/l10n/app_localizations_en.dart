@@ -178,4 +178,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tryAgain => 'Try Again';
+
+  @override
+  String get batchConversion => 'Batch Conversion Engine';
+
+  @override
+  String get batchConversionDesc =>
+      'Process and manage multiple files in the background simultaneously.';
+
+  @override
+  String get advancedPdfTools => 'Advanced PDF Tools';
+
+  @override
+  String get pdfMerge => 'Merge PDFs';
+
+  @override
+  String get pdfMergeDesc => 'Combine multiple PDF files into a single PDF.';
+
+  @override
+  String get pdfCompress => 'Compress PDF';
+
+  @override
+  String get pdfCompressDesc => 'Reduce the file size of large PDF files.';
 }

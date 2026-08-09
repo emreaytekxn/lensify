@@ -53,5 +53,12 @@
   "noOtherFolder": "Başka klasör bulunamadı.",
   "searchDocs": "Belgelerde ara...",
   "appLocked": "Uygulama Kilitli",
-  "tryAgain": "Tekrar Dene"
+  "tryAgain": "Tekrar Dene",
+  "batchConversion": "Toplu Dönüştürme Motoru",
+  "batchConversionDesc": "Aynı anda birden fazla dosyayı arka planda işleyin ve yönetin.",
+  "advancedPdfTools": "Gelişmiş PDF Araçları",
+  "pdfMerge": "PDF Birleştir",
+  "pdfMergeDesc": "Birden fazla PDF dosyasını tek bir PDF haline getirin.",
+  "pdfCompress": "PDF Sıkıştır",
+  "pdfCompressDesc": "Büyük PDF dosyalarınızın boyutunu küçültün."
 }
