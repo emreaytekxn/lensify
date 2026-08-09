@@ -66,6 +66,8 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
     // Filter out ARCHIVED documents unless the active smart folder is 'archive'
     if (state.activeSmartFolder == SmartFolderType.archive) {
       result = result.where((d) => d.tags.contains('ARCHIVED') || d.fileType == 'archive').toList();
+    } else if (state.activeSmartFolder == SmartFolderType.zipped) {
+      result = result.where((d) => !d.tags.contains('ARCHIVED')).toList();
     } else {
       result = result.where((d) => !d.tags.contains('ARCHIVED') && d.fileType != 'archive').toList();
     }
@@ -93,6 +95,9 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
         break;
       case SmartFolderType.text:
         result = result.where((d) => d.fileType == 'text').toList();
+        break;
+      case SmartFolderType.zipped:
+        result = result.where((d) => d.fileType == 'archive').toList();
         break;
       case SmartFolderType.archive:
         // Already handled above

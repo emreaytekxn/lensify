@@ -23,6 +23,7 @@ class SmartFolderListView extends ConsumerWidget {
       {'type': SmartFolderType.image, 'icon': Icons.image, 'label': isEn ? 'Images' : 'Görseller', 'color': Colors.green},
       {'type': SmartFolderType.audio, 'icon': Icons.audiotrack, 'label': isEn ? 'Audios' : 'Sesler', 'color': Colors.purple},
       {'type': SmartFolderType.text, 'icon': Icons.description, 'label': isEn ? 'Texts' : 'Metinler', 'color': Colors.teal},
+      {'type': SmartFolderType.zipped, 'icon': Icons.folder_zip, 'label': isEn ? 'Zipped' : 'Ziplenenler', 'color': Colors.brown},
     ];
 
     final showArchives = ref.watch(settingsNotifierProvider).showArchivesInHome;

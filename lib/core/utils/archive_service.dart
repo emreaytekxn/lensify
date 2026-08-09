@@ -4,10 +4,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
 import '../../domain/entities/document.dart';
+import '../../presentation/providers/core_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ArchiveService {
   /// Zips a list of Documents into a single .zip file and returns its path.
-  static Future<String?> zipDocuments(List<Document> documents, String zipName) async {
+  static Future<String?> zipDocuments(List<Document> documents, String zipName, ProviderContainer container) async {
     try {
       if (documents.isEmpty) return null;
 
@@ -23,12 +25,24 @@ class ArchiveService {
       encoder.create(zipPath);
 
       for (var doc in documents) {
-        if (doc.pdfPath != null) {
+        if (doc.pdfPath != null && await File(doc.pdfPath!).exists()) {
           final file = File(doc.pdfPath!);
-          if (await file.exists()) {
-            final ext = p.extension(doc.pdfPath!);
-            final entryName = '${doc.title}$ext';
-            encoder.addFile(file, entryName);
+          final ext = p.extension(doc.pdfPath!);
+          final entryName = '${doc.title}$ext';
+          encoder.addFile(file, entryName);
+        } else if (doc.id != null) {
+          // If no PDF exists, zip its pages instead
+          final repo = container.read(scannerRepositoryProvider);
+          final pages = await repo.getPagesForDocument(doc.id!);
+          for (var i = 0; i < pages.length; i++) {
+            final page = pages[i];
+            final imagePath = page.processedImagePath ?? page.originalImagePath;
+            final file = File(imagePath);
+            if (await file.exists()) {
+              final ext = p.extension(imagePath);
+              final entryName = '${doc.title}/Sayfa_${i + 1}$ext'; // Placed in a subfolder named after the document
+              encoder.addFile(file, entryName);
+            }
           }
         }
       }

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,11 +5,7 @@ import '../providers/document_provider.dart';
 import '../providers/document_state.dart';
 import '../providers/settings_provider.dart';
 import '../providers/folder_provider.dart';
-import '../providers/core_providers.dart';
 import '../pages/settings_screen.dart';
-import '../widgets/loading_overlay.dart';
-import '../../core/utils/archive_service.dart';
-import '../../domain/entities/document.dart';
 import '../../l10n/app_localizations.dart';
 import '../widgets/ux_feedback.dart';
 

@@ -21,6 +21,8 @@ import 'tools/ocr_scanner_screen.dart';
 import 'tools/pdf_encryption_screen.dart';
 import 'tools/background_eraser_screen.dart';
 import '../../l10n/app_localizations.dart';
+import '../widgets/ux_feedback.dart';
+import 'tools/zip_creator_screen.dart';
 
 class ToolsScreen extends ConsumerWidget {
   const ToolsScreen({super.key});
@@ -184,6 +186,16 @@ class ToolsScreen extends ConsumerWidget {
                   context,
                   MaterialPageRoute(
                       builder: (_) => const PdfEncryptionScreen()));
+            },
+          ),
+          _buildToolCard(
+            context,
+            title: 'ZIP Oluşturucu',
+            description: 'Çoklu belgeleri sıkıştır ve arşivle',
+            icon: CupertinoIcons.archivebox_fill,
+            color: Colors.brown,
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const ZipCreatorScreen()));
             },
           ),
           const SizedBox(height: 24),

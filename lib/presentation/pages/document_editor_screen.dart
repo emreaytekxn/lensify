@@ -380,12 +380,24 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
                         contentPadding: const EdgeInsets.all(8),
                         leading: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
-                          child: Image.file(
-                            File(imagePath),
-                            width: 60,
-                            height: 80,
-                            fit: BoxFit.cover,
-                          ),
+                          child: File(imagePath).existsSync()
+                              ? Image.file(
+                                  File(imagePath),
+                                  width: 60,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const SizedBox(
+                                        width: 60,
+                                        height: 80,
+                                        child: Center(child: Icon(CupertinoIcons.doc_richtext)),
+                                      ),
+                                )
+                              : const SizedBox(
+                                  width: 60,
+                                  height: 80,
+                                  child: Center(child: Icon(CupertinoIcons.doc_richtext)),
+                                ),
                         ),
                         title: Text('Sayfa ${index + 1}'),
                         subtitle: Text(page.appliedFilter.name),
