@@ -10,17 +10,19 @@ import '../widgets/loading_overlay.dart';
 import 'package:path/path.dart' as p;
 
 class SaveResultScreen extends ConsumerStatefulWidget {
-  final File file;
+  final File? file;
   final String fileType;
   final String defaultTitle;
   final int pageCount;
+  final Document? existingDocument;
   
   const SaveResultScreen({
     super.key,
-    required this.file,
+    this.file,
     required this.fileType,
     required this.defaultTitle,
     this.pageCount = 0,
+    this.existingDocument,
   });
 
   @override
@@ -56,20 +58,37 @@ class _SaveResultScreenState extends ConsumerState<SaveResultScreen> {
     LoadingOverlay.show(context, message: 'Kaydediliyor...');
     try {
       final repo = ref.read(scannerRepositoryProvider);
-      final fileSize = await widget.file.length();
+      if (widget.existingDocument != null) {
+        final doc = Document(
+          id: widget.existingDocument!.id,
+          title: title,
+          folderId: _selectedFolderId,
+          createdAt: widget.existingDocument!.createdAt,
+          updatedAt: DateTime.now(),
+          pageCount: widget.existingDocument!.pageCount,
+          pdfPath: widget.existingDocument!.pdfPath,
+          tags: widget.existingDocument!.tags,
+          isFavorite: widget.existingDocument!.isFavorite,
+          fileSize: widget.existingDocument!.fileSize,
+          fileType: widget.existingDocument!.fileType,
+        );
+        await repo.updateDocument(doc);
+      } else {
+        final fileSize = await widget.file!.length();
 
-      final doc = Document(
-        title: title,
-        folderId: _selectedFolderId,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        pageCount: widget.pageCount,
-        pdfPath: widget.file.path,
-        fileType: widget.fileType,
-        fileSize: fileSize,
-      );
+        final doc = Document(
+          title: title,
+          folderId: _selectedFolderId,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          pageCount: widget.pageCount,
+          pdfPath: widget.file!.path,
+          fileType: widget.fileType,
+          fileSize: fileSize,
+        );
 
-      await repo.createDocument(doc);
+        await repo.createDocument(doc);
+      }
       await ref.read(documentNotifierProvider.notifier).loadDocuments();
 
       if (mounted) {
@@ -94,7 +113,9 @@ class _SaveResultScreenState extends ConsumerState<SaveResultScreen> {
   @override
   Widget build(BuildContext context) {
     final folders = ref.watch(folderNotifierProvider).folders;
-    final ext = p.extension(widget.file.path).toUpperCase().replaceAll('.', '');
+    final ext = widget.file != null 
+        ? p.extension(widget.file!.path).toUpperCase().replaceAll('.', '') 
+        : widget.fileType.toUpperCase();
     
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

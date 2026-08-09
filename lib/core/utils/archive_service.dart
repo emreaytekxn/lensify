@@ -96,8 +96,19 @@ class ArchiveService {
       final extractDir = Directory('${dir.path}/extracted_$timestamp');
       if (!await extractDir.exists()) await extractDir.create(recursive: true);
 
-      // Extract using archive_io
-      await extractFileToDisk(zipPath, extractDir.path);
+      // Extract using ZipDecoder manually
+      final bytes = await File(zipPath).readAsBytes();
+      final archive = ZipDecoder().decodeBytes(bytes);
+      
+      for (final file in archive) {
+        final filename = file.name;
+        if (file.isFile) {
+          final data = file.content as List<int>;
+          final outFile = File('${extractDir.path}/$filename');
+          await outFile.create(recursive: true);
+          await outFile.writeAsBytes(data);
+        }
+      }
 
       // List all extracted files recursively
       List<String> extractedFiles = [];

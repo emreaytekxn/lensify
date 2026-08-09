@@ -8,6 +8,7 @@ import '../widgets/legal_documents_dialog.dart';
 import '../../l10n/app_localizations.dart';
 import '../../main.dart';
 import 'onboarding_screen.dart';
+import 'dart:io';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -61,8 +62,8 @@ class SettingsScreen extends ConsumerWidget {
               },
             ),
           SwitchListTile(
-            title: Text(loc.requireBiometrics),
-            subtitle: Text(loc.requireBiometricsDesc),
+            title: Text(Platform.isIOS ? 'Face ID / Touch ID Gerektir' : 'Biyometrik Doğrulama (Parmak İzi/Yüz)'),
+            subtitle: Text(Platform.isIOS ? 'Uygulama açılışında Face ID / Touch ID sorar.' : 'Uygulama açılışında biyometrik doğrulama sorar.'),
             value: settingsState.requireBiometricsOnStartup,
             secondary: const Icon(CupertinoIcons.lock_shield),
             onChanged: (value) async {

@@ -15,22 +15,23 @@ class DocumentImportService {
 
   DocumentImportService(this._repository);
 
-  Future<void> importFromGallery(int? targetFolderId) async {
+  Future<Document?> importFromGallery(int? targetFolderId) async {
     final ImagePicker picker = ImagePicker();
     final List<XFile> images = await picker.pickMultiImage(
       imageQuality: 100,
     );
 
     if (images.isNotEmpty) {
-      await _createDocumentFromImages(
+      return await _createDocumentFromImages(
         images.map((f) => f.path).toList(),
         "Galeriden İçe Aktarıldı",
         targetFolderId,
       );
     }
+    return null;
   }
 
-  Future<void> importPdf(int? targetFolderId) async {
+  Future<Document?> importPdf(int? targetFolderId) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
@@ -66,15 +67,16 @@ class DocumentImportService {
         await document.close();
 
         if (imagePaths.isNotEmpty) {
-          await _createDocumentFromImages(imagePaths, docName, targetFolderId);
+          return await _createDocumentFromImages(imagePaths, docName, targetFolderId);
         }
       } catch (e) {
         debugPrint("PDF Import Error: $e");
       }
     }
+    return null;
   }
 
-  Future<void> _createDocumentFromImages(
+  Future<Document> _createDocumentFromImages(
       List<String> imagePaths, String title, int? folderId) async {
     final doc = Document(
       title: title,
@@ -99,5 +101,6 @@ class DocumentImportService {
       await _repository.addPageToDocument(page);
       pageIndex++;
     }
+    return createdDoc;
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'barcode_scanner_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
+import 'save_result_screen.dart';
 
 
 import '../../core/utils/document_import_service.dart';
@@ -74,14 +75,24 @@ class ToolsScreen extends ConsumerWidget {
                 final folderId =
                     ref.read(folderNotifierProvider).activeFolderId;
                 final repo = ref.read(scannerRepositoryProvider);
-                await DocumentImportService(repo).importFromGallery(folderId);
+                final doc = await DocumentImportService(repo).importFromGallery(folderId);
                 ref.read(documentNotifierProvider.notifier).loadDocuments();
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(loc.photosImportedSuccessfully)),
-                  );
+                  LoadingOverlay.hide(context);
+                  if (doc != null) {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SaveResultScreen(
+                          fileType: 'image',
+                          defaultTitle: 'Fotoğraftan PDF',
+                          existingDocument: doc,
+                        ),
+                      ),
+                    );
+                  }
                 }
-              } finally {
+              } catch (e) {
                 if (context.mounted) LoadingOverlay.hide(context);
               }
             },
@@ -98,14 +109,24 @@ class ToolsScreen extends ConsumerWidget {
                 final folderId =
                     ref.read(folderNotifierProvider).activeFolderId;
                 final repo = ref.read(scannerRepositoryProvider);
-                await DocumentImportService(repo).importPdf(folderId);
+                final doc = await DocumentImportService(repo).importPdf(folderId);
                 ref.read(documentNotifierProvider.notifier).loadDocuments();
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(loc.pdfPagesConvertedSuccessfully)),
-                  );
+                  LoadingOverlay.hide(context);
+                  if (doc != null) {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SaveResultScreen(
+                          fileType: 'pdf',
+                          defaultTitle: 'PDF\'ten Fotoğraf',
+                          existingDocument: doc,
+                        ),
+                      ),
+                    );
+                  }
                 }
-              } finally {
+              } catch (e) {
                 if (context.mounted) LoadingOverlay.hide(context);
               }
             },
