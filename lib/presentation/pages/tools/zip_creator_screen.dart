@@ -176,6 +176,15 @@ class _ZipCreatorScreenState extends ConsumerState<ZipCreatorScreen> {
             children: [
               const Icon(Icons.folder_zip, size: 64, color: Colors.orange),
               const SizedBox(height: 24),
+              if (zipped > original)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    '(Sıkıştırılmış medya dosyaları tekrar sıkıştırılamadığından boyut aynı kalabilir veya paketlemeden dolayı çok az artabilir.)',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -183,7 +192,7 @@ class _ZipCreatorScreenState extends ConsumerState<ZipCreatorScreen> {
                     children: [
                       const Text('Önce', style: TextStyle(color: Colors.grey)),
                       const SizedBox(height: 4),
-                      Text(formatBytes(original), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.redAccent)),
+                      Text(formatBytes(original), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: zipped <= original ? Colors.redAccent : Colors.grey)),
                     ],
                   ),
                   const Icon(CupertinoIcons.arrow_right, color: Colors.grey),
@@ -191,7 +200,7 @@ class _ZipCreatorScreenState extends ConsumerState<ZipCreatorScreen> {
                     children: [
                       const Text('Sonra', style: TextStyle(color: Colors.grey)),
                       const SizedBox(height: 4),
-                      Text(formatBytes(zipped), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.green)),
+                      Text(formatBytes(zipped), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: zipped < original ? Colors.green : Colors.orange)),
                     ],
                   ),
                 ],

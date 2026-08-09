@@ -56,11 +56,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
-  void toggleBiometricsOnStartup() {
-    state = state.copyWith(
-        requireBiometricsOnStartup: !state.requireBiometricsOnStartup);
-  }
-
   void toggleShowArchivesInHome() {
     final newValue = !state.showArchivesInHome;
     prefs.setBool('showArchivesInHome', newValue);

@@ -61,38 +61,6 @@ class SettingsScreen extends ConsumerWidget {
                 _showPinSetupDialog(context, isFake: true);
               },
             ),
-          SwitchListTile(
-            title: Text(Platform.isIOS ? 'Face ID / Touch ID Gerektir' : 'Biyometrik Doğrulama (Parmak İzi/Yüz)'),
-            subtitle: Text(Platform.isIOS ? 'Uygulama açılışında Face ID / Touch ID sorar.' : 'Uygulama açılışında biyometrik doğrulama sorar.'),
-            value: settingsState.requireBiometricsOnStartup,
-            secondary: const Icon(CupertinoIcons.lock_shield),
-            onChanged: (value) async {
-              if (value) {
-                final auth = await SecurityService.authenticate(
-                    reason:
-                        'App kilidini aktifleştirmek için doğrulama gerekiyor');
-                if (auth) {
-                  ref
-                      .read(settingsNotifierProvider.notifier)
-                      .toggleBiometricsOnStartup();
-                } else {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Doğrulama başarısız.')));
-                  }
-                }
-              } else {
-                // Disabling lock
-                final auth = await SecurityService.authenticate(
-                    reason: 'App kilidini kapatmak için doğrulama gerekiyor');
-                if (auth) {
-                  ref
-                      .read(settingsNotifierProvider.notifier)
-                      .toggleBiometricsOnStartup();
-                }
-              }
-            },
-          ),
           const Divider(),
           ListTile(
             leading: const Icon(CupertinoIcons.moon),

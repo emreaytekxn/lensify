@@ -34,26 +34,12 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   }
 
   Future<void> _checkBiometrics() async {
-    // Need a tiny delay for providers to be ready if called very early, or just use ref.read
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final requiresAuth =
-          ref.read(settingsNotifierProvider).requireBiometricsOnStartup;
-      if (requiresAuth) {
-        final auth = await SecurityService.authenticate(
-            reason: 'Uygulamaya girmek için doğrulama gerekiyor');
-        if (mounted) {
-          setState(() {
-            _isAuthenticated = auth;
-            _isChecking = false;
-          });
-        }
-      } else {
-        if (mounted) {
-          setState(() {
-            _isAuthenticated = true;
-            _isChecking = false;
-          });
-        }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          _isAuthenticated = true;
+          _isChecking = false;
+        });
       }
     });
   }
