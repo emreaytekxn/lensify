@@ -282,7 +282,7 @@ class _BackgroundEraserScreenState extends ConsumerState<BackgroundEraserScreen>
                         children: [
                           _buildBottomBarItem(icon: CupertinoIcons.paintbrush, label: 'Fırça', index: 0),
                           _buildBottomBarItem(icon: CupertinoIcons.square_fill_on_square_fill, label: 'Arka Plan', index: 1),
-                          _buildBottomBarItem(icon: CupertinoIcons.camera_filters, label: 'Filtreler', index: 2),
+                          _buildBottomBarItem(icon: CupertinoIcons.slider_horizontal_3, label: 'Filtreler', index: 2),
                         ],
                       ),
                     ],

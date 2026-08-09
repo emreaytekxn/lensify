@@ -20,7 +20,7 @@ import 'pdf_merge_screen.dart';
 import 'pdf_compress_screen.dart';
 import 'tools/ocr_scanner_screen.dart';
 import 'tools/pdf_encryption_screen.dart';
-import 'tools/pdf_merge_screen.dart';
+import 'pdf_merge_screen.dart';
 import 'tools/pdf_splitter_screen.dart';
 import 'tools/background_eraser_screen.dart';
 import '../../l10n/app_localizations.dart';
