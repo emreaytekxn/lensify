@@ -250,4 +250,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get save => 'Save';
+
+  @override
+  String get backgroundEraser => 'Background Eraser';
+
+  @override
+  String get backgroundEraserDesc =>
+      'Use AI to magically remove the background from any photo.';
 }

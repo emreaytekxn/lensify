@@ -76,5 +76,7 @@
   "appLockPinSetupDesc": "4 haneli gerçek PIN kodunuzu belirleyin.",
   "fakePinSetupDesc": "4 haneli tuzak PIN kodunuzu belirleyin.",
   "cancel": "İptal",
-  "save": "Kaydet"
+  "save": "Kaydet",
+  "backgroundEraser": "Arka Plan Silici",
+  "backgroundEraserDesc": "Yapay zeka ile fotoğraflardaki insanları arka plandan ayırıp şeffaflaştırın."
 }

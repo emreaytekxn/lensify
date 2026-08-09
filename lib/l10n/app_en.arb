@@ -76,5 +76,7 @@
   "appLockPinSetupDesc": "Set your 4-digit real PIN code.",
   "fakePinSetupDesc": "Set your 4-digit decoy PIN code.",
   "cancel": "Cancel",
-  "save": "Save"
+  "save": "Save",
+  "backgroundEraser": "Background Eraser",
+  "backgroundEraserDesc": "Use AI to magically remove the background from any photo."
 }

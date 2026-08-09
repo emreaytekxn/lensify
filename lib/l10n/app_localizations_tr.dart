@@ -256,4 +256,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get save => 'Kaydet';
+
+  @override
+  String get backgroundEraser => 'Arka Plan Silici';
+
+  @override
+  String get backgroundEraserDesc =>
+      'Yapay zeka ile fotoğraflardaki insanları arka plandan ayırıp şeffaflaştırın.';
 }

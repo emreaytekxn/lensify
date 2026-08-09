@@ -22,6 +22,7 @@ import 'pdf_merge_screen.dart';
 import 'pdf_compress_screen.dart';
 import 'tools/ocr_scanner_screen.dart';
 import 'tools/pdf_encryption_screen.dart';
+import 'tools/background_eraser_screen.dart';
 import '../../l10n/app_localizations.dart';
 
 class ToolsScreen extends ConsumerWidget {
@@ -231,6 +232,19 @@ class ToolsScreen extends ConsumerWidget {
                   context,
                   MaterialPageRoute(
                       builder: (_) => const HeicConverterScreen()));
+            },
+          ),
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.wand_rays,
+            color: Colors.cyan,
+            title: loc.backgroundEraser,
+            description: loc.backgroundEraserDesc,
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const BackgroundEraserScreen()));
             },
           ),
         ],

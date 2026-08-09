@@ -559,6 +559,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
+
+  /// No description provided for @backgroundEraser.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Eraser'**
+  String get backgroundEraser;
+
+  /// No description provided for @backgroundEraserDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Use AI to magically remove the background from any photo.'**
+  String get backgroundEraserDesc;
 }
 
 class _AppLocalizationsDelegate
