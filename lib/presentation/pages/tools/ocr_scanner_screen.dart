@@ -10,6 +10,7 @@ import '../../providers/document_provider.dart';
 import '../../providers/folder_provider.dart';
 import '../../providers/core_providers.dart';
 import '../../widgets/loading_overlay.dart';
+import '../save_result_screen.dart';
 
 class OcrScannerScreen extends ConsumerStatefulWidget {
   const OcrScannerScreen({super.key});
@@ -67,7 +68,7 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen> {
   Future<void> _saveAsTextDocument() async {
     if (_recognizedText == null || _recognizedText!.isEmpty) return;
 
-    LoadingOverlay.show(context, message: 'Belge kaydediliyor...');
+    LoadingOverlay.show(context, message: 'Belge hazırlanıyor...');
     try {
       final appDir = await getApplicationDocumentsDirectory();
       final textDir = Directory('${appDir.path}/text_docs');
@@ -79,29 +80,31 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen> {
       final file = File('${textDir.path}/ocr_$timestamp.txt');
       await file.writeAsString(_recognizedText!);
       
-      final activeFolderId = ref.read(folderNotifierProvider).activeFolderId;
-      final repo = ref.read(scannerRepositoryProvider);
-      
-      final doc = Document(
-        title: 'Metin Belgesi $timestamp',
-        folderId: activeFolderId,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        pageCount: 0,
-        pdfPath: file.path,
-        isFavorite: false,
-        fileSize: await file.length(),
-        fileType: 'text',
-      );
-      
-      await repo.createDocument(doc);
-      await ref.read(documentNotifierProvider.notifier).loadDocuments();
-      
       if (mounted) {
-        Navigator.pop(context); // Go back after saving
+        LoadingOverlay.hide(context);
+        final success = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SaveResultScreen(
+              file: file,
+              fileType: 'text',
+              defaultTitle: 'OCR Metni',
+              pageCount: 0,
+            ),
+          ),
+        );
+        
+        if (success == true && mounted) {
+          Navigator.pop(context); // Go back to tools screen
+        }
       }
-    } finally {
-      if (mounted) LoadingOverlay.hide(context);
+    } catch (e) {
+      if (mounted) {
+        LoadingOverlay.hide(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Kayıt hatası: $e')),
+        );
+      }
     }
   }
 

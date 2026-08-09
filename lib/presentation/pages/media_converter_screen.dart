@@ -125,44 +125,83 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
 
             // Format Selector
             if (_selectedFilePath != null) ...[
-              const Text('Hedef Format:',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              const Text('Hedef Formatı Seçin',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: _formats.map((f) {
+                  final isSelected = _targetFormat == f;
+                  final isVideo = f == 'mp4' || f == 'mov';
+                  final isAudio = f == 'mp3' || f == 'wav' || f == 'm4a';
+                  return ChoiceChip(
+                    label: Text(f.toUpperCase()),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      if (selected) setState(() => _targetFormat = f);
+                    },
+                    avatar: Icon(
+                      isVideo
+                          ? CupertinoIcons.film
+                          : isAudio
+                              ? CupertinoIcons.music_note
+                              : CupertinoIcons.photo,
+                      size: 16,
+                      color: isSelected ? Colors.white : Colors.grey,
+                    ),
+                    selectedColor: Theme.of(context).primaryColor,
+                    labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : null,
+                      fontWeight: isSelected ? FontWeight.bold : null,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 24),
+              // Simulated Quality Selector
+              const Text('Kalite',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               const SizedBox(height: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+                  color: Colors.grey.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
                 ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _targetFormat,
-                    isExpanded: true,
-                    items: _formats.map((f) {
-                      return DropdownMenuItem(
-                        value: f,
-                        child: Text(f.toUpperCase()),
-                      );
-                    }).toList(),
-                    onChanged: (val) {
-                      if (val != null) setState(() => _targetFormat = val);
-                    },
-                  ),
+                child: const ListTile(
+                  leading: Icon(CupertinoIcons.sparkles, color: Colors.amber),
+                  title: Text('Orijinal Kaliteyi Koru'),
+                  subtitle: Text('Kayıpsız dönüştürme (Önerilen)'),
+                  trailing: Icon(CupertinoIcons.checkmark_alt, color: Colors.green),
                 ),
               ),
               const Spacer(),
-              ElevatedButton(
-                onPressed: _convert,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(16),
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _convert,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                    elevation: 4,
+                    shadowColor: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.arrow_right_arrow_left, size: 24),
+                      SizedBox(width: 12),
+                      Text('Şimdi Dönüştür',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                    ],
+                  ),
                 ),
-                child: const Text('Dönüştür',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 20),
             ]

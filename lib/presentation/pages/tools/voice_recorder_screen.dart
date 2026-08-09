@@ -13,6 +13,7 @@ import '../../providers/folder_provider.dart';
 import '../../widgets/loading_overlay.dart';
 import '../../../core/utils/media_conversion_service.dart';
 import '../../../core/utils/transcription_service.dart';
+import '../../../domain/entities/document.dart';
 import '../save_result_screen.dart';
 
 class VoiceRecorderScreen extends ConsumerStatefulWidget {
@@ -175,38 +176,36 @@ class _VoiceRecorderScreenState extends ConsumerState<VoiceRecorderScreen>
         final file = File('${textDir.path}/transcription_$timestamp.txt');
         await file.writeAsString(text);
 
-        final activeFolderId = ref.read(folderNotifierProvider).activeFolderId;
-        final repo = ref.read(scannerRepositoryProvider);
-        
-        final doc = Document(
-          title: 'Çevrilen Metin (Kayıt)',
-          folderId: activeFolderId,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          pageCount: 0,
-          pdfPath: file.path,
-          isFavorite: false,
-          fileSize: await file.length(),
-          fileType: 'text',
-        );
-        
-        await repo.createDocument(doc);
-        await ref.read(documentNotifierProvider.notifier).loadDocuments();
-
         if (mounted) {
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text('Çeviri Başarılı!'),
-              content: SingleChildScrollView(child: Text(text)),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Kapat'),
-                ),
-              ],
+          final success = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SaveResultScreen(
+                file: file,
+                fileType: 'text',
+                defaultTitle: 'Çevrilen Metin (Kayıt)',
+                pageCount: 0,
+              ),
             ),
           );
+          if (success == true && mounted) {
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Çeviri Başarılı!'),
+                content: SingleChildScrollView(child: Text(text)),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      Navigator.pop(context); // Go back to tools
+                    },
+                    child: const Text('Kapat'),
+                  ),
+                ],
+              ),
+            );
+          }
         }
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

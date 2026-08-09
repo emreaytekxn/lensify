@@ -10,6 +10,7 @@ import '../../providers/document_provider.dart';
 import '../../providers/folder_provider.dart';
 import '../../providers/core_providers.dart';
 import '../../widgets/loading_overlay.dart';
+import '../save_result_screen.dart';
 
 class PdfEncryptionScreen extends ConsumerStatefulWidget {
   const PdfEncryptionScreen({super.key});
@@ -61,38 +62,31 @@ class _PdfEncryptionScreenState extends ConsumerState<PdfEncryptionScreen> {
       final file = File('${pdfDir.path}/encrypted_$timestamp.pdf');
       await file.writeAsBytes(encryptedBytes);
       
-      final activeFolderId = ref.read(folderNotifierProvider).activeFolderId;
-      final repo = ref.read(scannerRepositoryProvider);
-      
-      final doc = Document(
-        title: _titleController.text,
-        folderId: activeFolderId,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        pageCount: 0,
-        pdfPath: file.path,
-        isFavorite: false,
-        fileSize: encryptedBytes.length,
-        fileType: 'pdf',
-      );
-      
-      await repo.createDocument(doc);
-      await ref.read(documentNotifierProvider.notifier).loadDocuments();
-      
       if (mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('PDF başarıyla şifrelendi!')),
+        LoadingOverlay.hide(context);
+        final success = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SaveResultScreen(
+              file: file,
+              fileType: 'pdf',
+              defaultTitle: _titleController.text,
+              pageCount: 0,
+            ),
+          ),
         );
+        
+        if (success == true && mounted) {
+          Navigator.pop(context);
+        }
       }
     } catch (e) {
       if (mounted) {
+        LoadingOverlay.hide(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Hata: $e')),
         );
       }
-    } finally {
-      if (mounted) LoadingOverlay.hide(context);
     }
   }
 
