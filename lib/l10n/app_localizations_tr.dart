@@ -211,4 +211,13 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get smartDictaphoneDesc =>
       'Yüksek kaliteli ses kaydedin ve saniyeler içinde metne dönüştürün.';
+
+  @override
+  String get aiSummarize => '✨ Yapay Zeka ile Özetle';
+
+  @override
+  String get summary => 'Özet';
+
+  @override
+  String get copy => 'Kopyala';
 }

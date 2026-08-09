@@ -207,4 +207,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get smartDictaphoneDesc =>
       'Record high-quality audio and convert it to text instantly.';
+
+  @override
+  String get aiSummarize => '✨ AI Summarize';
+
+  @override
+  String get summary => 'Summary';
+
+  @override
+  String get copy => 'Copy';
 }

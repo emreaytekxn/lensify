@@ -62,5 +62,8 @@
   "pdfCompress": "Compress PDF",
   "pdfCompressDesc": "Reduce the file size of large PDF files.",
   "smartDictaphone": "Smart Dictaphone",
-  "smartDictaphoneDesc": "Record high-quality audio and convert it to text instantly."
+  "smartDictaphoneDesc": "Record high-quality audio and convert it to text instantly.",
+  "aiSummarize": "✨ AI Summarize",
+  "summary": "Summary",
+  "copy": "Copy"
 }

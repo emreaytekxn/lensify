@@ -475,6 +475,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Record high-quality audio and convert it to text instantly.'**
   String get smartDictaphoneDesc;
+
+  /// No description provided for @aiSummarize.
+  ///
+  /// In en, this message translates to:
+  /// **'✨ AI Summarize'**
+  String get aiSummarize;
+
+  /// No description provided for @summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get summary;
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
 }
 
 class _AppLocalizationsDelegate

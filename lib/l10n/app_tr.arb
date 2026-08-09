@@ -62,5 +62,8 @@
   "pdfCompress": "PDF Sıkıştır",
   "pdfCompressDesc": "Büyük PDF dosyalarınızın boyutunu küçültün.",
   "smartDictaphone": "Akıllı Diktafon",
-  "smartDictaphoneDesc": "Yüksek kaliteli ses kaydedin ve saniyeler içinde metne dönüştürün."
+  "smartDictaphoneDesc": "Yüksek kaliteli ses kaydedin ve saniyeler içinde metne dönüştürün.",
+  "aiSummarize": "✨ Yapay Zeka ile Özetle",
+  "summary": "Özet",
+  "copy": "Kopyala"
 }
