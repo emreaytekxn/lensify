@@ -20,11 +20,8 @@ class SecurityService {
     try {
       final bool didAuthenticate = await _auth.authenticate(
         localizedReason: reason,
-        options: const AuthenticationOptions(
-          biometricOnly: false,
-          stickyAuth: true,
-          useErrorDialogs: true,
-        ),
+        biometricOnly: false,
+        persistAcrossBackgrounding: true,
       );
       return didAuthenticate;
     } on PlatformException catch (e) {
