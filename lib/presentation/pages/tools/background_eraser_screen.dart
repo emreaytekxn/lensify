@@ -10,6 +10,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../providers/document_provider.dart';
 import '../../providers/core_providers.dart';
 import '../../providers/folder_provider.dart';
+import '../save_result_screen.dart';
 
 class BackgroundEraserScreen extends ConsumerStatefulWidget {
   const BackgroundEraserScreen({super.key});
@@ -74,28 +75,20 @@ class _BackgroundEraserScreenState extends ConsumerState<BackgroundEraserScreen>
   Future<void> _saveToVault() async {
     if (_processedImage == null) return;
 
-    final fileName = 'BG_Removed_${DateTime.now().millisecondsSinceEpoch}.png';
-    final repo = ref.read(scannerRepositoryProvider);
-    final folderId = ref.read(folderNotifierProvider).activeFolderId;
-
-    final doc = Document(
-      title: fileName,
-      folderId: folderId,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      pageCount: 0,
-      pdfPath: _processedImage!.path,
-      fileType: 'image',
-      fileSize: await _processedImage!.length(),
+    final fileName = 'Arkaplan_Silinmis_${DateTime.now().millisecondsSinceEpoch}';
+    
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SaveResultScreen(
+          file: _processedImage!,
+          fileType: 'image',
+          defaultTitle: fileName,
+        ),
+      ),
     );
 
-    await repo.createDocument(doc);
-    await ref.read(documentNotifierProvider.notifier).loadDocuments();
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Kasaya kaydedildi: $fileName')),
-      );
+    if (result == true && mounted) {
       Navigator.pop(context);
     }
   }

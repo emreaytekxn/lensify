@@ -13,6 +13,7 @@ import '../../domain/entities/document.dart';
 import '../providers/document_provider.dart';
 import '../providers/folder_provider.dart';
 import '../providers/core_providers.dart';
+import 'save_result_screen.dart';
 
 class TranscriptionScreen extends ConsumerStatefulWidget {
   const TranscriptionScreen({super.key});
@@ -137,37 +138,34 @@ class _TranscriptionScreenState extends ConsumerState<TranscriptionScreen> {
       final file = File('${textDir.path}/transcription_$timestamp.txt');
       await file.writeAsString(_transcribedText!);
 
-      final activeFolderId = ref.read(folderNotifierProvider).activeFolderId;
-      final repo = ref.read(scannerRepositoryProvider);
+      if (mounted) LoadingOverlay.hide(context);
       
-      final doc = Document(
-        title: 'Çevrilen Metin $timestamp',
-        folderId: activeFolderId,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        pageCount: 0,
-        pdfPath: file.path,
-        isFavorite: false,
-        fileSize: await file.length(),
-        fileType: 'text',
+      final saveResult = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => SaveResultScreen(
+            file: file,
+            fileType: 'text',
+            defaultTitle: 'Cevrilen_Metin_$timestamp',
+          ),
+        ),
       );
-      
-      await repo.createDocument(doc);
-      await ref.read(documentNotifierProvider.notifier).loadDocuments();
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Metin belgesi olarak kaydedildi!')),
-        );
+      if (saveResult == true && mounted) {
+        // Nothing special to pop, stay on transcription screen or clear it
+        setState(() {
+          _transcribedText = null;
+          _selectedFilePath = null;
+          _selectedFileName = null;
+        });
       }
     } catch (e) {
+      if (mounted) LoadingOverlay.hide(context);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Kaydetme hatası: $e')),
         );
       }
-    } finally {
-      if (mounted) LoadingOverlay.hide(context);
     }
   }
 

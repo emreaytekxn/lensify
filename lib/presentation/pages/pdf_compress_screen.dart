@@ -6,6 +6,7 @@ import 'dart:io';
 
 import '../../core/utils/pdf_tools_service.dart';
 import '../widgets/loading_overlay.dart';
+import 'save_result_screen.dart';
 
 class PdfCompressScreen extends StatefulWidget {
   const PdfCompressScreen({super.key});
@@ -51,12 +52,49 @@ class _PdfCompressScreenState extends State<PdfCompressScreen> {
       final newSize = await outInfo.length();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sıkıştırıldı: ${(newSize / 1024 / 1024).toStringAsFixed(2)} MB')),
+        LoadingOverlay.hide(context);
+        
+        final oldSizeMb = _selectedFile!.size / 1024 / 1024;
+        final newSizeMb = newSize / 1024 / 1024;
+        
+        final shouldSave = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Sıkıştırma Tamamlandı 📉'),
+            content: Text('Eski Boyut: ${oldSizeMb.toStringAsFixed(2)} MB\n'
+                'Yeni Boyut: ${newSizeMb.toStringAsFixed(2)} MB\n\n'
+                'Bu dosyayı kaydetmek istiyor musunuz?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Vazgeç', style: TextStyle(color: Colors.red)),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('Evet, Kaydet'),
+              ),
+            ],
+          ),
         );
-        setState(() {
-          _selectedFile = null;
-        });
+        
+        if (shouldSave == true && mounted) {
+          final saveResult = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SaveResultScreen(
+                file: File(outputPath),
+                fileType: 'pdf',
+                defaultTitle: 'Sikistirilmis_PDF_${DateTime.now().millisecondsSinceEpoch}',
+              ),
+            ),
+          );
+          
+          if (saveResult == true && mounted) {
+            setState(() {
+              _selectedFile = null;
+            });
+          }
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -66,7 +104,6 @@ class _PdfCompressScreenState extends State<PdfCompressScreen> {
       }
     } finally {
       if (mounted) {
-        LoadingOverlay.hide(context);
         setState(() {
           _isProcessing = false;
         });

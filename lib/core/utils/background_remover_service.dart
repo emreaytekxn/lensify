@@ -30,9 +30,14 @@ img.Image _applyMaskInIsolate(_IsolateData data) {
     final index = maskY * maskWidth + maskX;
 
     if (index < confidences.length) {
-      if (confidences[index] < 0.5) {
+      final confidence = confidences[index];
+      if (confidence < 0.3) {
         // Set alpha to 0 (transparent) for background
         pixel.a = 0;
+      } else if (confidence < 0.7) {
+        // Feathering / Alpha Blending for smooth edges
+        final blend = (confidence - 0.3) / 0.4;
+        pixel.a = (pixel.a * blend).toInt();
       }
     }
   }

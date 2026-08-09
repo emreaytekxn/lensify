@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../providers/settings_provider.dart';
 import '../../core/utils/security_service.dart';
 import '../widgets/legal_documents_dialog.dart';
 import '../../l10n/app_localizations.dart';
 import '../../main.dart';
+import 'onboarding_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -146,7 +148,55 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () => LegalDocumentsDialog.showTerms(context),
           ),
-          const SizedBox(height: 32),
+          const Divider(),
+          ListTile(
+            leading: const Icon(CupertinoIcons.restart, color: Colors.orange),
+            title: const Text('Hızlı Kurulum Ekranını Göster', style: TextStyle(color: Colors.orange)),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.orange),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+              );
+            },
+          ),
+          const SizedBox(height: 48),
+          Center(
+            child: Column(
+              children: [
+                Text(
+                  'Powered by',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.withValues(alpha: 0.5),
+                    letterSpacing: 2,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [Colors.blueAccent, Colors.purpleAccent],
+                  ).createShader(bounds),
+                  child: Text(
+                    'N. Emre Aytekin',
+                    style: GoogleFonts.orbitron(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1.5,
+                      shadows: [
+                        BoxShadow(
+                          color: Colors.blueAccent.withValues(alpha: 0.5),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -6,10 +6,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../../domain/entities/document.dart';
 import '../../providers/core_providers.dart';
 import '../../providers/document_provider.dart';
 import '../../providers/folder_provider.dart';
+import '../../../domain/entities/document.dart';
+import '../save_result_screen.dart';
 import '../../widgets/loading_overlay.dart';
 
 class HeicConverterScreen extends ConsumerStatefulWidget {
@@ -59,42 +60,35 @@ class _HeicConverterScreenState extends ConsumerState<HeicConverterScreen> {
       );
 
       if (result != null) {
-        final folderId = ref.read(folderNotifierProvider).activeFolderId;
-        final repo = ref.read(scannerRepositoryProvider);
-        
-        final doc = Document(
-          title: 'Dönüştürülen Görsel',
-          folderId: folderId,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          pageCount: 0,
-          pdfPath: result.path,
-          isFavorite: false,
-          fileSize: await File(result.path).length(),
-          fileType: 'image',
-        );
-        
-        await repo.createDocument(doc);
-        await ref.read(documentNotifierProvider.notifier).loadDocuments();
+        if (mounted) LoadingOverlay.hide(context);
 
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('JPG olarak kaydedildi!')),
-          );
+        final saveResult = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SaveResultScreen(
+              file: File(result.path),
+              fileType: 'image',
+              defaultTitle: 'HEIC_Donusturuldu',
+            ),
+          ),
+        );
+
+        if (saveResult == true && mounted) {
           Navigator.pop(context);
         }
       } else {
+        if (mounted) LoadingOverlay.hide(context);
         throw Exception("Dönüştürme başarısız oldu.");
       }
     } catch (e) {
+      if (mounted) LoadingOverlay.hide(context);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Hata: $e')),
         );
       }
     } finally {
-      setState(() => _isConverting = false);
-      if (mounted) LoadingOverlay.hide(context);
+      if (mounted) setState(() => _isConverting = false);
     }
   }
 

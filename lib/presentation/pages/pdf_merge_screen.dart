@@ -6,6 +6,7 @@ import 'dart:io';
 
 import '../../core/utils/pdf_tools_service.dart';
 import '../widgets/loading_overlay.dart';
+import 'save_result_screen.dart';
 
 class PdfMergeScreen extends StatefulWidget {
   const PdfMergeScreen({super.key});
@@ -71,13 +72,24 @@ class _PdfMergeScreenState extends State<PdfMergeScreen> {
       await PdfToolsService.mergePdfs(paths, outputPath);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Başarıyla birleştirildi: ${outputPath.split('/').last}')),
+        LoadingOverlay.hide(context);
+        
+        final saveResult = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SaveResultScreen(
+              file: File(outputPath),
+              fileType: 'pdf',
+              defaultTitle: 'Birlestirilmis_PDF_${DateTime.now().millisecondsSinceEpoch}',
+            ),
+          ),
         );
-        // You could navigate to a preview screen here
-        setState(() {
-          _selectedFiles.clear();
-        });
+        
+        if (saveResult == true && mounted) {
+          setState(() {
+            _selectedFiles.clear();
+          });
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -87,7 +99,6 @@ class _PdfMergeScreenState extends State<PdfMergeScreen> {
       }
     } finally {
       if (mounted) {
-        LoadingOverlay.hide(context);
         setState(() {
           _isProcessing = false;
         });
