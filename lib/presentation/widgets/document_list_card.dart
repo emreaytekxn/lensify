@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -93,7 +94,9 @@ class DocumentListCard extends ConsumerWidget {
                             final firstPage = snapshot.data!.first;
                             final path = firstPage.processedImagePath ??
                                 firstPage.originalImagePath;
-                            if (File(path).existsSync()) {
+                            final ext = p.extension(path).toLowerCase();
+                            final isImage = ext == '.jpg' || ext == '.jpeg' || ext == '.png' || ext == '.webp' || ext == '.heic';
+                            if (File(path).existsSync() && isImage) {
                               return ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: Image.file(

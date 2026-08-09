@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -72,7 +73,10 @@ class DocumentGridCard extends ConsumerWidget {
                                 final firstPage = snapshot.data!.first;
                                 final path = firstPage.processedImagePath ??
                                     firstPage.originalImagePath;
-                                if (File(path).existsSync()) {
+                                final ext = p.extension(path).toLowerCase();
+                                final isImage = ext == '.jpg' || ext == '.jpeg' || ext == '.png' || ext == '.webp' || ext == '.heic';
+                                
+                                if (File(path).existsSync() && isImage) {
                                   return ClipRRect(
                                     borderRadius: const BorderRadius.vertical(
                                         top: Radius.circular(14)),
@@ -115,14 +119,25 @@ class DocumentGridCard extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        document.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Row(
+                        children: [
+                          if (document.isFavorite)
+                            const Padding(
+                              padding: EdgeInsets.only(right: 4.0),
+                              child: Icon(Icons.star, color: Colors.orange, size: 14),
+                            ),
+                          Expanded(
+                            child: Text(
+                              document.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Row(

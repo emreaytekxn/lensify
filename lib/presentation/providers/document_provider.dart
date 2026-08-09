@@ -62,6 +62,13 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
 
   void _applySearchFilter() {
     List<Document> result = state.allDocuments;
+    
+    // Filter out ARCHIVED documents unless the active smart folder is 'archive'
+    if (state.activeSmartFolder == SmartFolderType.archive) {
+      result = result.where((d) => d.tags.contains('ARCHIVED') || d.fileType == 'archive').toList();
+    } else {
+      result = result.where((d) => !d.tags.contains('ARCHIVED') && d.fileType != 'archive').toList();
+    }
 
     // 1. Apply Smart Folder Filter
     switch (state.activeSmartFolder) {
@@ -88,7 +95,7 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
         result = result.where((d) => d.fileType == 'text').toList();
         break;
       case SmartFolderType.archive:
-        result = result.where((d) => d.fileType == 'archive').toList();
+        // Already handled above
         break;
       case SmartFolderType.none:
         break;
@@ -293,6 +300,29 @@ class DocumentNotifier extends StateNotifier<DocumentState> {
         final doc = state.allDocuments.firstWhere((d) => d.id == id);
         final updatedDoc = doc.copyWith(
           isFavorite: !doc.isFavorite,
+          updatedAt: DateTime.now(),
+        );
+        await _repository.updateDocument(updatedDoc);
+      }
+      clearSelection();
+      await loadDocuments();
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  Future<void> toggleArchiveSelectedDocuments() async {
+    try {
+      for (final id in state.selectedDocumentIds) {
+        final doc = state.allDocuments.firstWhere((d) => d.id == id);
+        
+        final hasTag = doc.tags.contains('ARCHIVED');
+        final updatedTags = hasTag
+            ? doc.tags.where((t) => t != 'ARCHIVED').toList()
+            : [...doc.tags, 'ARCHIVED'];
+
+        final updatedDoc = doc.copyWith(
+          tags: updatedTags,
           updatedAt: DateTime.now(),
         );
         await _repository.updateDocument(updatedDoc);

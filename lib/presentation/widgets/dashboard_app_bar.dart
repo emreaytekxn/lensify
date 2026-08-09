@@ -37,9 +37,13 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
             onPressed: docState.selectedDocumentIds.isEmpty
                 ? null
                 : () {
+                    final firstId = docState.selectedDocumentIds.first;
+                    final firstDoc = docState.allDocuments.firstWhere((d) => d.id == firstId);
+                    final isAdding = !firstDoc.isFavorite;
+                    
                     ref.read(documentNotifierProvider.notifier).toggleFavoriteSelectedDocuments().then((_) {
                       if (context.mounted) {
-                        UXFeedback.showStar(context, 'Favori Durumu Değişti');
+                        UXFeedback.showStar(context, isAdding ? 'Favorilere Eklendi' : 'Favorilerden Çıkarıldı');
                       }
                     });
                   },
@@ -53,11 +57,13 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   },
           ),
           IconButton(
-            icon: const Icon(CupertinoIcons.archivebox),
+            icon: Icon(docState.activeSmartFolder == SmartFolderType.archive 
+                ? CupertinoIcons.tray_arrow_up 
+                : CupertinoIcons.archivebox),
             onPressed: docState.selectedDocumentIds.isEmpty
                 ? null
                 : () {
-                    _zipSelectedDocuments(context, ref, docState);
+                    _toggleArchiveSelectedDocuments(context, ref, docState);
                   },
           ),
           IconButton(
@@ -197,51 +203,19 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
     );
   }
 
-  Future<void> _zipSelectedDocuments(BuildContext context, WidgetRef ref, DocumentState docState) async {
-    final docs = docState.filteredDocuments
-        .where((d) => docState.selectedDocumentIds.contains(d.id))
-        .toList();
-    if (docs.isEmpty) return;
+  void _toggleArchiveSelectedDocuments(BuildContext context, WidgetRef ref, DocumentState docState) {
+    final firstId = docState.selectedDocumentIds.first;
+    final firstDoc = docState.allDocuments.firstWhere((d) => d.id == firstId);
+    final isArchiving = !firstDoc.tags.contains('ARCHIVED');
 
-    LoadingOverlay.show(context, message: 'Arşivleniyor...');
-    
-    try {
-      final zipPath = await ArchiveService.zipDocuments(docs, 'Archive_${DateTime.now().millisecondsSinceEpoch}');
-      if (zipPath != null) {
-        final repo = ref.read(scannerRepositoryProvider);
-        final file = File(zipPath);
-        final folderId = ref.read(folderNotifierProvider).activeFolderId;
-
-        final archiveDoc = Document(
-          title: 'Arşiv - ${docs.length} Dosya',
-          folderId: folderId,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          pageCount: 0,
-          pdfPath: zipPath,
-          isFavorite: false,
-          fileSize: await file.length(),
-          fileType: 'archive',
-        );
-
-        await repo.createDocument(archiveDoc);
-        await ref.read(documentNotifierProvider.notifier).loadDocuments();
-        ref.read(documentNotifierProvider.notifier).clearSelection();
-        
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Dosyalar arşivlendi!')),
-          );
-        }
-      } else {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Arşivleme başarısız oldu.')),
-          );
+    ref.read(documentNotifierProvider.notifier).toggleArchiveSelectedDocuments().then((_) {
+      if (context.mounted) {
+        if (isArchiving) {
+          UXFeedback.showSuccess(context, 'Arşivlendi', icon: CupertinoIcons.archivebox_fill);
+        } else {
+          UXFeedback.showSuccess(context, 'Arşivden Çıkarıldı', icon: CupertinoIcons.tray_arrow_up_fill);
         }
       }
-    } finally {
-      if (context.mounted) LoadingOverlay.hide(context);
-    }
+    });
   }
 }
