@@ -5,6 +5,8 @@ import 'package:share_plus/share_plus.dart';
 import '../widgets/kawaru_text.dart';
 import '../../core/utils/media_conversion_service.dart';
 import '../widgets/loading_overlay.dart';
+import 'dart:io';
+import 'save_result_screen.dart';
 
 class MediaConverterScreen extends StatefulWidget {
   const MediaConverterScreen({super.key});
@@ -45,11 +47,24 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
 
       if (outputPath != null && mounted) {
         // Success
-        await Share.shareXFiles(
-          [XFile(outputPath)],
-          text: 'Kawaru ile dönüştürüldü',
-          sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
+        final saveResult = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SaveResultScreen(
+              file: File(outputPath),
+              fileType: _targetFormat == 'mp4' || _targetFormat == 'mov' 
+                  ? 'video' 
+                  : _targetFormat == 'gif' ? 'image' : 'audio',
+              defaultTitle: 'Donusturulmus_Medya_${DateTime.now().millisecondsSinceEpoch}',
+            ),
+          ),
         );
+        if (saveResult == true && mounted) {
+          setState(() {
+            _selectedFilePath = null;
+            _selectedFileName = null;
+          });
+        }
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

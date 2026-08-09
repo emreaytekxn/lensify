@@ -13,6 +13,7 @@ import '../../providers/folder_provider.dart';
 import '../../widgets/loading_overlay.dart';
 import '../../../core/utils/media_conversion_service.dart';
 import '../../../core/utils/transcription_service.dart';
+import '../save_result_screen.dart';
 
 class VoiceRecorderScreen extends ConsumerStatefulWidget {
   const VoiceRecorderScreen({super.key});
@@ -107,31 +108,17 @@ class _VoiceRecorderScreenState extends ConsumerState<VoiceRecorderScreen>
       });
 
       if (path != null) {
-        // Save to Database
-        final activeFolderId = ref.read(folderNotifierProvider).activeFolderId;
-        final repo = ref.read(scannerRepositoryProvider);
-        final file = File(path);
-
-        final doc = Document(
-          title: 'Ses Kaydı - $_formattedTime',
-          folderId: activeFolderId,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          pageCount: 0,
-          pdfPath: path,
-          isFavorite: false,
-          fileSize: await file.length(),
-          fileType: 'audio',
+        // Use SaveResultScreen
+        final saveResult = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SaveResultScreen(
+              file: File(path),
+              fileType: 'audio',
+              defaultTitle: 'Ses Kaydı - $_formattedTime',
+            ),
+          ),
         );
-
-        await repo.createDocument(doc);
-        await ref.read(documentNotifierProvider.notifier).loadDocuments();
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Ses kaydı belgelere eklendi.')),
-          );
-        }
       }
     } catch (e) {
       debugPrint("Durdurma hatası: $e");

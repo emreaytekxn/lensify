@@ -9,6 +9,7 @@ import '../../../core/utils/archive_service.dart';
 import '../save_result_screen.dart';
 import '../../widgets/loading_overlay.dart';
 import 'package:intl/intl.dart';
+import 'package:file_picker/file_picker.dart';
 
 class ZipCreatorScreen extends ConsumerStatefulWidget {
   const ZipCreatorScreen({super.key});
@@ -95,6 +96,67 @@ class _ZipCreatorScreenState extends ConsumerState<ZipCreatorScreen> {
     }
   }
 
+  Future<void> _pickFromDeviceAndZip() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+      if (result != null && result.files.isNotEmpty) {
+        final filePaths = result.files.map((f) => f.path!).toList();
+        
+        int originalSizeBytes = 0;
+        for (var path in filePaths) {
+          originalSizeBytes += await File(path).length();
+        }
+
+        setState(() { _isZipping = true; });
+        if (mounted) LoadingOverlay.show(context, message: 'Zipleniyor...');
+
+        final zipPath = await ArchiveService.zipFiles(
+          filePaths,
+          'Archive_${DateTime.now().millisecondsSinceEpoch}',
+        );
+
+        if (zipPath != null && mounted) {
+          final zipFile = File(zipPath);
+          final zippedSizeBytes = await zipFile.length();
+          if (!mounted) return;
+          LoadingOverlay.hide(context);
+
+          final proceed = await _showSizeComparison(originalSizeBytes, zippedSizeBytes);
+          if (proceed == true && mounted) {
+            final success = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SaveResultScreen(
+                  file: zipFile,
+                  fileType: 'archive',
+                  defaultTitle: 'Cihazdan ZIP - ${filePaths.length} Dosya',
+                  pageCount: 0,
+                ),
+              ),
+            );
+            if (success == true && mounted) {
+              Navigator.pop(context);
+            }
+          } else {
+            if (await zipFile.exists()) await zipFile.delete();
+          }
+        } else {
+          if (mounted) {
+            LoadingOverlay.hide(context);
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Zipleme başarısız oldu.')));
+          }
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        LoadingOverlay.hide(context);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hata: $e')));
+      }
+    } finally {
+      if (mounted) setState(() { _isZipping = false; });
+    }
+  }
+
   Future<bool?> _showSizeComparison(int original, int zipped) {
     String formatBytes(int bytes) {
       if (bytes < 1024) return '$bytes B';
@@ -162,6 +224,11 @@ class _ZipCreatorScreenState extends ConsumerState<ZipCreatorScreen> {
       appBar: AppBar(
         title: const Text('ZIP Oluşturucu'),
         actions: [
+          IconButton(
+            icon: const Icon(CupertinoIcons.folder_badge_plus),
+            tooltip: 'Cihazdan Seç',
+            onPressed: _isZipping ? null : _pickFromDeviceAndZip,
+          ),
           if (_selectedIds.isNotEmpty)
             TextButton(
               onPressed: () => setState(() => _selectedIds.clear()),

@@ -97,116 +97,192 @@ class _SaveResultScreenState extends ConsumerState<SaveResultScreen> {
     final ext = p.extension(widget.file.path).toUpperCase().replaceAll('.', '');
     
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Dosyayı Kaydet'),
-        actions: [
-          TextButton(
-            onPressed: _save,
-            child: const Text('Kaydet', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          )
-        ],
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        title: const Text('Dosyayı Kaydet', style: TextStyle(fontWeight: FontWeight.w700)),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              height: 120,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Center(
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Icon(
-                      widget.fileType == 'pdf'
-                          ? CupertinoIcons.doc_fill
-                          : widget.fileType == 'image'
-                              ? CupertinoIcons.photo_fill
-                              : widget.fileType == 'audio'
-                                  ? CupertinoIcons.waveform_path_badge_plus
-                                  : CupertinoIcons.doc_text_fill,
-                      size: 48,
-                      color: Theme.of(context).primaryColor,
+                    // Premium Header Card
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Theme.of(context).primaryColor,
+                            Theme.of(context).primaryColor.withValues(alpha: 0.7)
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              widget.fileType == 'pdf'
+                                  ? CupertinoIcons.doc_fill
+                                  : widget.fileType == 'archive'
+                                      ? CupertinoIcons.archivebox_fill
+                                      : widget.fileType == 'image'
+                                          ? CupertinoIcons.photo_fill
+                                          : widget.fileType == 'audio'
+                                              ? CupertinoIcons.waveform_path_badge_plus
+                                              : CupertinoIcons.doc_text_fill,
+                              size: 48,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            '$ext Formatında Hazır',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'İşlem başarıyla tamamlandı. Dosyanızı kasanıza kaydedebilirsiniz.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withValues(alpha: 0.8),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                    const SizedBox(height: 32),
+                    
+                    // Inputs Section
+                    const Text('Dosya Adı', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey)),
                     const SizedBox(height: 8),
-                    Text(
-                      '$ext Formatında Hazır',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
+                    TextField(
+                      controller: _titleController,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      decoration: InputDecoration(
+                        hintText: 'Örn: Önemli Belge',
+                        filled: true,
+                        fillColor: Theme.of(context).cardColor,
+                        prefixIcon: const Icon(CupertinoIcons.pen, color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 24),
+                    const Text('Hedef Klasör', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey)),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<int?>(
+                          value: _selectedFolderId,
+                          isExpanded: true,
+                          icon: const Icon(CupertinoIcons.chevron_down, color: Colors.grey),
+                          hint: const Text('Ana Dizin (Klasörsüz)'),
+                          items: [
+                            const DropdownMenuItem(
+                              value: null,
+                              child: Row(
+                                children: [
+                                  Icon(CupertinoIcons.tray, size: 20, color: Colors.grey),
+                                  SizedBox(width: 12),
+                                  Text('Ana Dizin (Klasörsüz)', style: TextStyle(fontWeight: FontWeight.w500)),
+                                ],
+                              ),
+                            ),
+                            ...folders.map((folder) {
+                              return DropdownMenuItem(
+                                value: folder.id,
+                                child: Row(
+                                  children: [
+                                    Icon(CupertinoIcons.folder_fill, size: 20, color: Color(folder.color)),
+                                    const SizedBox(width: 12),
+                                    Text(folder.name, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                  ],
+                                ),
+                              );
+                            }),
+                          ],
+                          onChanged: (val) {
+                            setState(() {
+                              _selectedFolderId = val;
+                            });
+                          },
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 32),
-            const Text('Dosya Adı', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                hintText: 'Örn: Kimlik Fotokopisi',
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Text('Hedef Klasör', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            const SizedBox(height: 8),
+            
+            // Bottom Save Button
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
+                  )
+                ],
               ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<int?>(
-                  value: _selectedFolderId,
-                  isExpanded: true,
-                  hint: const Text('Ana Dizin (Klasörsüz)'),
-                  items: [
-                    const DropdownMenuItem(
-                      value: null,
-                      child: Text('Ana Dizin (Klasörsüz)'),
-                    ),
-                    ...folders.map((folder) {
-                      return DropdownMenuItem(
-                        value: folder.id,
-                        child: Text(folder.name),
-                      );
-                    }),
+              child: ElevatedButton(
+                onPressed: _save,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(CupertinoIcons.check_mark_circled_solid, size: 24),
+                    SizedBox(width: 12),
+                    Text('Kasaya Kaydet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   ],
-                  onChanged: (val) {
-                    setState(() {
-                      _selectedFolderId = val;
-                    });
-                  },
                 ),
               ),
-            ),
-            const SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: _save,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(16),
-                backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: const Text('Kasaya Kaydet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
           ],
         ),

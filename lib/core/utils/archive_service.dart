@@ -54,6 +54,37 @@ class ArchiveService {
     }
   }
 
+  /// Zips a list of file paths into a single .zip file.
+  static Future<String?> zipFiles(List<String> filePaths, String zipName) async {
+    try {
+      if (filePaths.isEmpty) return null;
+
+      final dir = await getApplicationDocumentsDirectory();
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final zipDir = Directory('${dir.path}/archives');
+      if (!await zipDir.exists()) await zipDir.create(recursive: true);
+
+      final safeName = zipName.replaceAll(RegExp(r'[^a-zA-Z0-9_\-\s]'), '').trim();
+      final zipPath = '${zipDir.path}/${safeName}_$timestamp.zip';
+
+      var encoder = ZipFileEncoder();
+      encoder.create(zipPath);
+
+      for (var path in filePaths) {
+        final file = File(path);
+        if (await file.exists()) {
+          final entryName = p.basename(path);
+          encoder.addFile(file, entryName);
+        }
+      }
+
+      encoder.close();
+      return zipPath;
+    } catch (e) {
+      return null;
+    }
+  }
+
   /// Unzips a file to a temporary directory and returns a list of extracted file paths.
   static Future<List<String>> unzipFile(String zipPath) async {
     try {
@@ -77,7 +108,9 @@ class ArchiveService {
       }
 
       return extractedFiles;
-    } catch (e) {
+    } catch (e, st) {
+      print("UNZIP ERROR: $e");
+      print(st);
       return [];
     }
   }
