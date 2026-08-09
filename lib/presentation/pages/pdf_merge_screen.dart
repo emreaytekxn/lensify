@@ -17,7 +17,6 @@ class PdfMergeScreen extends StatefulWidget {
 
 class _PdfMergeScreenState extends State<PdfMergeScreen> {
   final List<PlatformFile> _selectedFiles = [];
-  bool _isProcessing = false;
 
   Future<void> _pickFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -56,10 +55,6 @@ class _PdfMergeScreenState extends State<PdfMergeScreen> {
       );
       return;
     }
-
-    setState(() {
-      _isProcessing = true;
-    });
     
     LoadingOverlay.show(context, message: 'PDF\'ler birleştiriliyor...');
 
@@ -99,9 +94,6 @@ class _PdfMergeScreenState extends State<PdfMergeScreen> {
       }
     } finally {
       if (mounted) {
-        setState(() {
-          _isProcessing = false;
-        });
       }
     }
   }

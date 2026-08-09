@@ -17,7 +17,7 @@ class ArchiveService {
       if (!await zipDir.exists()) await zipDir.create(recursive: true);
 
       final safeName = zipName.replaceAll(RegExp(r'[^a-zA-Z0-9_\-\s]'), '').trim();
-      final zipPath = '${zipDir.path}/$safeName\_$timestamp.zip';
+      final zipPath = '${zipDir.path}/${safeName}_$timestamp.zip';
 
       var encoder = ZipFileEncoder();
       encoder.create(zipPath);

@@ -17,7 +17,6 @@ class PdfCompressScreen extends StatefulWidget {
 
 class _PdfCompressScreenState extends State<PdfCompressScreen> {
   PlatformFile? _selectedFile;
-  bool _isProcessing = false;
   double _compressionLevel = 1.0; // 0 to 3
 
   Future<void> _pickFile() async {
@@ -35,10 +34,6 @@ class _PdfCompressScreenState extends State<PdfCompressScreen> {
 
   Future<void> _compressPdf() async {
     if (_selectedFile == null) return;
-
-    setState(() {
-      _isProcessing = true;
-    });
     
     LoadingOverlay.show(context, message: 'PDF Sıkıştırılıyor...');
 
@@ -104,9 +99,6 @@ class _PdfCompressScreenState extends State<PdfCompressScreen> {
       }
     } finally {
       if (mounted) {
-        setState(() {
-          _isProcessing = false;
-        });
       }
     }
   }

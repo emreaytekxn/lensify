@@ -88,8 +88,10 @@ class FolderListView extends ConsumerWidget {
                       .read(folderNotifierProvider.notifier)
                       .setActiveFolder(folder.id);
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Doğrulama başarısız!')));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Doğrulama başarısız!')));
+                  }
                 }
               } else {
                 ref

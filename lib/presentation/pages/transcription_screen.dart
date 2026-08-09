@@ -3,16 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/media_conversion_service.dart';
 import '../../core/utils/transcription_service.dart';
 import '../widgets/loading_overlay.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../domain/entities/document.dart';
-import '../providers/document_provider.dart';
-import '../providers/folder_provider.dart';
-import '../providers/core_providers.dart';
 import 'save_result_screen.dart';
 
 class TranscriptionScreen extends ConsumerStatefulWidget {
@@ -80,10 +75,12 @@ class _TranscriptionScreenState extends ConsumerState<TranscriptionScreen> {
       if (_isCancelled) return;
 
       if (wavPath == null) {
-        if (mounted) LoadingOverlay.hide(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Medya dönüştürme başarısız.')),
-        );
+        if (mounted) {
+          LoadingOverlay.hide(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Medya dönüştürme başarısız.')),
+          );
+        }
         return;
       }
 
@@ -139,6 +136,7 @@ class _TranscriptionScreenState extends ConsumerState<TranscriptionScreen> {
       await file.writeAsString(_transcribedText!);
 
       if (mounted) LoadingOverlay.hide(context);
+      if (!mounted) return;
       
       final saveResult = await Navigator.push(
         context,

@@ -36,8 +36,7 @@ class MediaConversionService {
       if (ReturnCode.isSuccess(returnCode)) {
         return outputPath;
       } else {
-        final logs = await session.getLogs();
-        for (var log in logs) {}
+        await session.getLogs();
         return null;
       }
     } catch (e) {

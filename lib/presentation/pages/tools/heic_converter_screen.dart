@@ -6,10 +6,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../providers/core_providers.dart';
-import '../../providers/document_provider.dart';
-import '../../providers/folder_provider.dart';
-import '../../../domain/entities/document.dart';
 import '../save_result_screen.dart';
 import '../../widgets/loading_overlay.dart';
 
@@ -61,6 +57,7 @@ class _HeicConverterScreenState extends ConsumerState<HeicConverterScreen> {
 
       if (result != null) {
         if (mounted) LoadingOverlay.hide(context);
+        if (!mounted) return;
 
         final saveResult = await Navigator.push(
           context,

@@ -10,7 +10,6 @@ import '../../domain/entities/document.dart';
 import '../../domain/entities/document_page.dart';
 import '../providers/core_providers.dart';
 import '../providers/document_provider.dart';
-import '../providers/folder_provider.dart';
 import 'scanner_camera_screen.dart';
 import '../../core/utils/ocr_service.dart';
 import '../../core/utils/tts_service.dart';
@@ -123,6 +122,7 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
       await repo.updateDocument(updatedDoc);
       await ref.read(documentNotifierProvider.notifier).loadDocuments();
 
+      if (!mounted) return;
       final size = MediaQuery.of(context).size;
       await Share.shareXFiles(
         [XFile(pdfFile.path)],
@@ -168,6 +168,7 @@ class _DocumentEditorScreenState extends ConsumerState<DocumentEditorScreen> {
     if (success == true) {
       // Refresh the list to show the new image with the signature
       await _loadPages();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('İmza başarıyla eklendi!')));
     }

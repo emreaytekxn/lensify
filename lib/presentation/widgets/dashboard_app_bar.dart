@@ -6,7 +6,6 @@ import '../providers/document_provider.dart';
 import '../providers/document_state.dart';
 import '../providers/settings_provider.dart';
 import '../providers/folder_provider.dart';
-import '../providers/folder_provider.dart';
 import '../providers/core_providers.dart';
 import '../pages/settings_screen.dart';
 import '../widgets/loading_overlay.dart';

@@ -5,11 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 
 import '../../../core/utils/background_remover_service.dart';
-import '../../../domain/entities/document.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../providers/document_provider.dart';
-import '../../providers/core_providers.dart';
-import '../../providers/folder_provider.dart';
 import '../save_result_screen.dart';
 
 class BackgroundEraserScreen extends ConsumerStatefulWidget {

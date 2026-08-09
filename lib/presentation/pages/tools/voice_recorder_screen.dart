@@ -13,7 +13,6 @@ import '../../providers/folder_provider.dart';
 import '../../widgets/loading_overlay.dart';
 import '../../../core/utils/media_conversion_service.dart';
 import '../../../core/utils/transcription_service.dart';
-import '../../../l10n/app_localizations.dart';
 
 class VoiceRecorderScreen extends ConsumerStatefulWidget {
   const VoiceRecorderScreen({super.key});
@@ -114,7 +113,7 @@ class _VoiceRecorderScreenState extends ConsumerState<VoiceRecorderScreen>
         final file = File(path);
 
         final doc = Document(
-          title: 'Ses Kaydı - ${_formattedTime}',
+          title: 'Ses Kaydı - $_formattedTime',
           folderId: activeFolderId,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
@@ -161,10 +160,12 @@ class _VoiceRecorderScreenState extends ConsumerState<VoiceRecorderScreen>
       if (_isCancelled) return;
 
       if (wavPath == null) {
-        if (mounted) LoadingOverlay.hide(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Medya dönüştürme başarısız.')),
-        );
+        if (mounted) {
+          LoadingOverlay.hide(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Medya dönüştürme başarısız.')),
+          );
+        }
         return;
       }
 

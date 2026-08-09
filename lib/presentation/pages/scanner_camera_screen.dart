@@ -99,8 +99,10 @@ class _ScannerCameraScreenState extends ConsumerState<ScannerCameraScreen> {
           setState(() {
             _idCardFrontPath = photo.path;
           });
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('Ön yüz çekildi. Şimdi arka yüzü çekin.')));
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Ön yüz çekildi. Şimdi arka yüzü çekin.')));
+          }
         } else {
           // Back captured, combine them
           setState(() {
@@ -118,8 +120,10 @@ class _ScannerCameraScreenState extends ConsumerState<ScannerCameraScreen> {
           if (combinedPath != null) {
             await _processSelectedImage(combinedPath);
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Kimlik birleştirilemedi.')));
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Kimlik birleştirilemedi.')));
+            }
           }
         }
       } else {
@@ -184,17 +188,21 @@ class _ScannerCameraScreenState extends ConsumerState<ScannerCameraScreen> {
         setState(() {
           _batchCount++;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Sayfa eklendi ($_batchCount)')));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Sayfa eklendi ($_batchCount)')));
+        }
       } else {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => FilterScreen(
-              imagePath: croppedFile.path,
-              targetDocumentId: widget.targetDocumentId,
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => FilterScreen(
+                imagePath: croppedFile.path,
+                targetDocumentId: widget.targetDocumentId,
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     }
   }
