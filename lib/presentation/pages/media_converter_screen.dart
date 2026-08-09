@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:share_plus/share_plus.dart';
+import '../widgets/kawaru_text.dart';
 import '../../core/utils/media_conversion_service.dart';
 import '../widgets/loading_overlay.dart';
 
@@ -80,7 +81,7 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
             const Icon(CupertinoIcons.infinite,
                 size: 80, color: Colors.blueAccent),
             const SizedBox(height: 16),
-            const Text(
+            const KawaruText(
               'Kawaru Evrensel Dönüştürücü',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),

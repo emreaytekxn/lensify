@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main.dart';
 import 'main_navigation_screen.dart';
@@ -22,10 +22,12 @@ class _AnimatedSplashScreenState extends ConsumerState<AnimatedSplashScreen>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
+    _playChime();
 
     _controller = AnimationController(
       vsync: this,
@@ -98,8 +100,17 @@ class _AnimatedSplashScreenState extends ConsumerState<AnimatedSplashScreen>
     });
   }
 
+  Future<void> _playChime() async {
+    try {
+      await _audioPlayer.play(AssetSource('sounds/splash.wav'));
+    } catch (e) {
+      debugPrint("Error playing chime: $e");
+    }
+  }
+
   @override
   void dispose() {
+    _audioPlayer.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -114,66 +125,31 @@ class _AnimatedSplashScreenState extends ConsumerState<AnimatedSplashScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: Opacity(
-                    opacity: _opacityAnimation.value,
-                    child: Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        image: const DecorationImage(
-                          image: AssetImage('assets/icon/app_icon.png'),
-                          fit: BoxFit.cover,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.blueAccent.withValues(alpha: 0.3),
-                            blurRadius: 20,
-                            spreadRadius: 5,
-                          ),
-                        ],
-                      ),
+            FadeTransition(
+              opacity: _opacityAnimation,
+              child: Transform.scale(
+                scale: _scaleAnimation.value,
+                child: RichText(
+                  text: TextSpan(
+                    style: GoogleFonts.outfit(
+                      fontSize: 48,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
                     ),
+                    children: [
+                      const TextSpan(
+                        text: 'K',
+                        style: TextStyle(color: Colors.blueAccent),
+                      ),
+                      TextSpan(
+                        text: 'awaru',
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 24),
-            FadeTransition(
-              opacity: _opacityAnimation,
-              child: Text(
-                'Kawaru',
-                style: GoogleFonts.outfit(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                  color: isDark ? Colors.white : Colors.black87,
                 ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            FadeTransition(
-              opacity: _opacityAnimation,
-              child: Text(
-                'Premium Scanner',
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  letterSpacing: 1.5,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            const SizedBox(height: 60),
-            FadeTransition(
-              opacity: _opacityAnimation,
-              child: LoadingAnimationWidget.staggeredDotsWave(
-                color: Colors.blueAccent,
-                size: 40,
               ),
             ),
           ],

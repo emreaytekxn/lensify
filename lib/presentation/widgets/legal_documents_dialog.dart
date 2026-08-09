@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'kawaru_text.dart';
 
 class LegalDocumentsDialog {
   static void showPrivacyPolicy(BuildContext context) {
@@ -117,7 +118,7 @@ Teşekkür ederiz.
                   Expanded(
                     child: SingleChildScrollView(
                       controller: scrollController,
-                      child: Text(
+                      child: KawaruText(
                         content.trim(),
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               height: 1.6,

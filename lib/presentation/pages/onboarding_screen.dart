@@ -5,6 +5,7 @@ import '../../l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main.dart';
 import '../providers/settings_provider.dart';
+import '../widgets/kawaru_text.dart';
 import 'main_navigation_screen.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -125,7 +126,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         children: [
           Icon(icon, size: 100, color: color),
           const SizedBox(height: 40),
-          Text(
+          KawaruText(
             title,
             textAlign: TextAlign.center,
             style:

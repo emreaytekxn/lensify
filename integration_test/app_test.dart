@@ -11,7 +11,10 @@ void main() {
     app.main();
     
     // Wait for the splash screen animations and Isar initialization
-    await tester.pumpAndSettle(const Duration(seconds: 4));
+    await tester.pump(const Duration(seconds: 4));
+
+    // Wait if we are on Lock Screen (Test robot doesn't know your PIN!)
+    // So the test will only succeed if you temporarily disable App Lock in Settings.
 
     // 2. Check if we are on Onboarding, Lock Screen, or Main Screen
     // For this test, let's assume we are either on Main Screen or we can find the 'Kawaru' text
@@ -21,7 +24,7 @@ void main() {
     final toolsTab = find.byIcon(Icons.grid_view); // Adjust icon if needed based on bottom navigation
     if (toolsTab.evaluate().isNotEmpty) {
       await tester.tap(toolsTab);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Check if some tools are visible
       expect(find.textContaining('Arka Plan Silici'), findsWidgets);
@@ -33,7 +36,7 @@ void main() {
     final settingsTab = find.byIcon(Icons.settings);
     if (settingsTab.evaluate().isNotEmpty) {
       await tester.tap(settingsTab);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Check for signature
       expect(find.text('Powered by'), findsWidgets);
@@ -44,13 +47,13 @@ void main() {
     final homeTab = find.byIcon(Icons.folder);
     if (homeTab.evaluate().isNotEmpty) {
       await tester.tap(homeTab);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       // Tap on the FAB to add a folder or document
       final fab = find.byType(FloatingActionButton);
       if (fab.evaluate().isNotEmpty) {
         await tester.tap(fab);
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 500));
         // Just checking if dialog opens
         expect(find.byType(AlertDialog), findsWidgets);
         
@@ -58,7 +61,7 @@ void main() {
         final cancelBtn = find.text('İptal');
         if (cancelBtn.evaluate().isNotEmpty) {
           await tester.tap(cancelBtn);
-          await tester.pumpAndSettle();
+          await tester.pump(const Duration(milliseconds: 500));
         }
       }
     }
