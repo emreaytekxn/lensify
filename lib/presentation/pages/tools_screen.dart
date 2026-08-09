@@ -20,10 +20,13 @@ import 'pdf_merge_screen.dart';
 import 'pdf_compress_screen.dart';
 import 'tools/ocr_scanner_screen.dart';
 import 'tools/pdf_encryption_screen.dart';
+import 'tools/pdf_merge_screen.dart';
+import 'tools/pdf_splitter_screen.dart';
 import 'tools/background_eraser_screen.dart';
 import '../../l10n/app_localizations.dart';
 import '../widgets/ux_feedback.dart';
 import 'tools/zip_creator_screen.dart';
+import 'tools/jpeg_to_gif_screen.dart';
 
 class ToolsScreen extends ConsumerWidget {
   const ToolsScreen({super.key});
@@ -159,10 +162,23 @@ class ToolsScreen extends ConsumerWidget {
           ),
           _buildToolCard(
             context,
+            icon: CupertinoIcons.sparkles,
+            color: Colors.purpleAccent,
+            title: 'JPEG to GIF',
+            description: 'Fotoğraflarınızı hareketli GIF animasyonlarına dönüştürün.',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const JpegToGifScreen()));
+            },
+          ),
+          _buildToolCard(
+            context,
             icon: CupertinoIcons.infinite,
             color: Colors.deepPurple,
             title: loc.mediaConverter,
-            description: loc.mediaConverterDesc,
+            description: 'Ses ve video dosyalarınızı internetsiz dönüştürün.',
             onTap: () {
               Navigator.push(
                   context,
@@ -223,6 +239,19 @@ class ToolsScreen extends ConsumerWidget {
           Text(
             loc.advancedPdfTools,
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          _buildToolCard(
+            context,
+            icon: CupertinoIcons.scissors,
+            color: Colors.indigo,
+            title: 'PDF Ayır',
+            description: 'PDF dosyasından belirli sayfaları kopartın.',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const PdfSplitterScreen()));
+            },
           ),
           const SizedBox(height: 16),
           _buildToolCard(

@@ -52,13 +52,21 @@ class _PdfCompressScreenState extends State<PdfCompressScreen> {
         final oldSizeMb = _selectedFile!.size / 1024 / 1024;
         final newSizeMb = newSize / 1024 / 1024;
         
+        // If file didn't shrink significantly (less than 1%), explain to the user.
+        final bool didNotShrink = newSize >= _selectedFile!.size || (_selectedFile!.size - newSize) < 1024;
+
         final shouldSave = await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Sıkıştırma Tamamlandı 📉'),
-            content: Text('Eski Boyut: ${oldSizeMb.toStringAsFixed(2)} MB\n'
-                'Yeni Boyut: ${newSizeMb.toStringAsFixed(2)} MB\n\n'
-                'Bu dosyayı kaydetmek istiyor musunuz?'),
+            title: Text(didNotShrink ? 'Sıkıştırma Gerekmiyor' : 'Sıkıştırma Tamamlandı 📉'),
+            content: Text(
+                didNotShrink 
+                  ? 'Eski Boyut: ${oldSizeMb.toStringAsFixed(2)} MB\n'
+                    'Yeni Boyut: ${newSizeMb.toStringAsFixed(2)} MB\n\n'
+                    'Bu dosya zaten maksimum seviyede sıkıştırılmış veya daha fazla küçültülemeyecek bir yapıya sahip. Yine de yeni kopyasını kaydetmek istiyor musunuz?'
+                  : 'Eski Boyut: ${oldSizeMb.toStringAsFixed(2)} MB\n'
+                    'Yeni Boyut: ${newSizeMb.toStringAsFixed(2)} MB\n\n'
+                    'Bu dosyayı kaydetmek istiyor musunuz?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),

@@ -94,12 +94,15 @@ class _BatchConversionScreenState extends ConsumerState<BatchConversionScreen> {
                 ],
               ),
             )
-          : ListView.builder(
+          : ReorderableListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: items.length,
+              onReorder: (oldIndex, newIndex) {
+                ref.read(batchConversionProvider.notifier).reorderItems(oldIndex, newIndex);
+              },
               itemBuilder: (context, index) {
                 final item = items[index];
-                return _buildBatchItemCard(item);
+                return _buildBatchItemCard(item, key: ValueKey(item.id));
               },
             ),
       floatingActionButton: items.isNotEmpty
@@ -112,7 +115,7 @@ class _BatchConversionScreenState extends ConsumerState<BatchConversionScreen> {
     );
   }
 
-  Widget _buildBatchItemCard(BatchItem item) {
+  Widget _buildBatchItemCard(BatchItem item, {Key? key}) {
     IconData statusIcon;
     Color statusColor;
 
@@ -140,6 +143,7 @@ class _BatchConversionScreenState extends ConsumerState<BatchConversionScreen> {
     }
 
     return Card(
+      key: key,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
@@ -157,18 +161,45 @@ class _BatchConversionScreenState extends ConsumerState<BatchConversionScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    '${item.conversionType} ➔ ${item.targetFormat.toUpperCase()}',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                PopupMenuButton<String>(
+                  onSelected: (val) {
+                    if (item.status != BatchItemStatus.pending && item.status != BatchItemStatus.paused) return;
+                    String newType = 'media';
+                    if (val == 'txt') newType = 'transcription';
+                    else if (val == 'pdf') newType = 'image_to_pdf';
+                    else if (val == 'jpg' && item.sourceFileName.toLowerCase().endsWith('pdf')) newType = 'pdf_to_image';
+                    ref.read(batchConversionProvider.notifier).updateItemFormat(item.id!, val, newType);
+                  },
+                  itemBuilder: (context) {
+                    final ext = item.sourceFileName.split('.').last.toLowerCase();
+                    List<String> options = ['mp4', 'mp3', 'wav', 'm4a', 'gif'];
+                    if (['mp3', 'wav', 'm4a', 'flac'].contains(ext)) options = ['txt', 'mp4', 'mp3', 'wav'];
+                    else if (['jpg', 'jpeg', 'png'].contains(ext)) options = ['pdf', 'gif'];
+                    else if (ext == 'pdf') options = ['jpg'];
+                    
+                    return options.map((e) => PopupMenuItem(value: e, child: Text(e.toUpperCase()))).toList();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Theme.of(context).primaryColor.withValues(alpha: 0.3)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '${item.conversionType} ➔ ${item.targetFormat.toUpperCase()}',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(CupertinoIcons.chevron_down, size: 14, color: Theme.of(context).primaryColor),
+                      ],
                     ),
                   ),
                 ),

@@ -20,7 +20,7 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
   String? _selectedFileName;
   String _targetFormat = 'mp4';
 
-  final List<String> _formats = ['mp4', 'mov', 'mp3', 'wav', 'm4a', 'gif'];
+  final List<String> _formats = ['mp4', 'mov', 'mp3', 'wav', 'm4a'];
 
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
@@ -54,7 +54,7 @@ class _MediaConverterScreenState extends State<MediaConverterScreen> {
               file: File(outputPath),
               fileType: _targetFormat == 'mp4' || _targetFormat == 'mov' 
                   ? 'video' 
-                  : _targetFormat == 'gif' ? 'image' : 'audio',
+                  : 'audio',
               defaultTitle: 'Donusturulmus_Medya_${DateTime.now().millisecondsSinceEpoch}',
             ),
           ),

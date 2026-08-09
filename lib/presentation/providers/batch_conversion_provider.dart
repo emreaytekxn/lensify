@@ -64,6 +64,22 @@ class BatchConversionNotifier extends StateNotifier<BatchConversionState> {
     state = state.copyWith(items: updatedList);
   }
 
+  Future<void> updateItemFormat(int id, String newFormat, String newType) async {
+    final item = state.items.firstWhere((e) => e.id == id);
+    if (item.status == BatchItemStatus.pending || item.status == BatchItemStatus.paused) {
+      await _updateItem(item.copyWith(targetFormat: newFormat, conversionType: newType));
+    }
+  }
+
+  Future<void> reorderItems(int oldIndex, int newIndex) async {
+    if (newIndex > oldIndex) newIndex -= 1;
+    final items = List<BatchItem>.from(state.items);
+    final item = items.removeAt(oldIndex);
+    items.insert(newIndex, item);
+    state = state.copyWith(items: items);
+    // Ideally we would update order in DB here, but for now in-memory is fine for the session
+  }
+
   Future<void> addJobs(List<BatchItem> newItems) async {
     for (var item in newItems) {
       final savedItem = await _repository.createBatchItem(item);
