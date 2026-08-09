@@ -4,19 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/media_conversion_service.dart';
 import '../../core/utils/transcription_service.dart';
 import '../widgets/loading_overlay.dart';
 import 'package:path_provider/path_provider.dart';
+import '../../domain/entities/document.dart';
+import '../providers/document_provider.dart';
+import '../providers/folder_provider.dart';
+import '../providers/core_providers.dart';
 
-class TranscriptionScreen extends StatefulWidget {
+class TranscriptionScreen extends ConsumerStatefulWidget {
   const TranscriptionScreen({super.key});
 
   @override
-  State<TranscriptionScreen> createState() => _TranscriptionScreenState();
+  ConsumerState<TranscriptionScreen> createState() => _TranscriptionScreenState();
 }
 
-class _TranscriptionScreenState extends State<TranscriptionScreen> {
+class _TranscriptionScreenState extends ConsumerState<TranscriptionScreen> {
   String? _selectedFilePath;
   String? _selectedFileName;
   String? _transcribedText;
@@ -119,21 +124,47 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
 
   Future<void> _exportAsTxt() async {
     if (_transcribedText == null) return;
+    LoadingOverlay.show(context, message: 'Belge kaydediliyor...');
     try {
-      final dir = await getTemporaryDirectory();
-      final path = '${dir.path}/transcription_kawaru.txt';
-      final file = File(path);
+      final dir = await getApplicationDocumentsDirectory();
+      final textDir = Directory('${dir.path}/text_docs');
+      if (!await textDir.exists()) await textDir.create(recursive: true);
+      
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final file = File('${textDir.path}/transcription_$timestamp.txt');
       await file.writeAsString(_transcribedText!);
 
-      await Share.shareXFiles(
-        [XFile(path)],
-        text: 'Kawaru ile çıkarılan metin',
-        sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
+      final activeFolderId = ref.read(folderNotifierProvider).activeFolderId;
+      final repo = ref.read(scannerRepositoryProvider);
+      
+      final doc = Document(
+        title: 'Çevrilen Metin $timestamp',
+        folderId: activeFolderId,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        pageCount: 0,
+        pdfPath: file.path,
+        isFavorite: false,
+        fileSize: await file.length(),
+        fileType: 'text',
       );
+      
+      await repo.createDocument(doc);
+      await ref.read(documentNotifierProvider.notifier).loadDocuments();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Metin belgesi olarak kaydedildi!')),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Dışa aktarma hatası: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Kaydetme hatası: $e')),
+        );
+      }
+    } finally {
+      if (mounted) LoadingOverlay.hide(context);
     }
   }
 
@@ -234,8 +265,8 @@ class _TranscriptionScreenState extends State<TranscriptionScreen> {
                   ),
                   TextButton.icon(
                     onPressed: _exportAsTxt,
-                    icon: const Icon(CupertinoIcons.share),
-                    label: const Text('TXT Paylaş'),
+                    icon: const Icon(CupertinoIcons.doc_text),
+                    label: const Text('Belge Olarak Kaydet'),
                   ),
                 ],
               )

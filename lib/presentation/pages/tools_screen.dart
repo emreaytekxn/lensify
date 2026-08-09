@@ -18,6 +18,8 @@ import 'transcription_screen.dart';
 import 'batch_conversion_screen.dart';
 import 'pdf_merge_screen.dart';
 import 'pdf_compress_screen.dart';
+import 'tools/ocr_scanner_screen.dart';
+import 'tools/pdf_encryption_screen.dart';
 import '../../l10n/app_localizations.dart';
 
 class ToolsScreen extends ConsumerWidget {
@@ -151,23 +153,11 @@ class ToolsScreen extends ConsumerWidget {
             color: Colors.green,
             title: loc.imageToText,
             description: loc.imageToTextDesc,
-            onTap: () async {
-              LoadingOverlay.show(context, message: loc.analyzingText);
-              try {
-                final success =
-                    await FormatConversionService.extractTextToTxt();
-                if (success && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(loc.textFileCreated)));
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('${loc.error}: $e')));
-                }
-              } finally {
-                if (context.mounted) LoadingOverlay.hide(context);
-              }
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const OcrScannerScreen()));
             },
           ),
           _buildToolCard(
@@ -177,7 +167,10 @@ class ToolsScreen extends ConsumerWidget {
             title: loc.pdfEncrypt,
             description: loc.pdfEncryptDesc,
             onTap: () {
-              _showPasswordDialog(context, loc);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const PdfEncryptionScreen()));
             },
           ),
           const SizedBox(height: 24),
@@ -214,70 +207,6 @@ class ToolsScreen extends ConsumerWidget {
           ),
         ],
       ),
-    );
-  }
-
-  void _showPasswordDialog(BuildContext context, AppLocalizations loc) {
-    final TextEditingController passwordController = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('PDF Şifreleme'),
-          content: TextField(
-            controller: passwordController,
-            obscureText: true,
-            decoration:
-                const InputDecoration(hintText: 'Yeni parolanızı girin'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('İptal'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final pwd = passwordController.text.trim();
-                if (pwd.isEmpty) return;
-                Navigator.pop(context); // close dialog
-
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                  type: FileType.custom,
-                  allowedExtensions: ['pdf'],
-                );
-
-                if (result == null || result.files.single.path == null) return;
-
-                if (context.mounted) {
-                  LoadingOverlay.show(context, message: 'PDF şifreleniyor...');
-                }
-
-                String? encryptedPath;
-                try {
-                  encryptedPath = await FormatConversionService.encryptPdf(
-                      result.files.single.path!, pwd);
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('Hata: $e')));
-                  }
-                } finally {
-                  if (context.mounted) LoadingOverlay.hide(context);
-                }
-
-                if (encryptedPath != null) {
-                  await Share.shareXFiles(
-                    [XFile(encryptedPath)],
-                    text: 'Kawaru ile şifrelenmiş PDF',
-                    sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
-                  );
-                }
-              },
-              child: const Text('Şifrele'),
-            ),
-          ],
-        );
-      },
     );
   }
 
